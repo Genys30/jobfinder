@@ -35,7 +35,7 @@ Freelancer - OSINT/WEBINT Experts,Alice,New York,2026-04-18,https://alice.io/pos
 GenAI Account Executive,Alice,New York,2026-04-16,https://alice.io/positions/position-BB_368,Sales,Remote
 GenAI Account Executive,Alice,London,2026-04-16,https://alice.io/positions/position-BB_368,Sales,Remote
 GenAI Analyst,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-F5_468,Intelligence,Hybrid
-GenAI Security Specialist,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-00_C55?=&utm_campaign=&hsa_acc=1671889184&hsa_cam=&hsa_grp=&hsa_ad=-6720764958826854284&hsa_src=&hsa_tgt=&hsa_kw=&hsa_mt=b&hsa_net=adwords&hsa_ver=3,Intelligence,Hybrid
+GenAI Security Specialist,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-00_C55,Intelligence,Hybrid
 Geopolitical Risk Project Lead,Alice,Ramat Gan,2026-04-16,https://alice.io/positions/position-60_662,Intelligence,Hybrid
 Infrastructure Red Team Specialist (Maternity Leave Rep),Alice,Ramat Gan,2026-04-17,https://alice.io/positions/position-15_766,Intelligence,Hybrid
 Intel Desk Team Lead,Alice,Ramat Gan,2026-04-16,https://alice.io/positions/position-1E_86C,Intelligence,Hybrid
@@ -43,12 +43,12 @@ Intelligence Infrastructure Expert (Maternity leave replacement),Alice,Ramat Gan
 Malware Researcher,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-5D_46F?t=1769440433534,Security,Hybrid
 Malware Researcher (Mid-Level),Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-B0_757?t=1774270252041,Security,On-site
 Marketing Automation Specialist (Maternity Leave Cover),Alice,Ramat Gan,2026-04-17,https://alice.io/positions/position-C7_369,Finance,Hybrid
-Mobile Threat Analyst,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-13_76F?t=1775562430289,Intelligence,Hybrid
+Mobile Threat Analyst,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-13_76F?t=1776234184507,Intelligence,Hybrid
 Office Manager & Welfare Operations (Maternity Leave Cover),Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-D9_669?t=1772978488402,Human Resources,On-site
 Research Team Lead - Online Child Safety,Alice,Ramat Gan,2026-04-16,https://alice.io/positions/position-32_F5D,Intelligence,Hybrid
 Sales Executive,Alice,New York,2026-04-17,https://alice.io/positions/position-29_268,Sales,Remote
 Senior Controller,Alice,Ramat Gan,2026-04-17,https://alice.io/positions/position-27_66C,Finance,Hybrid
-Senior Violent Extremism Researcher,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-15_16E?_gl=1*1axtqyv*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjw-pHPBhCdARIsAHXYWP_z5S4in6L57PDq7U5t-HLuGwzZyfmYcwCe4a10SfMAAakb7oSos3AaAqHZEALw_wcB&gbraid=0AAAAAocE-XST5BLl2z5NSa12VNFz3f2hp,Intelligence,Hybrid
+Senior Violent Extremism Researcher,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-15_16E,Intelligence,Hybrid
 "Bilingual Technical Writer –  Italian, German, Portuguese",Optibus,Tel Aviv-Yafo,2026-04-19,https://optibus.com/company/careers/jobs/co/israel/49.769/bilingual-technical-writer-italian-german-portuguese/all/,Customer Success,Hybrid
 Customer Success Engineer,Optibus,"Santiago, Chile",2026-03-28,https://optibus.com/company/careers/jobs/co/santiago-chile/63.366/customer-success-engineer/all/,Customer Success,Remote
 "Senior Full Stack Engineer, Scheduling",Optibus,Tel Aviv-Yafo,2026-04-19,https://optibus.com/company/careers/jobs/co/israel/5D.167/senior-full-stack-engineer-scheduling/all/,Engineering,Hybrid
@@ -57,7 +57,7 @@ Senior Team Lead,Optibus,Tel Aviv-Yafo,2026-02-24,https://optibus.com/company/ca
 Software Architect,Optibus,Tel Aviv-Yafo,2026-04-18,https://optibus.com/company/careers/jobs/co/israel/52.A53/software-architect/all/,Engineering,Hybrid
 "Software Engineer, Gen AI",Optibus,Tel Aviv-Yafo,2026-04-13,https://optibus.com/company/careers/jobs/co/israel/B4.861/software-engineer-gen-ai/all/,,On-site
 AI Engineer,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-18,https://www.onezerobank.com/career/position/?positionID=63.560,R&D,Hybrid
-Back Office – Trading Operations,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=DC.76F,Finance & Accounting,Hybrid
+Back Office – Trading Operations,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/en/career/position/?positionID=DC.76F,Finance & Accounting,Hybrid
 Backend Developer – DevEx,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=04.563,R&D,Hybrid
 Backend Tech Lead,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-18,https://www.onezerobank.com/career/position/?positionID=0C.463,R&D,Hybrid
 Controller – Banking Experience,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-16,https://www.onezerobank.com/career/position/?positionID=50.762,Finance & Accounting,Hybrid
@@ -121,7 +121,7 @@ Executive Assistant to the CEO,Atera,Tel Aviv-Yafo,2026-04-19,https://www.atera.
 Full Stack Developer,Atera,Tel Aviv-Yafo,2026-04-16,https://www.atera.com/careers/co/tel-aviv/ED.850/full-stack-developer/all/,R&D,On-site
 Full Stack Team Lead,Atera,Tel Aviv-Yafo,2026-03-31,https://www.atera.com/careers/co/tel-aviv/2C.E5E/full-stack-team-lead/all/,R&D,On-site
 Global Talent Acquisition Director,Atera,Tel Aviv-Yafo,2026-04-15,https://www.atera.com/careers/co/tel-aviv/9B.566/global-talent-acquisition-director/all/,HR,On-site
-Marketing Project Manager (Maternity Leave Replacement),Atera,Tel Aviv-Yafo,2026-04-19,https://www.atera.com/careers/co/tel-aviv/CC.76A/marketing-project-manager-maternity-leave-replacement/all/,Marketing,Hybrid
+Marketing Project Manager (Maternity Leave Replacement),Atera,Tel Aviv-Yafo,2026-04-19,https://www.atera.com/careers/co/tel-aviv/CC.76A/marketing-project-manager-maternity-leave-replacement/all/?t=1776579578899&fbclid=IwZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQKNjYyODU2ODM3OQABHtQKYiAjc3XUR22q1g8VE-GwAPiGUwpjYxTyzkswiT38coOZSVFIo3InxW-E_aem_4izD9gi6BLKpcrMf6rf-SQ,Marketing,Hybrid
 Product Designer,Atera,Tel Aviv-Yafo,2026-04-19,https://www.atera.com/careers/co/tel-aviv/A7.76F/product-designer/all/,Product,On-site
 Senior AI Product Manager,Atera,Tel Aviv-Yafo,2026-04-15,https://www.atera.com/careers/co/tel-aviv/A9.C56/senior-ai-product-manager/all/,Product,Hybrid
 Senior Product Designer,Atera,Tel Aviv-Yafo,2026-03-30,https://www.atera.com/careers/co/tel-aviv/E9.66E/senior-product-designer/all/,Product,Hybrid
@@ -133,7 +133,7 @@ Assembly Technician,SolarEdge,Modi'in,2026-04-19,https://corporate.solaredge.com
 ATE Engineer,SolarEdge,Nazareth Iliit,2026-04-18,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-98767,IL Production - Engineering,On-site
 ATE Testers Technician (Level 2),SolarEdge,Nazareth Iliit,2026-04-15,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-9376F,IL Production - Engineering,On-site
 ATE Testers Technicians Supervisor,SolarEdge,Nazareth Iliit,2026-04-15,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0E76A&-updates,IL Production - Engineering,On-site
-Automation Software Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0A567&_gl=1*nzzamt*_up*MQ..*_ga*MTUzOTM0NDQzOC4xNzc2NTk0MDA4*_ga_VLCW84G8SB*czE3NzY1OTQwMDckbzEkZzAkdDE3NzY1OTQwMDckajYwJGwwJGgw*_ga_EB80EEY8WM*czE3NzY1OTQwMDckbzEkZzAkdDE3NzY1OTQwMDckajYwJGwwJGgw,Q&R,On-site
+Automation Software Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0A567,Q&R,On-site
 BI Development Team Leader,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-06864&_gl=1*1j7syzz*_up*MQ..*_ga*MTE1MTM5NDgzOC4xNzc2NTkwMjQz*_ga_EB80EEY8WM*czE3NzY1OTAyNDIkbzEkZzEkdDE3NzY1OTAyNTYkajQ2JGwwJGgw*_ga_VLCW84G8SB*czE3NzY1OTAyNDIkbzEkZzEkdDE3NzY1OTAyNTYkajQ2JGwwJGgw,IT,Hybrid
 C&I Marketing Team Leader,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-9F66E,Marketing,Hybrid
 Cleaner,SolarEdge,Herzliya,2026-04-15,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-4D858,Facilities Ops and Admin,On-site
@@ -148,8 +148,8 @@ Embedded Software Engineer,SolarEdge,Modi'in,2026-04-16,https://corporate.solare
 Embedded Software Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-3D56F&_gl=1*1jsic4t*_up*MQ..*_ga*MTAxNjcwOTQ5OS4xNzc2NTkwMDQx*_ga_EB80EEY8WM*czE3NzY1OTAwNDAkbzEkZzAkdDE3NzY1OTAwNDAkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1OTAwNDAkbzEkZzAkdDE3NzY1OTAwNDAkajYwJGwwJGgw,Battery Systems,Hybrid
 Embedded Software Engineer,SolarEdge,Modi'in,2026-04-14,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-D7767,Data centers,On-site
 Experienced ATE HW Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0E860,Core Tech,On-site
-Experienced Backend Developer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-FF261&1773671912352,R&D - Software,Hybrid
-Experienced Hardware Engineer,SolarEdge,Modi'in,2026-04-18,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-2B56F&_gl=1*t9z93a*_up*MQ..*_ga*MTcyMzI3MDM5OC4xNzc2NTQzMzc5*_ga_EB80EEY8WM*czE3NzY1NDMzNzkkbzEkZzEkdDE3NzY1NDM0MDgkajMxJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1NDMzNzkkbzEkZzEkdDE3NzY1NDM0MDgkajMxJGwwJGgw,Data centers,On-site
+Experienced Backend Developer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-FF261,R&D - Software,Hybrid
+Experienced Hardware Engineer,SolarEdge,Modi'in,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-2B56F,Data centers,On-site
 Experienced Hardware Engineer,SolarEdge,Modi'in,2026-04-15,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-3B565&1773671429947,R&D - Hardware,On-site
 Experienced Hardware Engineer,SolarEdge,Modi'in,2026-04-18,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-D7766&_gl=1*t9z93a*_up*MQ..*_ga*MTcyMzI3MDM5OC4xNzc2NTQzMzc5*_ga_EB80EEY8WM*czE3NzY1NDMzNzkkbzEkZzEkdDE3NzY1NDM0MDgkajMxJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1NDMzNzkkbzEkZzEkdDE3NzY1NDM0MDgkajMxJGwwJGgw,Data centers,On-site
 Experienced Mechanical Engineer,SolarEdge,Modi'in,2026-04-15,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-3B562,Data centers,On-site
@@ -160,7 +160,7 @@ Growth Specialist,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/
 Hardware Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-42368&_gl=1*1p9qk42*_up*MQ..*_ga*MTMzNzgwNjE2OS4xNzc2NTk2NzU0*_ga_EB80EEY8WM*czE3NzY1OTY3NTQkbzEkZzAkdDE3NzY1OTY3NTQkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1OTY3NTQkbzEkZzAkdDE3NzY1OTY3NTQkajYwJGwwJGgw,R&D - Hardware,On-site
 Hardware Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0A768&_gl=1*1p9qk42*_up*MQ..*_ga*MTMzNzgwNjE2OS4xNzc2NTk2NzU0*_ga_EB80EEY8WM*czE3NzY1OTY3NTQkbzEkZzAkdDE3NzY1OTY3NTQkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1OTY3NTQkbzEkZzAkdDE3NzY1OTY3NTQkajYwJGwwJGgw,R&D - Hardware,On-site
 Inside Sales Account Executive,SolarEdge,Chicago,2026-04-17,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-E356E&_gl=1*1xivu8t*_up*MQ..*_ga*MTU2MjYzMzE5NS4xNzc2NDU1MzQ5*_ga_EB80EEY8WM*czE3NzY0NTUzNDkkbzEkZzEkdDE3NzY0NTU0MzYkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY0NTUzNDkkbzEkZzEkdDE3NzY0NTU0MzYkajYwJGwwJGgw,Sales,Remote
-Integration Engineer,SolarEdge,Modi'in,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-C1365&_gl=1*1p9qk42*_up*MQ..*_ga*MTMzNzgwNjE2OS4xNzc2NTk2NzU0*_ga_EB80EEY8WM*czE3NzY1OTY3NTQkbzEkZzAkdDE3NzY1OTY3NTQkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1OTY3NTQkbzEkZzAkdDE3NzY1OTY3NTQkajYwJGwwJGgw,Data centers,Hybrid
+Integration Engineer,SolarEdge,Modi'in,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-C1365&_gl=1*1yj5199*_up*MQ..*_ga*MTcyODM0NTkwOC4xNzc2MjQ4MjYx*_ga_EB80EEY8WM*czE3NzYyNDgyNjAkbzEkZzEkdDE3NzYyNDg1MTckajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzYyNDgyNjEkbzEkZzEkdDE3NzYyNDg1MTckajYwJGwwJGgw,Data centers,Hybrid
 Integration Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-80664,R&D - Integration,Hybrid
 Invoice Reconciliation Specialist,SolarEdge,Nazareth Iliit,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-C376E,Ziporit Manufacturing Plant - North,On-site
 Maintenance Manager – Modiin Site,SolarEdge,Modi'in,2026-04-17,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-F9E50&_gl=1*eonp77*_up*MQ..*_ga*MTAzNzY2MjExOC4xNzc2NTAwOTM0*_ga_EB80EEY8WM*czE3NzY1MDA5MzMkbzEkZzAkdDE3NzY1MDA5MzMkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1MDA5MzMkbzEkZzAkdDE3NzY1MDA5MzMkajYwJGwwJGgw,Facilities Ops and Admin,On-site
@@ -182,7 +182,7 @@ Regional Sales Manager - Puerto Rico,SolarEdge,San Juan,2026-04-16,https://corpo
 Safety Officer - Modi'in,SolarEdge,Modi'in,2026-04-18,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-6E34E,Facilities Ops and Admin,On-site
 Sales Data Analyst,SolarEdge,Herzliya,2026-04-18,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-ED761,Sales Operations,Hybrid
 Sales Representative,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-3D46D,Sales,Hybrid
-Sales Team Leader,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-CD762&_gl=1*xs02qs*_up*MQ..*_ga*MTkwNzQxNjQ4My4xNzc1NzU2OTgw*_ga_VLCW84G8SB*czE3NzU3NTY5ODAkbzEkZzEkdDE3NzU3NTY5OTckajQzJGwwJGgw*_ga_EB80EEY8WM*czE3NzU3NTY5NzkkbzEkZzEkdDE3NzU3NTY5OTckajQyJGwwJGgw,Sales,Hybrid
+Sales Team Leader,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-CD762,Sales,Hybrid
 Senior Analog Chip Designer,SolarEdge,Herzliya,2026-04-13,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-F4563&1773671086865,R&D - ASIC,Hybrid
 Senior Automation Developer,SolarEdge,Herzliya,2026-04-13,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-1D269,Battery Systems,Hybrid
 Senior Backend Engineer,SolarEdge,Herzliya,2026-04-18,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0E86A,R&D - Software,Hybrid
@@ -404,7 +404,7 @@ Senior Data Analyst,365scores,Tel Aviv-Yafo,2026-03-28,https://corporate.365scor
 Senior Data Scientist,365scores,Tel Aviv-Yafo,2026-04-16,https://corporate.365scores.com/careers/position/?jobid=AB.560,Data & BI,On-site
 Senior DevOps Engineer,365scores,Tel Aviv-Yafo,2026-03-25,https://corporate.365scores.com/careers/position/?jobid=8B.C4E,CTO,On-site
 Senior Fullstack Developer,365scores,Tel Aviv-Yafo,2026-04-17,https://corporate.365scores.com/careers/position/?jobid=42.F57,R&D,On-site
-AI & Advanced Technologies - Senior Software Engineer,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/69-764/,Engineering,Hybrid
+AI & Advanced Technologies - Senior Software Engineer,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/en/careers/69-764/,Engineering,Hybrid
 Assistant Controller,Global-e,Petah-Tikva,2026-04-16,https://www.global-e.com/careers/da-566/,Finance,Hybrid
 Business Development Manager (DACH),Global-e,London,2026-04-19,https://www.global-e.com/careers/16-764/,Sales,Remote
 Data Analyst,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/09-766/,Finance,Hybrid
@@ -412,7 +412,7 @@ Delivery Solution Engineer,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.
 Director of Analytics - Growth,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/e1-367/,Growth,Hybrid
 Director of Customer Service,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/d8-760/,Customer Service,Hybrid
 Duty Drawback Specialist,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/de/careers/85-867/,Operations,Hybrid
-Full Stack Developer,Global-e,Petah-Tikva,2026-04-15,https://www.global-e.com/careers/dd-663/,Engineering,Hybrid
+Full Stack Developer,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/dd-663/,Engineering,Hybrid
 Indirect Tax Analyst- Temporary,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/jobs/indirect-tax-analyst--temporary,Finance,Hybrid
 NOC Engineer- Student Position,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/bc-84d/,Technical Operations,On-site
 Payments Operations Specialist,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/78-86c/,Payments,Hybrid
@@ -421,8 +421,8 @@ Pricing Analyst,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/en/care
 R&D Director,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/bc-860/,Engineering,Hybrid
 Sales Manager (DACH),Global-e,Berlin,2026-04-17,https://www.global-e.com/careers/0f-d5e/,Sales,Remote
 Senior Demand Generation Manager (B2B),Global-e,Petah-Tikva,2026-04-18,https://www.global-e.com/careers/a8-86a/,Borderfree & DTC Marketing,Hybrid
-Senior Full Stack Developer,Global-e,Petah-Tikva,2026-04-18,https://www.global-e.com/careers/87-365/,R&D,Hybrid
-Senior Product Manager- Cross,Global-e,Petah-Tikva,2026-04-17,https://www.global-e.com/careers/a6-555/,Product,Hybrid
+Senior Full Stack Developer,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/en/careers/87-365/,R&D,Hybrid
+Senior Product Manager- Cross,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/en/careers/a6-555/,Product,Hybrid
 Software Engineer Team Lead,Global-e,Petah-Tikva,2026-04-18,https://www.global-e.com/careers/a2-664/,Engineering,Hybrid
 System Architect,Global-e,Petah-Tikva,2026-04-17,https://www.global-e.com/careers/17-f5f/,R&D,On-site
 Trade Analyst,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/fd-061/,Operations,Hybrid
@@ -436,7 +436,7 @@ Lead Enterprise Account Manager (Player-Coach),Lusha,Tel Aviv-Yafo,2026-04-18,ht
 Mid-Market & Enterprise Account Executive,Lusha,Tel Aviv-Yafo,2026-04-18,https://www.lusha.com/careers/co/tel-aviv/0C.561/mid-market-enterprise-account-executive/,Sales,Hybrid
 "R&D Director, Core Solutions",Lusha,Tel Aviv-Yafo,2026-04-19,https://www.lusha.com/careers/co/tel-aviv/42.96A/rd-director-core-solutions/?t=1776593063002,R&D,Hybrid
 Senior BI Data Engineer,Lusha,Tel Aviv-Yafo,2026-04-19,https://www.lusha.com/careers/co/tel-aviv/6F.26C/senior-bi-data-engineer/,R&D,Hybrid
-Senior Business Analyst,Lusha,Tel Aviv-Yafo,2026-04-19,https://www.lusha.com/careers/co/tel-aviv/6D.86A/senior-business-analyst/,HQ,Hybrid
+Senior Business Analyst,Lusha,Tel Aviv-Yafo,2026-04-19,https://www.lusha.com/careers/co/tel-aviv/6D.86A/senior-business-analyst/?t=1775993965947,HQ,Hybrid
 Senior Data Analyst,Lusha,Tel Aviv-Yafo,2026-04-18,https://www.lusha.com/careers/co/tel-aviv/FE.86F/senior-data-analyst/,R&D,Hybrid
 Senior Data Product Manager,Lusha,Tel Aviv-Yafo,2026-04-14,https://www.lusha.com/careers/co/tel-aviv/C6.46A/senior-data-product-manager/,Product Management,Hybrid
 Senior Full Stack Developer,Lusha,Tel Aviv-Yafo,2026-04-15,https://www.lusha.com/careers/co/tel-aviv/B7.A5F/senior-full-stack-developer/,R&D,Hybrid
@@ -595,7 +595,7 @@ Business Development Manager,WSC Sports,Madrid,2026-04-19,https://wsc-sports.com
 Business Operations Manager,WSC Sports,Ramat-Gan,2026-04-16,https://wsc-sports.com/career/business-operations-manager/,Revenue,Hybrid
 Cloud FinOps Engineer,WSC Sports,Ramat-Gan,2026-04-17,https://wsc-sports.com/career/cloud-finops-engineer/,Engineering,Hybrid
 Data Engineer,WSC Sports,Ramat-Gan,2026-04-15,https://wsc-sports.com/career/data-engineer/,Engineering,Hybrid
-Director of Global Marketing,WSC Sports,Ramat-Gan,2026-04-19,https://wsc-sports.com/career/director-of-global-marketing/?t=1775985290555,Marketing,Hybrid
+Director of Global Marketing,WSC Sports,Ramat-Gan,2026-04-19,https://wsc-sports.com/career/director-of-global-marketing/,Marketing,Hybrid
 Director of Product,WSC Sports,Ramat-Gan,2026-04-17,https://wsc-sports.com/career/director-of-product/,Product,Hybrid
 FP&A Analyst,WSC Sports,Ramat-Gan,2026-04-17,https://wsc-sports.com/career/fpa-analyst/,Finance,Hybrid
 Generative AI Evangelist,WSC Sports,Ramat-Gan,2026-04-16,https://wsc-sports.com/career/generative-ai-evangelist/,Engineering,Hybrid
@@ -620,7 +620,7 @@ Frontend Team Leader - Czech Republic,Zero Networks,Czech Republic,2025-12-05,ht
 Linux Developer,Zero Networks,Ramat Gan,2026-04-13,https://zeronetworks.com/careers/details?uid=10.E4B,Engineering,On-site
 Network Data Analyst,Zero Networks,Ramat Gan,2026-03-24,https://zeronetworks.com/careers/details?uid=7C.E41,Data,On-site
 On-Prem Backend Engineer (Network Oriented),Zero Networks,Ramat Gan,2026-01-31,https://zeronetworks.com/careers/details?uid=70.D51,Engineering,On-site
-QA Engineer,Zero Networks,Ramat Gan,2026-04-19,https://zeronetworks.com/careers/details?uid=F4.945&t=1776596153719,Engineering,On-site
+QA Engineer,Zero Networks,Ramat Gan,2026-04-19,https://zeronetworks.com/careers/details?uid=F4.945,Engineering,On-site
 Regional Sales Manager,Zero Networks,Munich,2026-03-11,https://zeronetworks.com/careers/details?uid=85.76D,Sales,Remote
 Regional Sales Manager-Atlanta,Zero Networks,Georgia,2026-01-15,https://zeronetworks.com/careers/details?uid=44.463,Sales,Remote
 Regional Sales Manager-Atlanta,Zero Networks,Atlanta,2026-01-15,https://zeronetworks.com/careers/details?uid=44.463,Sales,Remote
@@ -745,7 +745,7 @@ Talent Acquisition Partner,Aidoc,Tel Aviv-Yafo,2026-04-16,https://www.aidoc.com/
 "Talent Acquisition Partner, GTM Healthtech",Aidoc,New York,2026-04-19,https://www.aidoc.com/about/careers/co/remote/0F.260/talent-acquisition-partner-gtm-healthtech/all/#positions,People,Remote
 Backend Engineer,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/A0.661/backend-engineer/all/,R&D,Hybrid
 Backend Team Lead,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/57.F58/backend-team-lead/all/?t=1775399769095,R&D,Hybrid
-Deep Learning Algorithm Engineer,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/C9.062/deep-learning-algorithm-engineer/all/?layout=blog,R&D,Hybrid
+Deep Learning Algorithm Engineer,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/C9.062/deep-learning-algorithm-engineer/all/?v=0i&tg=SEO&tag1=Entail&tag2=Entail,R&D,Hybrid
 Deep Learning Algorithm Intern,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/5C.769/deep-learning-algorithm-intern/all/?v=0j&trk=article-ssr-frontend-pulse_little-text-block,R&D,Hybrid
 Head of Engineering,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/FC.06C/head-of-engineering/all/,R&D,Hybrid
 Senior Partnerships Manager,Imagen,Giv'atayim,2026-04-19,https://imagen-ai.com/careers/co/careers/30.660/senior-partnerships-manager/all/,Marketing,Hybrid
@@ -755,10 +755,10 @@ Customer Service Representative,Gett,Tel Aviv,2026-04-15,https://www.gett.com/ca
 Delivery Service Representative,Gett,Tel Aviv,2026-04-13,https://www.gett.com/careers/6B.76A/,Customer Experience,Hybrid
 IL Controller,Gett,Tel Aviv,2026-04-17,https://www.gett.com/careers/CD.76B/,Finance,Hybrid
 Salesforce System Analyst,Gett,Tel Aviv,2026-04-14,https://www.gett.com/careers/F2.365/,Systems IT,Hybrid
-Senior Product Designer,Gett,Tel Aviv,2026-04-19,https://www.gett.com/careers/9F.D5E/,Design,Hybrid
+Senior Product Designer,Gett,Tel Aviv,2026-04-19,https://www.gett.com/careers/9F.D5E/?t=1776409309134&fbclid=IwY2xjawRQmC5leHRuA2FlbQIxMQBzcnRjBmFwcF9pZA80MDk5NjI2MjMwODU2MDkAAR6H3TAQEmuPY9oPDLJY8_UTjVoMqmY3FMP5YhrjMBJEiKf1wHmv21vfjkwJxA_aem_uZa1vm8GppDbMnA2RFduUw,Design,Hybrid
 Staff DevOps Engineer,Gett,Tel Aviv,2026-04-17,https://www.gett.com/careers/C7.B5F/,R&D,Hybrid
 Talent Acquisition Specialist - Maternity Leave Replacement,Gett,Tel Aviv,2026-04-18,https://www.gett.com/careers/C8.76F/,People,Hybrid
-Taxi Line Representative (On site),Gett,Tel Aviv,2026-04-19,https://www.gett.com/careers/E6.859/?utm_id=120243163858440774,Operations,On-site
+Taxi Line Representative (On site),Gett,Tel Aviv,2026-04-19,https://www.gett.com/careers/E6.859/,Operations,On-site
 Customer Success Manager,Surecomp,Europe - Remotely.,2026-03-27,https://surecomp.com/careers/co/europe-remotely/B3.76D/customer-success-manager/all,Global Customer Success,Remote
 Enterprise Customer Success Manager,Surecomp,Europe - Remotely.,2026-03-30,https://surecomp.com/careers/co/europe-remotely/C3.767/enterprise-customer-success-manager/all,Global Customer Success,Remote
 "Gen AI Engineer (Backend, GenAI)",Surecomp,Kfar Saba,2026-04-19,https://surecomp.com/careers/co/kfar-saba-israel/70.76C/prompt-engineer-backend-genai/all,Global R&D,Hybrid
@@ -1123,7 +1123,7 @@ Account Manager - Tech,Kaltura,Remote,2026-04-08,https://corp.kaltura.com/career
 AI Business Development Vertical Lead - Education,Kaltura,Remote,2026-03-23,https://corp.kaltura.com/careers/ai-business-development-vertical-lead-education/FD.068/,Sales,Remote
 AI Business Development Vertical Lead - Financial Services,Kaltura,Remote,2026-03-26,https://corp.kaltura.com/careers/ai-business-development-vertical-lead-financial-services/FD.06C/,Sales,Remote
 AI Business Development Vertical Lead - Healthcare,Kaltura,EMEA - REMOTE,2026-04-16,https://corp.kaltura.com/careers/ai-business-development-vertical-lead-healthcare/FD.06F/,Sales,Remote
-Content Marketing Manager,Kaltura,Bnei Brak,2026-04-14,https://corp.kaltura.com/careers/content-marketing-manager/FD.867/,Marketing,Hybrid
+Content Marketing Manager,Kaltura,Bnei Brak,2026-04-19,https://corp.kaltura.com/careers/content-marketing-manager/FD.867/?t=1776598392322,Marketing,Hybrid
 FP&A Analyst,Kaltura,Bnei Brak,2026-03-19,https://corp.kaltura.com/careers/fpa-analyst/7B.76F/,G&A,Hybrid
 Help Desk,Kaltura,Bnei Brak,2026-04-19,https://corp.kaltura.com/careers/help-desk/D5.760/,IT,Hybrid
 Integration Engineer,Kaltura,Singapore,2026-03-31,https://corp.kaltura.com/careers/integration-engineer/06.861/,Professional Services,Remote
@@ -1218,8 +1218,8 @@ Regional Sales Manager (Texas Region),Fullpath,Dallas,2026-04-18,https://www.ful
 Regional Sales Manager (Texas Region),Fullpath,San Antonio,2026-04-18,https://www.fullpath.com/careers/co/texas/92.650/regional-sales-manager-texas-region/all/#positions,Sales,Remote
 Regional Sales Manager (Texas Region),Fullpath,Houston,2026-04-18,https://www.fullpath.com/careers/co/texas/92.650/regional-sales-manager-texas-region/all/#positions,Sales,Remote
 Regional Sales Manager (Texas Region),Fullpath,Plano,2026-04-18,https://www.fullpath.com/careers/co/texas/92.650/regional-sales-manager-texas-region/all/#positions,Sales,Remote
-Senior Backend Engineer,Fullpath,Tel Aviv-Yafo,2026-04-19,https://www.fullpath.com/careers/co/israel-tel-aviv/97.069/senior-backend-engineer-tech-lead/all/#positions,R&D - Dev,Hybrid
-Senior Backend Engineer,Fullpath,Jerusalem,2026-04-19,https://www.fullpath.com/careers/co/israel-tel-aviv/97.069/senior-backend-engineer-tech-lead/all/#positions,R&D - Dev,Hybrid
+Senior Backend Engineer,Fullpath,Tel Aviv-Yafo,2026-04-19,https://www.fullpath.com/careers/co/israel-tel-aviv/97.069/senior-backend-engineer-tech-lead/all/?t=1770040577119,R&D - Dev,Hybrid
+Senior Backend Engineer,Fullpath,Jerusalem,2026-04-19,https://www.fullpath.com/careers/co/israel-tel-aviv/97.069/senior-backend-engineer-tech-lead/all/?t=1770040577119,R&D - Dev,Hybrid
 Senior Fullstack Engineer,Fullpath,Tel Aviv-Yafo,2026-04-19,https://www.fullpath.com/careers/co/israel-tel-aviv/49.760/fullstack-tech-lead/all/#positions,R&D - Others,Hybrid
 Senior Fullstack Engineer,Fullpath,Jerusalem,2026-04-19,https://www.fullpath.com/careers/co/israel-tel-aviv/49.760/fullstack-tech-lead/all/#positions,R&D - Others,Hybrid
 Custom Agentic Solutions Product Manager - (Founder Background),Tastewise,Tel Aviv-Yafo,2026-04-18,https://tastewise.io/career/co/tel-aviv-israel/20.964/custom-agentic-solutions-product-manager-founder-background/all,Product,On-site
