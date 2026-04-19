@@ -1,0 +1,11 @@
+[
+  {"token": "snyk",         "name": "Snyk"},
+  {"token": "armis",        "name": "Armis"},
+  {"token": "cyera",        "name": "Cyera"},
+  {"token": "datto",        "name": "Datto"},
+  {"token": "cato-networks","name": "Cato Networks"},
+  {"token": "perimeter81",  "name": "Perimeter 81"},
+  {"token": "transmitsecurity","name": "Transmit Security"},
+  {"token": "island",       "name": "Island"},
+  {"token": "torq",         "name": "Torq"}
+]

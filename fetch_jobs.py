@@ -1,291 +1,301 @@
 """
-fetch_jobs.py  —  Nightly GitHub Action script
-Fetches Israeli tech jobs from two sources:
-  1. Comeet  — scrapes API token from career page, then calls Careers API
-  2. Greenhouse — fully public API, no token needed
-
-Outputs:
-  comeet_jobs_YYYY-MM-DD.csv
-  greenhouse_jobs_YYYY-MM-DD.csv
+fetch_jobs.py  —  Nightly GitHub Action
+Sources: Comeet · Greenhouse · Lever · Ashby · Workable
+Outputs one dated CSV per source.
 """
 
-import requests
-import csv
-import json
-import re
+import requests, csv, json, re
 from datetime import date
 
-# ── Config ────────────────────────────────────────────────────────────────────
+# ── Config ─────────────────────────────────────────────────────────────────
 TECHMAP_FNS = [
     'admin','business','data-science','design','devops','finance','frontend',
     'hardware','hr','legal','marketing','procurement-operations','product',
     'project-management','qa','sales','security','software','support'
 ]
 TECHMAP_BASE = 'https://raw.githubusercontent.com/mluggy/techmap/main/jobs/'
-
-COMEET_PAGE  = 'https://www.comeet.com/jobs/{slug}/{uid}'
-COMEET_API   = 'https://www.comeet.co/careers-api/2.0/company/{uid}/positions?token={token}&details=false'
-COMEET_EXTRA = 'comeet_extra_companies.json'
-
-GH_API       = 'https://boards-api.greenhouse.io/v1/boards/{token}/jobs'
-GH_EXTRA     = 'greenhouse_extra_companies.json'
-
 HEADERS      = {'User-Agent': 'Mozilla/5.0 (compatible; jobfinder-bot/1.0)'}
 TODAY        = date.today().isoformat()
 
-ISRAEL_COUNTRIES = {'IL', 'ISR', 'ISRAEL'}
+ISRAEL_COUNTRIES = {'IL','ISR','ISRAEL'}
 ISRAEL_CITIES = {
     'tel aviv','tel-aviv','herzliya','haifa','jerusalem','beer sheva',
     "be'er sheva",'petah tikva','raanana',"ra'anana",'netanya','rehovot',
     'rishon lezion','holon','bnei brak','kfar saba','modiin','ashkelon',
     'ashdod','bat yam','givatayim','rosh haayin','lod','ramla','nazareth',
     'hadera','caesarea','yokneam','matam','airport city','kiryat gat',
-    'even yehuda','hod hasharon','ra\'anana'
+    'hod hasharon','even yehuda','ramat gan','petah tiqwa','rishon le zion'
 }
 
-# ── Shared helpers ────────────────────────────────────────────────────────────
-def is_israel(location_str: str, country_code: str = '', workplace_type: str = '') -> bool:
-    loc = location_str.lower()
-    if country_code.upper() in ISRAEL_COUNTRIES:
-        return True
-    if 'israel' in loc or any(c in loc for c in ISRAEL_CITIES):
-        return True
-    if 'remote' in workplace_type.lower() or 'remote' in loc:
-        return True
-    return False
+# ── Shared helpers ──────────────────────────────────────────────────────────
+def is_israel(text: str, country: str = '', remote: bool = False) -> bool:
+    t = text.lower()
+    if remote: return True
+    if country.upper() in ISRAEL_COUNTRIES: return True
+    if 'israel' in t: return True
+    return any(c in t for c in ISRAEL_CITIES)
 
-
-def load_extras(filename: str) -> list:
+def load_extras(fname: str) -> list:
     try:
-        with open(filename) as f:
-            data = json.load(f)
-        print(f"  extras: {len(data)} from {filename}")
+        data = json.load(open(fname))
+        print(f"  extras: {len(data)} from {fname}")
         return data
     except FileNotFoundError:
         return []
 
+def write_csv(rows: list, fields: list, fname: str):
+    with open(fname, 'w', newline='', encoding='utf-8-sig') as f:
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore')
+        w.writeheader(); w.writerows(rows)
+    print(f"  → {len(rows)} jobs saved to {fname}")
 
-# ── Techmap CSV scanner ───────────────────────────────────────────────────────
+# ── Techmap scanner ─────────────────────────────────────────────────────────
 def scan_techmap():
-    """Return (comeet_companies, greenhouse_tokens) found in techmap CSVs."""
-    comeet_pat = re.compile(r'comeet\.co[m]?/jobs/([^/\s"\']+)/([0-9A-Fa-f]{2,}\.[0-9A-Fa-f]{3,})', re.I)
-    gh_pat     = re.compile(r'boards(?:\.eu)?\.greenhouse\.io/([^/\s"\'?#]+)/jobs', re.I)
-
-    comeet = {}   # key -> {slug, uid, name}
-    gh     = {}   # token -> {token, name}
+    patterns = {
+        'comeet':    re.compile(r'comeet\.co[m]?/jobs/([^/\s"\']+)/([0-9A-Fa-f]{2,}\.[0-9A-Fa-f]{3,})', re.I),
+        'greenhouse':re.compile(r'boards(?:\.eu)?\.greenhouse\.io/([^/\s"\'?#]+)/jobs', re.I),
+        'lever':     re.compile(r'jobs\.lever\.co/([^/\s"\'?#]+)/', re.I),
+        'ashby':     re.compile(r'jobs\.ashbyhq\.com/([^/\s"\'?#]+)/', re.I),
+        'workable':  re.compile(r'(?:apply\.workable\.com|([^.\s"\']+)\.workable\.com)/([^/\s"\'?#]+)/', re.I),
+    }
+    found = {k: {} for k in patterns}
 
     for fn in TECHMAP_FNS:
         try:
             r = requests.get(TECHMAP_BASE + fn + '.csv', timeout=30, headers=HEADERS)
-            if not r.ok:
-                continue
-            reader = csv.DictReader(r.text.splitlines())
-            for row in reader:
-                url  = row.get('url', '')
-                comp = row.get('company', '')
-
-                m = comeet_pat.search(url)
+            if not r.ok: continue
+            for row in csv.DictReader(r.text.splitlines()):
+                url  = row.get('url','')
+                comp = row.get('company','')
+                # Comeet
+                m = patterns['comeet'].search(url)
                 if m:
-                    slug, uid = m.group(1).lower(), m.group(2).upper()
+                    slug,uid = m.group(1).lower(), m.group(2).upper()
                     k = f"{slug}/{uid}"
-                    if k not in comeet:
-                        comeet[k] = {'slug': slug, 'uid': uid, 'name': comp or slug}
-
-                m = gh_pat.search(url)
+                    if k not in found['comeet']:
+                        found['comeet'][k] = {'slug':slug,'uid':uid,'name':comp or slug}
+                # Others (single token)
+                for src in ('greenhouse','lever','ashby'):
+                    m = patterns[src].search(url)
+                    if m:
+                        t = m.group(1).lower()
+                        if t not in found[src]:
+                            found[src][t] = {'token':t,'name':comp or t}
+                # Workable (subdomain or apply.workable.com)
+                m = patterns['workable'].search(url)
                 if m:
-                    token = m.group(1).lower()
-                    if token not in gh:
-                        gh[token] = {'token': token, 'name': comp or token}
+                    t = (m.group(1) or m.group(2) or '').lower().strip('/')
+                    if t and t not in found['workable']:
+                        found['workable'][t] = {'token':t,'name':comp or t}
         except Exception as e:
             print(f"  warn: techmap/{fn} — {e}")
 
-    print(f"  techmap: {len(comeet)} Comeet companies, {len(gh)} Greenhouse tokens")
-    return list(comeet.values()), list(gh.values())
+    for src,d in found.items():
+        print(f"  techmap {src}: {len(d)}")
+    return found
 
-
-# ══════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════
 # COMEET
-# ══════════════════════════════════════════════════════════════════════════════
-def comeet_get_token(slug: str, uid: str) -> str | None:
-    url = COMEET_PAGE.format(slug=slug, uid=uid)
+# ══════════════════════════════════════════════════════════════════════════
+def comeet_token(slug, uid):
+    url = f'https://www.comeet.com/jobs/{slug}/{uid}'
     try:
         r = requests.get(url, timeout=30, headers=HEADERS)
-        if not r.ok:
-            return None
-        patterns = [
-            r'"token"\s*:\s*"([0-9A-F]{16,})"',
-            r"'token'\s*:\s*'([0-9A-F]{16,})'",
-            r'[?&]token=([0-9A-F]{16,})',
-            r'"companyToken"\s*:\s*"([0-9A-F]{16,})"',
-            r'careers-api/2\.0/company/[^?]+\?token=([0-9A-F]{16,})',
-        ]
-        for p in patterns:
-            m = re.search(p, r.text, re.IGNORECASE)
-            if m:
-                return m.group(1).upper()
-        return None
-    except Exception as e:
-        print(f"    page error {slug}: {e}")
-        return None
+        if not r.ok: return None
+        for p in [r'"token"\s*:\s*"([0-9A-F]{16,})"',r"'token'\s*:\s*'([0-9A-F]{16,})'",
+                  r'[?&]token=([0-9A-F]{16,})',r'"companyToken"\s*:\s*"([0-9A-F]{16,})"']:
+            m = re.search(p, r.text, re.I)
+            if m: return m.group(1).upper()
+    except: pass
+    return None
 
-
-def comeet_fetch_positions(uid: str, token: str, company_name: str) -> list:
-    url = COMEET_API.format(uid=uid, token=token)
+def comeet_jobs(uid, token, name):
+    url = f'https://www.comeet.co/careers-api/2.0/company/{uid}/positions?token={token}&details=false'
     try:
         r = requests.get(url, timeout=60, headers=HEADERS)
-        if not r.ok:
-            return []
+        if not r.ok: return []
         jobs = []
         for pos in r.json():
             loc   = pos.get('location') or {}
-            wtype = pos.get('workplace_type', '')
-            city  = loc.get('city') or loc.get('name', '')
-            country = loc.get('country', '')
-            if not is_israel(city + ' ' + loc.get('name',''), country, wtype):
+            wtype = pos.get('workplace_type','')
+            city  = loc.get('city') or loc.get('name','')
+            if not is_israel(city+' '+loc.get('name',''), loc.get('country',''), 'remote' in wtype.lower()):
                 continue
-            jobs.append({
-                'title':          pos.get('name', ''),
-                'company':        pos.get('company_name') or company_name,
-                'location':       city,
-                'date':           (pos.get('time_updated') or '')[:10],
-                'url':            pos.get('url_active_page') or pos.get('url_comeet_hosted_page',''),
-                'department':     pos.get('department', ''),
-                'employment_type':pos.get('employment_type', ''),
-                'workplace_type': wtype,
-            })
+            jobs.append({'title':pos.get('name',''),'company':pos.get('company_name') or name,
+                'location':city,'date':(pos.get('time_updated') or '')[:10],
+                'url':pos.get('url_active_page') or pos.get('url_comeet_hosted_page',''),
+                'department':pos.get('department',''),'workplace_type':wtype})
         return jobs
-    except Exception as e:
-        print(f"    api error {uid}: {e}")
-        return []
+    except: return []
 
-
-def run_comeet(tm_companies: list):
+def run_comeet(tm):
     print("\n── Comeet ───────────────────────────────────────────────────────")
-    extras = load_extras(COMEET_EXTRA)
-    seen   = set()
-    all_c  = []
-    for c in tm_companies + extras:
+    seen = set(); all_c = []
+    for c in list(tm.values()) + load_extras('comeet_extra_companies.json'):
         k = f"{c['slug'].lower()}/{c['uid'].upper()}"
-        if k not in seen:
-            seen.add(k)
-            all_c.append(c)
-    print(f"  Total companies: {len(all_c)}")
-
+        if k not in seen: seen.add(k); all_c.append(c)
+    print(f"  Companies: {len(all_c)}")
     jobs = []
-    ok = fail = 0
-    for i, c in enumerate(all_c, 1):
-        slug, uid, name = c['slug'], c['uid'], c.get('name', c['slug'])
-        print(f"  [{i}/{len(all_c)}] {name}")
-        token = comeet_get_token(slug, uid)
-        if not token:
-            print(f"    ✗ token not found")
-            fail += 1
-            continue
-        pos = comeet_fetch_positions(uid, token, name)
-        print(f"    ✓ {len(pos)} jobs")
-        jobs.extend(pos)
-        ok += 1
+    for i,c in enumerate(all_c,1):
+        print(f"  [{i}/{len(all_c)}] {c.get('name',c['slug'])}")
+        tok = comeet_token(c['slug'], c['uid'])
+        if not tok: print("    ✗ token"); continue
+        pos = comeet_jobs(c['uid'], tok, c.get('name',''))
+        print(f"    ✓ {len(pos)}"); jobs.extend(pos)
+    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'comeet_jobs_{TODAY}.csv')
 
-    output = f'comeet_jobs_{TODAY}.csv'
-    fields = ['title','company','location','date','url','department','employment_type','workplace_type']
-    with open(output, 'w', newline='', encoding='utf-8-sig') as f:
-        csv.DictWriter(f, fieldnames=fields).writeheader()
-        csv.DictWriter(f, fieldnames=fields).writerows(jobs)
-    print(f"  → {len(jobs)} jobs saved to {output} ({ok} ok / {fail} no token)")
-    return jobs
-
-
-# ══════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════
 # GREENHOUSE
-# ══════════════════════════════════════════════════════════════════════════════
-def gh_fetch_jobs(token: str, company_name: str) -> list:
-    url = GH_API.format(token=token)
-    try:
-        r = requests.get(url, timeout=30, headers=HEADERS)
-        if not r.ok:
-            return []
-        jobs = []
-        for job in r.json().get('jobs', []):
-            loc_name = job.get('location', {}).get('name', '')
-            offices  = job.get('offices', [])
-            # Check country code from any office
-            country  = next((o.get('country_code','') for o in offices if o.get('country_code')), '')
-            # Also check office names for Israel
-            office_names = ' '.join(o.get('name','') for o in offices).lower()
-            if not is_israel(loc_name + ' ' + office_names, country):
-                continue
-
-            # Detect work type from location string
-            wt = ''
-            if re.search(r'\bremote\b', loc_name, re.I):  wt = 'Remote'
-            elif re.search(r'\bhybrid\b', loc_name, re.I): wt = 'Hybrid'
-
-            dept = ''
-            for d in job.get('departments', []):
-                dept = d.get('name', '')
-                break
-
-            jobs.append({
-                'title':          job.get('title', ''),
-                'company':        company_name,
-                'location':       loc_name.split(',')[0].strip(),
-                'date':           (job.get('updated_at') or '')[:10],
-                'url':            job.get('absolute_url', ''),
-                'department':     dept,
-                'workplace_type': wt,
-            })
-        return jobs
-    except Exception as e:
-        print(f"    api error {token}: {e}")
-        return []
-
-
-def run_greenhouse(tm_tokens: list):
+# ══════════════════════════════════════════════════════════════════════════
+def run_greenhouse(tm):
     print("\n── Greenhouse ───────────────────────────────────────────────────")
-    extras = load_extras(GH_EXTRA)
-    seen   = set()
-    all_t  = []
-    for c in tm_tokens + extras:
+    seen = set(); all_t = []
+    for c in list(tm.values()) + load_extras('greenhouse_extra_companies.json'):
         t = c['token'].lower()
-        if t not in seen:
-            seen.add(t)
-            all_t.append(c)
-    print(f"  Total companies: {len(all_t)}")
-
+        if t not in seen: seen.add(t); all_t.append(c)
+    print(f"  Companies: {len(all_t)}")
     jobs = []
-    ok = fail = 0
-    for i, c in enumerate(all_t, 1):
-        token, name = c['token'], c.get('name', c['token'])
+    for i,c in enumerate(all_t,1):
+        token,name = c['token'],c.get('name',c['token'])
         print(f"  [{i}/{len(all_t)}] {name}")
-        pos = gh_fetch_jobs(token, name)
-        if pos is not None and len(pos)>0:
-            print(f"    ✓ {len(pos)} jobs")
-            jobs.extend(pos)
-            ok += 1
-        else:
-            print(f"    — 0 IL jobs")
-            fail += 1
+        try:
+            r = requests.get(f'https://boards-api.greenhouse.io/v1/boards/{token}/jobs', timeout=30, headers=HEADERS)
+            if not r.ok: print(f"    — {r.status_code}"); continue
+            pos = []
+            for job in r.json().get('jobs',[]):
+                loc_name = job.get('location',{}).get('name','')
+                offices  = job.get('offices',[])
+                country  = next((o.get('country_code','') for o in offices if o.get('country_code')),'')
+                office_names = ' '.join(o.get('name','') for o in offices)
+                if not is_israel(loc_name+' '+office_names, country):
+                    continue
+                wt = 'Remote' if re.search(r'\bremote\b',loc_name,re.I) else ('Hybrid' if re.search(r'\bhybrid\b',loc_name,re.I) else '')
+                dept = next((d.get('name','') for d in job.get('departments',[])), '')
+                pos.append({'title':job.get('title',''),'company':name,
+                    'location':loc_name.split(',')[0].strip(),
+                    'date':(job.get('updated_at') or '')[:10],
+                    'url':job.get('absolute_url',''),'department':dept,'workplace_type':wt})
+            print(f"    ✓ {len(pos)}"); jobs.extend(pos)
+        except Exception as e: print(f"    ✗ {e}")
+    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'greenhouse_jobs_{TODAY}.csv')
 
-    output = f'greenhouse_jobs_{TODAY}.csv'
-    fields = ['title','company','location','date','url','department','workplace_type']
-    with open(output, 'w', newline='', encoding='utf-8-sig') as f:
-        csv.DictWriter(f, fieldnames=fields).writeheader()
-        csv.DictWriter(f, fieldnames=fields).writerows(jobs)
-    print(f"  → {len(jobs)} jobs saved to {output} ({ok} ok / {fail} empty)")
-    return jobs
+# ══════════════════════════════════════════════════════════════════════════
+# LEVER
+# ══════════════════════════════════════════════════════════════════════════
+def run_lever(tm):
+    print("\n── Lever ────────────────────────────────────────────────────────")
+    seen = set(); all_t = []
+    for c in list(tm.values()) + load_extras('lever_extra_companies.json'):
+        t = c['token'].lower()
+        if t not in seen: seen.add(t); all_t.append(c)
+    print(f"  Companies: {len(all_t)}")
+    jobs = []
+    for i,c in enumerate(all_t,1):
+        token,name = c['token'],c.get('name',c['token'])
+        print(f"  [{i}/{len(all_t)}] {name}")
+        try:
+            r = requests.get(f'https://api.lever.co/v0/postings/{token}?mode=json', timeout=30, headers=HEADERS)
+            if not r.ok: print(f"    — {r.status_code}"); continue
+            pos = []
+            for job in r.json():
+                cats     = job.get('categories',{})
+                loc      = cats.get('location','')
+                wtype    = job.get('workplaceType','')
+                remote   = wtype == 'remote'
+                if not is_israel(loc, remote=remote):
+                    continue
+                # createdAt is milliseconds
+                ts = job.get('createdAt',0)
+                dt = date.fromtimestamp(ts/1000).isoformat() if ts else ''
+                pos.append({'title':job.get('text',''),'company':name,
+                    'location':loc,'date':dt,
+                    'url':job.get('hostedUrl',''),
+                    'department':cats.get('team',''),'workplace_type':wtype})
+            print(f"    ✓ {len(pos)}"); jobs.extend(pos)
+        except Exception as e: print(f"    ✗ {e}")
+    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'lever_jobs_{TODAY}.csv')
 
+# ══════════════════════════════════════════════════════════════════════════
+# ASHBY
+# ══════════════════════════════════════════════════════════════════════════
+def run_ashby(tm):
+    print("\n── Ashby ────────────────────────────────────────────────────────")
+    seen = set(); all_t = []
+    for c in list(tm.values()) + load_extras('ashby_extra_companies.json'):
+        t = c['token'].lower()
+        if t not in seen: seen.add(t); all_t.append(c)
+    print(f"  Companies: {len(all_t)}")
+    jobs = []
+    for i,c in enumerate(all_t,1):
+        token,name = c['token'],c.get('name',c['token'])
+        print(f"  [{i}/{len(all_t)}] {name}")
+        try:
+            r = requests.get(f'https://api.ashbyhq.com/posting-api/job-board/{token}', timeout=30, headers=HEADERS)
+            if not r.ok: print(f"    — {r.status_code}"); continue
+            pos = []
+            for job in r.json().get('jobPostings',[]):
+                if not job.get('isListed',True): continue
+                loc    = job.get('locationName','')
+                remote = job.get('locationIsRemote',False)
+                if not is_israel(loc, remote=remote):
+                    continue
+                wt = 'Remote' if remote else ('Hybrid' if 'hybrid' in loc.lower() else '')
+                pos.append({'title':job.get('title',''),'company':name,
+                    'location':loc,'date':job.get('publishedDate',''),
+                    'url':job.get('externalLink') or job.get('jobUrl',''),
+                    'department':job.get('departmentName',''),'workplace_type':wt})
+            print(f"    ✓ {len(pos)}"); jobs.extend(pos)
+        except Exception as e: print(f"    ✗ {e}")
+    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'ashby_jobs_{TODAY}.csv')
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════
+# WORKABLE
+# ══════════════════════════════════════════════════════════════════════════
+def run_workable(tm):
+    print("\n── Workable ─────────────────────────────────────────────────────")
+    seen = set(); all_t = []
+    for c in list(tm.values()) + load_extras('workable_extra_companies.json'):
+        t = c['token'].lower()
+        if t not in seen: seen.add(t); all_t.append(c)
+    print(f"  Companies: {len(all_t)}")
+    jobs = []
+    for i,c in enumerate(all_t,1):
+        token,name = c['token'],c.get('name',c['token'])
+        print(f"  [{i}/{len(all_t)}] {name}")
+        try:
+            r = requests.get(f'https://apply.workable.com/api/v1/widget/accounts/{token}',
+                timeout=30, headers=HEADERS)
+            if not r.ok: print(f"    — {r.status_code}"); continue
+            pos = []
+            for job in r.json().get('jobs',[]):
+                loc  = job.get('location',{})
+                city = loc.get('city','')
+                country = loc.get('country_code','')
+                remote  = loc.get('telecommuting',False)
+                loc_str = loc.get('location_str','') or f"{city}, {loc.get('country','')}"
+                if not is_israel(loc_str+' '+city, country, remote):
+                    continue
+                wt = 'Remote' if remote else ''
+                pos.append({'title':job.get('title',''),'company':name,
+                    'location':city or loc_str.split(',')[0].strip(),
+                    'date':(job.get('created_at') or '')[:10],
+                    'url':job.get('url',''),'department':job.get('department',''),
+                    'workplace_type':wt})
+            print(f"    ✓ {len(pos)}"); jobs.extend(pos)
+        except Exception as e: print(f"    ✗ {e}")
+    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'workable_jobs_{TODAY}.csv')
+
+# ── Main ────────────────────────────────────────────────────────────────────
 def main():
     print(f"=== fetch_jobs.py  {TODAY} ===\n")
-    print("Scanning techmap CSVs…")
-    tm_comeet, tm_gh = scan_techmap()
-
-    comeet_jobs = run_comeet(tm_comeet)
-    gh_jobs     = run_greenhouse(tm_gh)
-
-    print(f"\n=== Done: {len(comeet_jobs)} Comeet + {len(gh_jobs)} Greenhouse jobs ===")
-
+    print("Scanning techmap…")
+    tm = scan_techmap()
+    run_comeet(tm['comeet'])
+    run_greenhouse(tm['greenhouse'])
+    run_lever(tm['lever'])
+    run_ashby(tm['ashby'])
+    run_workable(tm['workable'])
+    print("\n=== All done ===")
 
 if __name__ == '__main__':
     main()
