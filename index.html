@@ -59,7 +59,7 @@
   /* ─── Source pills ─── */
 
   /* ─── Filters ─── */
-  .filters{display:grid;grid-template-columns:1.5fr repeat(6,1fr) auto;gap:12px;
+  .filters{display:grid;grid-template-columns:1.5fr repeat(7,1fr) auto;gap:12px;
     padding:22px 48px;border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:10;
     backdrop-filter:blur(12px);background-color:rgba(245,241,232,.88);}
   .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -216,6 +216,22 @@
     <select id="category"><option value="">All industries</option></select>
   </div>
   <div class="field">
+    <label for="segment">Role type</label>
+    <select id="segment">
+      <option value="">All roles</option>
+      <option value="rd">R&amp;D / Engineering</option>
+      <option value="product">Product</option>
+      <option value="data">Data &amp; Analytics</option>
+      <option value="design">Design</option>
+      <option value="sales">Sales</option>
+      <option value="marketing">Marketing</option>
+      <option value="operations">Operations</option>
+      <option value="support">Customer Success</option>
+      <option value="management">Management</option>
+      <option value="intern">Student / Intern</option>
+    </select>
+  </div>
+  <div class="field">
     <label for="date">Posted</label>
     <select id="date">
       <option value="">Any time</option>
@@ -310,6 +326,7 @@ const $stamp    = document.getElementById('stamp');
 const $lastBuild= document.getElementById('lastBuild');
 const $export   = document.getElementById('export');
 const $liStatus  = document.getElementById('liStatusText');
+const $segment   = document.getElementById('segment');
 const $source    = document.getElementById('source');
 const $worktype  = document.getElementById('worktype');
 const $cmStatus = document.getElementById('cmStatusText');
@@ -662,12 +679,38 @@ function populateDropdowns(){
   fill($city,'city'); fill($company,'company'); fill($category,'category'); 
 }
 
+
+// ─── SEGMENT CLASSIFIER ──────────────────────────────────────────────────────
+const SEGMENTS = {
+  intern:     /\b(intern|internship|student|trainee|apprentice|co-op|coop|graduate program)\b/i,
+  management: /\b(vp|vice president|cto|coo|cpo|ciso|cmo|cfo|ceo|head of|director|general manager|gm\b|chief )\b/i,
+  rd:         /\b(engineer|developer|dev\b|devops|sre|architect|backend|front.?end|full.?stack|mobile|ios|android|firmware|embedded|infrastructure|platform|security research|reverse engineer|qa\b|quality assurance|tester|testing|sdet|software|r&d|research and develop)\b/i,
+  product:    /\b(product manager|product owner|pm\b|product lead|product director|vp product|program manager|project manager|scrum|agile coach)\b/i,
+  data:       /\b(data scientist|data engineer|data analyst|analytics engineer|ml engineer|machine learning|deep learning|ai engineer|artificial intelligence|bi engineer|business intelligence|data architect|data platform|nlp|computer vision|llm|model)\b/i,
+  design:     /\b(designer|ux|ui\b|user experience|user interface|figma|product design|visual design|graphic|illustrat)\b/i,
+  sales:      /\b(account executive|account manager|sales engineer|sales manager|business development|bd\b|sdr\b|bdr\b|pre.?sales|presales|revenue|partnership|channel|alliances|enterprise sales|deal)\b/i,
+  marketing:  /\b(marketing|growth|content|seo|sem|brand|demand generation|campaign|copywriter|social media|pr\b|public relations|communications|field marketing|product marketing)\b/i,
+  support:    /\b(customer success|customer support|technical support|implementation|solutions engineer|solution consultant|integration engineer|onboarding|professional services|client success|support engineer)\b/i,
+  operations: /\b(hr\b|human resources|recruiter|talent acquisition|people ops|finance|accounting|legal|counsel|procurement|office manager|operations|ops\b|admin|executive assistant|ea\b|it manager|information technology|supply chain|logistics|biz ops|revenue ops|sales ops)\b/i,
+};
+
+function classifySegment(title) {
+  // intern check always first
+  if (SEGMENTS.intern.test(title)) return 'intern';
+  for (const [seg, re] of Object.entries(SEGMENTS)) {
+    if (seg === 'intern') continue;
+    if (re.test(title)) return seg;
+  }
+  return '';
+}
+
 // ─── FILTER ──────────────────────────────────────────────────────────────────
 function applyFilters(){
   const q        = $q.value.trim().toLowerCase();
   const city     = $city.value;
   const company  = $company.value;
   const category = $category.value;
+  const segFilter = $segment  ? $segment.value  : '';
   const srcFilter= $source   ? $source.value   : '';
   const wtFilter = $worktype ? $worktype.value  : '';
   const days     = $date.value ? parseInt($date.value) : null;
@@ -678,6 +721,7 @@ function applyFilters(){
     if(city      && r.city!==city)           return false;
     if(company   && r.company!==company)     return false;
     if(category  && r.category!==category)   return false;
+    if(segFilter && classifySegment(r.title)!==segFilter) return false;
     if(srcFilter && r.source!==srcFilter)    return false;
     if(wtFilter  && (r.workType||'')!==wtFilter) return false;
     if(q && !(r.title.toLowerCase().includes(q)||r.fnArea.includes(q))) return false;
