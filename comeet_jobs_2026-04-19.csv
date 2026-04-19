@@ -49,7 +49,7 @@ Research Team Lead - Online Child Safety,Alice,Ramat Gan,2026-04-16,https://alic
 Sales Executive,Alice,New York,2026-04-17,https://alice.io/positions/position-29_268,Sales,Remote
 Senior Controller,Alice,Ramat Gan,2026-04-17,https://alice.io/positions/position-27_66C,Finance,Hybrid
 Senior Violent Extremism Researcher,Alice,Ramat Gan,2026-04-19,https://alice.io/positions/position-15_16E,Intelligence,Hybrid
-"Bilingual Technical Writer –  Italian, German, Portuguese",Optibus,Tel Aviv-Yafo,2026-04-19,https://optibus.com/company/careers/jobs/co/israel/49.769/bilingual-technical-writer-italian-german-portuguese/all/,Customer Success,Hybrid
+"Bilingual Technical Writer –  Italian, German, Portuguese",Optibus,Tel Aviv-Yafo,2026-04-19,https://optibus.com/company/careers/jobs/co/israel/49.769/technical-writer/all/,Customer Success,Hybrid
 Customer Success Engineer,Optibus,"Santiago, Chile",2026-03-28,https://optibus.com/company/careers/jobs/co/santiago-chile/63.366/customer-success-engineer/all/,Customer Success,Remote
 "Senior Full Stack Engineer, Scheduling",Optibus,Tel Aviv-Yafo,2026-04-19,https://optibus.com/company/careers/jobs/co/israel/5D.167/senior-full-stack-engineer-scheduling/all/,Engineering,Hybrid
 Senior Software Engineer (React Native),Optibus,San Sebastian,2026-04-18,https://optibus.com/company/careers/jobs/co/spain/CC.76D/senior-software-engineer-mobile/all/,Engineering,Remote
@@ -73,7 +73,7 @@ Project Manager,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.oneze
 Securities Control Specialist,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-18,https://www.onezerobank.com/career/position/?positionID=2D.55A,Retail Banking,Hybrid
 SOX Compliance Specialist,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=BD.466,Finance & Accounting,Hybrid
 בנקאי דובר רוסית,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-18,https://www.onezerobank.com/career/position/?positionID=3B.560,Retail Banking,Hybrid
-מומח/ית בקרות תפעוליות בשוק ההון,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=C4.76A,Retail Banking,Hybrid
+מומח/ית בקרות תפעוליות בשוק ההון,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/en/career/position/?positionID=C4.76A,Retail Banking,Hybrid
 משהו גדול קורה כאן – הכשרה לבנקאות ללא ניסיון!,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=72.150,Retail Banking,Hybrid
 נציג/ת גיוס לקוחות,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/en/career/position/?positionID=FC.C41,Marketing,On-site
 עורך דין - מטה ורגולציה,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=7B.76D,Legal,Hybrid
@@ -277,8 +277,8 @@ Full Stack GenAI Engineer,Cellebrite,Petah Tikva,2026-04-14,https://cellebrite.c
 Full Stack Web Developer,Cellebrite,Remote,2026-04-18,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=0C.867&comeet_all=all,Marketing,Remote
 Group Product Manager,Cellebrite,Remote,2026-04-17,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=6C.465&comeet_all=all,Product and Technology,Remote
 iOS Vulnerability Researcher,Cellebrite,Tel Aviv-Yafo,2026-04-18,https://cellebrite.com/en/about/careers/positions/?comeet_cat=rd&comeet_pos=0B.613&comeet_all=all,Product and Technology,Hybrid
-iOS Vulnerability Researcher (Remote),Cellebrite,Remote,2026-04-19,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=B2.048&comeet_all=all&source=JobTarget+via+Rally+Point+%28OFCCP%29&_jtochash=a28o1DHbjdlYOCkJeSdeP1&_jtocprof=7E5zfaLQHQO_lGq0_F_tm8VaQdXsH1HY,Product and Technology,Remote
-iOS Vulnerability Researcher (Remote),Cellebrite,London,2026-04-19,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=B2.048&comeet_all=all&source=JobTarget+via+Rally+Point+%28OFCCP%29&_jtochash=a28o1DHbjdlYOCkJeSdeP1&_jtocprof=7E5zfaLQHQO_lGq0_F_tm8VaQdXsH1HY,Product and Technology,Remote
+iOS Vulnerability Researcher (Remote),Cellebrite,Remote,2026-04-19,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=B2.048&comeet_all=all,Product and Technology,Remote
+iOS Vulnerability Researcher (Remote),Cellebrite,London,2026-04-19,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=B2.048&comeet_all=all,Product and Technology,Remote
 Middleware Engineer,Cellebrite,Remote,2026-04-18,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=FB.76C&comeet_all=all,Product and Technology,Remote
 Portfolio Growth Engineer,Cellebrite,Remote,2026-04-14,https://cellebrite.com/en/about/careers/positions/?comeet_cat=usa-remote&comeet_pos=1C.56D&comeet_all=all,Marketing,Remote
 Pre-Sales Solutions Engineer (Northeast),Cellebrite,Tysons,2026-04-19,https://cellebrite.com/en/about/careers/positions/?comeet_cat=us-dc&comeet_pos=EF.56A&comeet_all=all,Professional Services & Customer Success,Remote
@@ -323,8 +323,8 @@ Product Engineer,DRIVENETS,Ra'anana,2026-04-14,https://drivenets.com/job/?id=98.
 "Product Manager – Network, Infrastructure & Security",DRIVENETS,Raanana,2026-02-04,https://drivenets.com/job/?id=21.262,Product & Solutions Engineering,On-site
 Senior Account Executive - Japan,DRIVENETS,Tokyo,2026-04-16,https://drivenets.com/job/?id=9A.562,Sales,Remote
 Senior AI Engineer,DRIVENETS,Tel Aviv,2026-02-26,https://drivenets.com/job/?id=59.665,Cyber Security,On-site
-Senior Backend Developer /Tech Lead,DRIVENETS,Tel Aviv,2026-04-19,https://drivenets.com/job/?id=81.369&amp;1773747322807&amp;,R&D,Hybrid
-Senior Backend Developer /Tech Lead,DRIVENETS,Israel,2026-04-19,https://drivenets.com/job/?id=81.369&amp;1773747322807&amp;,R&D,Hybrid
+Senior Backend Developer /Tech Lead,DRIVENETS,Tel Aviv,2026-04-19,https://drivenets.com/job/?id=81.369,R&D,Hybrid
+Senior Backend Developer /Tech Lead,DRIVENETS,Israel,2026-04-19,https://drivenets.com/job/?id=81.369,R&D,Hybrid
 Senior Frontend Developer,DRIVENETS,Raanana,2026-03-26,https://drivenets.com/job/?id=A1.66F,R&D,On-site
 Senior Frontend Developer,DRIVENETS,Tel Aviv,2026-03-26,https://drivenets.com/job/?id=A1.66F,R&D,On-site
 Senior Indirect Buyer,DRIVENETS,Ra'anana,2026-04-14,https://drivenets.com/job/?id=EB.162,GSC,Hybrid
@@ -459,7 +459,7 @@ Senior Data Engineer,Fetcherr,Tel Aviv-Yafo,2026-04-19,https://www.fetcherr.io/c
 Tableau Expert,Fetcherr,Netanya,2026-04-16,https://www.fetcherr.io/careers/44567,Data Science,Hybrid
 Talent Acquisition Partner - Temporary position,Fetcherr,Netanya,2026-04-14,https://www.fetcherr.io/careers/3776B,HR,On-site
 Engineering Map Lead,Exodigo,Tel Aviv,2026-04-19,https://www.exodigo.com/open-positions/engineering-map-lead-1#cv-form,Product Operation,On-site
-Enterprise Account Executive,Exodigo,Washington DC,2026-04-19,https://www.exodigo.com/open-positions/Enterprise_Account_Executive_57-86D,Sales,Remote
+Enterprise Account Executive,Exodigo,Washington DC,2026-04-19,https://www.exodigo.com/open-positions/Enterprise_Account_Executive_57-86D?1776447979394,Sales,Remote
 Enterprise Account Manager,Exodigo,Miami,2026-04-18,https://www.exodigo.com/open-positions/Enterprise_Account_Manager?1776448876334,Sales,Remote
 Enterprise Account Manager,Exodigo,Seattle,2026-04-18,https://www.exodigo.com/open-positions/Enterprise_Account_Manager?1776448876334,Sales,Remote
 Field Operations Employee,Exodigo,Tel Aviv-Yafo,2026-04-19,https://www.exodigo.com/open-positions/Field_Operations_Employee_85-549,Field Operation IL,On-site
@@ -509,7 +509,7 @@ QA Engineer,SuperPlay,Tel Aviv-Yafo,2026-04-16,https://www.superplay.co/careers-
 QA Operations Engineer,SuperPlay,Warsaw,2026-04-15,https://www.superplay.co/careers-position/45.76D/,Monetization,Remote
 Senior Motion Graphic Artist,SuperPlay,Tel Aviv-Yafo,2026-04-19,https://www.superplay.co/careers-position/A0.769/,Art & Design,On-site
 Server QA Engineer,SuperPlay,Warsaw,2026-04-15,https://www.superplay.co/careers-position/EF.86B/,R&D,Remote
-Technical Artist,SuperPlay,Tel Aviv-Yafo,2026-04-16,https://www.superplay.co/careers-position/69.762/,R&D,On-site
+Technical Artist,SuperPlay,Tel Aviv-Yafo,2026-04-19,https://www.superplay.co/careers-position/69.762/?t=1776613129398,R&D,On-site
 Technical Artist (Rigging & Pipeline),SuperPlay,Tel Aviv-Yafo,2026-04-15,https://www.superplay.co/careers-position/FB.86A/,Art & Design,On-site
 VIP Account Manager,SuperPlay,Tel Aviv-Yafo,2026-04-19,https://www.superplay.co/careers-position/A8.865/,Support,On-site
 Communications Manager,Checkmarx,US- Remote,2026-04-18,https://checkmarx.com/job-openings/position/73.56A/,Marketing,Remote
@@ -1122,7 +1122,7 @@ Content Marketing Manager,Kaltura,Bnei Brak,2026-04-19,https://corp.kaltura.com/
 FP&A Analyst,Kaltura,Bnei Brak,2026-03-19,https://corp.kaltura.com/careers/fpa-analyst/7B.76F/,G&A,Hybrid
 Help Desk,Kaltura,Bnei Brak,2026-04-19,https://corp.kaltura.com/careers/help-desk/D5.760/,IT,Hybrid
 Integration Engineer,Kaltura,Singapore,2026-03-31,https://corp.kaltura.com/careers/integration-engineer/06.861/,Professional Services,Remote
-Learning & Development Partner,Kaltura,Bnei Brak,2026-04-02,https://corp.kaltura.com/careers/learning-development-partner/D4.569/,G&A,Hybrid
+Learning & Development Partner,Kaltura,Bnei Brak,2026-04-19,https://corp.kaltura.com/careers/learning-development-partner/D4.569/?t=1770283055744,G&A,Hybrid
 Legal Counsel - North America,Kaltura,Remote,2026-04-17,https://corp.kaltura.com/careers/legal-counsel-north-america/6B.06B/,G&A,Remote
 Procurement Specialist,Kaltura,Bnei Brak,2026-04-15,https://corp.kaltura.com/careers/procurement-specialist/39.76E/,G&A,Hybrid
 Security Operations Engineer,Kaltura,Bnei Brak,2026-04-14,https://corp.kaltura.com/careers/security-operations-engineer/C9.269/,Security,Hybrid
@@ -1255,7 +1255,7 @@ Sales Development Representative,Novidea,Netanya,2026-04-18,https://novidea.com/
 Account Executive US,Panaya,Miami,2026-03-20,https://www.panaya.com/careers/account-executive-us/6C.56B/,Sales,Remote
 "Customer Success Manager, Brazil",Panaya,Socorro,2026-03-31,https://www.panaya.com/careers/customer-success-manager-brazil/66.D55/,Customer Success,Remote
 "Customer Success Manager, Brazil",Panaya,Miami,2026-03-31,https://www.panaya.com/careers/customer-success-manager-brazil/66.D55/,Customer Success,Remote
-Sales Development Representative - German Speaker,Panaya,Hod Hasharon,2026-04-19,https://www.panaya.com/careers/sales-development-representative-german-speaker/13.767/?fbclid=IwZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQKNjYyODU2ODM3OQABHhWZhNCLhVQPgBdb2etx8K0CcsvhDAAzi0cz_RrHRB99t0Dp02FylT3rDPUS_aem_0yNKCWrfxQIM0WXJgsBySw,Marketing,Hybrid
+Sales Development Representative - German Speaker,Panaya,Hod Hasharon,2026-04-19,https://www.panaya.com/careers/sales-development-representative-german-speaker/13.767/,Marketing,Hybrid
 Business Development Representative (BDR),BrandShield,Herzliya,2026-04-14,https://www.brandshield.com/careers,Sales,On-site
 Cyber Security Customer Success Manager,BrandShield,Herzliya,2026-04-15,https://www.brandshield.com/company/careers/?comeet_cat=enforcement&comeet_pos=75.530&comeet_all=all&rd,Enforcement,On-site
 Junior Customer Success manager,BrandShield,Herzliya,2026-04-19,https://www.brandshield.com/company/careers/?comeet_cat=enforcement&comeet_pos=B2.12D&comeet_all=all&rd,Enforcement,On-site
