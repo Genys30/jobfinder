@@ -27,7 +27,7 @@ COMEET_PAGE  = 'https://www.comeet.com/jobs/{slug}/{uid}'
 COMEET_API   = 'https://www.comeet.co/careers-api/2.0/company/{uid}/positions?token={token}&details=false'
 COMEET_EXTRA = 'comeet_extra_companies.json'
 
-GH_API       = 'https://boards-api.greenhouse.io/v1/boards/{token}/jobs?content=false'
+GH_API       = 'https://boards-api.greenhouse.io/v1/boards/{token}/jobs'
 GH_EXTRA     = 'greenhouse_extra_companies.json'
 
 HEADERS      = {'User-Agent': 'Mozilla/5.0 (compatible; jobfinder-bot/1.0)'}
@@ -207,10 +207,12 @@ def gh_fetch_jobs(token: str, company_name: str) -> list:
         jobs = []
         for job in r.json().get('jobs', []):
             loc_name = job.get('location', {}).get('name', '')
-            # Check offices for Israel
-            offices   = job.get('offices', [])
-            country   = next((o.get('country_code','') for o in offices), '')
-            if not is_israel(loc_name, country):
+            offices  = job.get('offices', [])
+            # Check country code from any office
+            country  = next((o.get('country_code','') for o in offices if o.get('country_code')), '')
+            # Also check office names for Israel
+            office_names = ' '.join(o.get('name','') for o in offices).lower()
+            if not is_israel(loc_name + ' ' + office_names, country):
                 continue
 
             # Detect work type from location string
@@ -256,12 +258,12 @@ def run_greenhouse(tm_tokens: list):
         token, name = c['token'], c.get('name', c['token'])
         print(f"  [{i}/{len(all_t)}] {name}")
         pos = gh_fetch_jobs(token, name)
-        if pos:
+        if pos is not None and len(pos)>0:
             print(f"    ✓ {len(pos)} jobs")
             jobs.extend(pos)
             ok += 1
         else:
-            print(f"    — 0 jobs (404 or empty)")
+            print(f"    — 0 IL jobs")
             fail += 1
 
     output = f'greenhouse_jobs_{TODAY}.csv'

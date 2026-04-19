@@ -238,7 +238,7 @@
       <option value="onsite">On-site</option>
     </select>
   </div>
-  <button class="reset" id="reset">Reset</button>
+  <button class="reset" id="reset">Find</button>
 </section>
 
 <div class="status">
@@ -557,8 +557,15 @@ async function loadGreenhouse(){
     }catch(e){return [];}
   }))).flat();
 
+  // Differentiate: file not found vs file found but empty
+  const anyFileFound = (await Promise.all(filenames.map(async fname=>{
+    try{ const r=await fetch(LI_RAW+fname); return r.ok; }catch(e){return false;}
+  }))).some(Boolean);
+
   if(allRows.length===0){
-    if($ghStatus) $ghStatus.innerHTML='Greenhouse: <span style="color:var(--ink-faint)">no file yet</span>';
+    if($ghStatus) $ghStatus.innerHTML = anyFileFound
+      ? 'Greenhouse: <span style="color:var(--ink-faint)">0 jobs today</span>'
+      : 'Greenhouse: <span style="color:var(--ink-faint)">no file yet</span>';
     return;
   }
   const seen=new Set();
