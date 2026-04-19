@@ -1,11 +1,12 @@
 [
-  {"token": "snyk",         "name": "Snyk"},
-  {"token": "armis",        "name": "Armis"},
-  {"token": "cyera",        "name": "Cyera"},
-  {"token": "datto",        "name": "Datto"},
-  {"token": "cato-networks","name": "Cato Networks"},
-  {"token": "perimeter81",  "name": "Perimeter 81"},
+  {"token": "navan",           "name": "Navan"},
+  {"token": "claroty",         "name": "Claroty"},
+  {"token": "cyera",           "name": "Cyera"},
+  {"token": "pentera",         "name": "Pentera"},
+  {"token": "drivents",        "name": "DriveNets"},
+  {"token": "buildots",        "name": "Buildots"},
+  {"token": "quantum-machines","name": "Quantum Machines"},
+  {"token": "gong-io",         "name": "Gong"},
   {"token": "transmitsecurity","name": "Transmit Security"},
-  {"token": "island",       "name": "Island"},
-  {"token": "torq",         "name": "Torq"}
+  {"token": "lightricks",      "name": "Lightricks"}
 ]

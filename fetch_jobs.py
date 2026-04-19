@@ -51,14 +51,10 @@ def scan_techmap():
     pat_comeet = re.compile(r'comeet\.co[m]?/jobs/([^/\s"\']+)/([0-9A-Fa-f]{2,}\.[0-9A-Fa-f]{3,})', re.I)
     pat_gh     = re.compile(r'boards(?:\.eu)?\.greenhouse\.io/([^/\s"\'?#]+)/jobs', re.I)
     pat_lever  = re.compile(r'jobs\.lever\.co/([^/\s"\'?#]+)/', re.I)
-    pat_smartr = re.compile(r'jobs\.smartrecruiters\.com/([^/\s"\'?#]+)/', re.I)
-    pat_re     = re.compile(r'(?:([^.\s"\'?#]+)\.recruitee\.com|careers\.recruitee\.com/c/([^/\s"\'?#]+))', re.I)
 
     comeet = {}
     gh = {}
     lever = {}
-    smartr = {}
-    recruitee = {}
 
     for fn in TECHMAP_FNS:
         try:
@@ -75,24 +71,18 @@ def scan_techmap():
                     if k not in comeet:
                         comeet[k] = {'slug': slug, 'uid': uid, 'name': comp or slug}
 
-                for pat, d in [(pat_gh, gh), (pat_lever, lever), (pat_smartr, smartr)]:
+                for pat, d in [(pat_gh, gh), (pat_lever, lever)]:
                     m = pat.search(url)
                     if m:
                         t = m.group(1).lower()
                         if t not in d:
                             d[t] = {'token': t, 'name': comp or t}
 
-                m = pat_re.search(url)
-                if m:
-                    t = (m.group(1) or m.group(2) or '').lower().strip('/')
-                    if t and t not in recruitee:
-                        recruitee[t] = {'token': t, 'name': comp or t}
-
         except Exception as e:
             print(f"  warn: techmap/{fn} - {e}")
 
-    print(f"  techmap: comeet={len(comeet)} gh={len(gh)} lever={len(lever)} smartr={len(smartr)} recruitee={len(recruitee)}")
-    return comeet, gh, lever, smartr, recruitee
+    print(f"  techmap: comeet={len(comeet)} gh={len(gh)} lever={len(lever)}")
+    return comeet, gh, lever
 
 
 # ══ COMEET ═══════════════════════════════════════════════════════════════════
@@ -203,93 +193,14 @@ def run_lever(tm):
     write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'lever_jobs_{TODAY}.csv')
 
 
-# ══ SMARTRECRUITERS ══════════════════════════════════════════════════════════
-def run_smartr(tm):
-    print("\n-- SmartRecruiters --------------------------------------------------")
-    seen = set(); all_t = []
-    for c in list(tm.values()) + load_extras('smartr_extra_companies.json'):
-        t = c['token'].lower()
-        if t not in seen: seen.add(t); all_t.append(c)
-    print(f"  Companies: {len(all_t)}")
-    jobs = []
-    for i, c in enumerate(all_t, 1):
-        token, name = c['token'], c.get('name', c['token'])
-        print(f"  [{i}/{len(all_t)}] {name}")
-        try:
-            all_pos = []
-            seen_ids = set()
-            for url in [
-                f'https://api.smartrecruiters.com/v1/companies/{token}/postings?country=il&limit=100',
-                f'https://api.smartrecruiters.com/v1/companies/{token}/postings?limit=100',
-            ]:
-                r = requests.get(url, timeout=30, headers=HEADERS)
-                if not r.ok: break
-                for job in r.json().get('content', []):
-                    jid = job.get('id','')
-                    if jid in seen_ids: continue
-                    seen_ids.add(jid)
-                    loc    = job.get('location', {})
-                    city   = loc.get('city', '')
-                    cntry  = loc.get('country', '')
-                    remote = loc.get('remote', False)
-                    if not is_israel(city, cntry, remote): continue
-                    wt   = 'Remote' if remote else ''
-                    dept = (job.get('department') or {}).get('label', '')
-                    jurl = job.get('ref') or f"https://jobs.smartrecruiters.com/{token}/{jid}"
-                    all_pos.append({'title': job.get('name',''), 'company': name,
-                        'location': city, 'date': (job.get('releasedDate') or '')[:10],
-                        'url': jurl, 'department': dept, 'workplace_type': wt})
-            print(f"    + {len(all_pos)}"); jobs.extend(all_pos)
-        except Exception as e: print(f"    x {e}")
-    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'smartr_jobs_{TODAY}.csv')
-
-
-# ══ RECRUITEE ════════════════════════════════════════════════════════════════
-def run_recruitee(tm):
-    print("\n-- Recruitee --------------------------------------------------------")
-    seen = set(); all_t = []
-    for c in list(tm.values()) + load_extras('recruitee_extra_companies.json'):
-        t = c['token'].lower()
-        if t not in seen: seen.add(t); all_t.append(c)
-    print(f"  Companies: {len(all_t)}")
-    jobs = []
-    for i, c in enumerate(all_t, 1):
-        token, name = c['token'], c.get('name', c['token'])
-        print(f"  [{i}/{len(all_t)}] {name}")
-        try:
-            r = requests.get(f'https://careers.recruitee.com/api/c/{token}/offers', timeout=30, headers=HEADERS)
-            if not r.ok: print(f"    - {r.status_code}"); continue
-            pos = []
-            for job in r.json().get('offers', []):
-                city    = job.get('city', '')
-                country = job.get('country', '')
-                remote  = job.get('remote', False)
-                loc_str = job.get('location', '')
-                if not is_israel(loc_str + ' ' + city + ' ' + country, remote=remote): continue
-                wt = 'Remote' if remote else ('Hybrid' if 'hybrid' in loc_str.lower() else '')
-                dept = ''
-                for tag in job.get('tags', []):
-                    if tag.get('type') == 'department': dept = tag.get('name',''); break
-                pos.append({'title': job.get('title',''), 'company': name,
-                    'location': city or loc_str.split(',')[0].strip(),
-                    'date': (job.get('created_at') or '')[:10],
-                    'url': job.get('url','') or f"https://careers.recruitee.com/c/{token}",
-                    'department': dept, 'workplace_type': wt})
-            print(f"    + {len(pos)}"); jobs.extend(pos)
-        except Exception as e: print(f"    x {e}")
-    write_csv(jobs, ['title','company','location','date','url','department','workplace_type'], f'recruitee_jobs_{TODAY}.csv')
-
-
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print(f"=== fetch_jobs.py  {TODAY} ===\n")
     print("Scanning techmap...")
-    comeet, gh, lever, smartr, recruitee = scan_techmap()
+    comeet, gh, lever = scan_techmap()
     run_comeet(comeet)
     run_greenhouse(gh)
     run_lever(lever)
-    run_smartr(smartr)
-    run_recruitee(recruitee)
     print("\n=== All done ===")
 
 if __name__ == '__main__':
