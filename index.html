@@ -57,7 +57,7 @@
   /* ─── Source pills ─── */
 
   /* ─── Filters ─── */
-  .filters{display:grid;grid-template-columns:1.5fr repeat(4,1fr) auto;gap:12px;
+  .filters{display:grid;grid-template-columns:1.5fr repeat(6,1fr) auto;gap:12px;
     padding:22px 48px;border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:10;
     backdrop-filter:blur(12px);background-color:rgba(245,241,232,.88);}
   .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -208,6 +208,23 @@
       <option value="30">Last 30 days</option>
     </select>
   </div>
+  <div class="field">
+    <label for="source">Source</label>
+    <select id="source">
+      <option value="">All sources</option>
+      <option value="linkedin">LinkedIn</option>
+      <option value="comeet">Comeet</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="worktype">Work type</label>
+    <select id="worktype">
+      <option value="">All types</option>
+      <option value="remote">Remote</option>
+      <option value="hybrid">Hybrid</option>
+      <option value="onsite">On-site</option>
+    </select>
+  </div>
   <button class="reset" id="reset">Reset</button>
 </section>
 
@@ -253,7 +270,7 @@ let LI_JOBS  = [];   // linkedin
 let CM_JOBS  = [];   // comeet
 let FILTERED = [];
 let visible  = PAGE;
-const activeSrc = 'linkedin';
+let activeSrc = 'all';
 
 // ─── DOM ─────────────────────────────────────────────────────────────────────
 const $q        = document.getElementById('q');
@@ -270,7 +287,9 @@ const $more     = document.getElementById('more');
 const $stamp    = document.getElementById('stamp');
 const $lastBuild= document.getElementById('lastBuild');
 const $export   = document.getElementById('export');
-const $liStatus = document.getElementById('liStatusText');
+const $liStatus  = document.getElementById('liStatusText');
+const $source    = document.getElementById('source');
+const $worktype  = document.getElementById('worktype');
 const $cmStatus = document.getElementById('cmStatusText');
 
 // ─── UTILS ───────────────────────────────────────────────────────────────────
@@ -329,15 +348,20 @@ function normLinkedIn(row, filename){
   const company  = g('company', ['company name','employer']);
   if(!title || !company) return null;
 
-  // Extract date from filename as fallback: linkedin_jobs_2026-04-19.csv -> 2026-04-19
   const fnDate = (filename.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+
+  // Extract work type from location string e.g. "Tel Aviv (Hybrid)"
+  const rawLoc = g('location',['city','place']);
+  const wtMatch = rawLoc.match(/\((remote|hybrid|on-?site)\)/i);
+  const workType = wtMatch ? wtMatch[1].toLowerCase().replace('-','') : '';
 
   return {
     source:'linkedin', fnArea:'linkedin',
     title, company, category:'linkedin', size:'', level:'',
-    city:cleanCity(g('location',['city','place'])),
+    city:cleanCity(rawLoc),
     url:g('url',['link','job url','apply']),
-    updated: g('date',['posted','date posted']) || fnDate
+    updated: g('date',['posted','date posted']) || fnDate,
+    workType
   };
 }
 
@@ -349,6 +373,8 @@ function normComeet(row, filename){
   const company = g('company');
   if(!title||!company) return null;
   const fnDate  = (filename.match(/(\d{4}-\d{2}-\d{2})/)||[])[1]||'';
+  const wt = g('workplace_type').toLowerCase();
+  const workType = wt.includes('remote')?'remote':wt.includes('hybrid')?'hybrid':wt.includes('on-site')||wt.includes('onsite')?'onsite':'';
   return{
     source:'comeet', fnArea:'comeet',
     title, company,
@@ -356,7 +382,8 @@ function normComeet(row, filename){
     size:'', level: g('employment_type')||'',
     city: g('location'),
     url:  g('url'),
-    updated: g('date')||fnDate
+    updated: g('date')||fnDate,
+    workType
   };
 }
 
@@ -503,26 +530,27 @@ function populateDropdowns(){
 
 // ─── FILTER ──────────────────────────────────────────────────────────────────
 function applyFilters(){
-  const q       = $q.value.trim().toLowerCase();
-  const city    = $city.value;
-  const company = $company.value;
-  const category= $category.value;
-  const level   = '';
-  const days    = $date.value ? parseInt($date.value) : null;
-  const cutoff  = days ? Date.now()-days*86400000 : null;
+  const q        = $q.value.trim().toLowerCase();
+  const city     = $city.value;
+  const company  = $company.value;
+  const category = $category.value;
+  const srcFilter= $source   ? $source.value   : '';
+  const wtFilter = $worktype ? $worktype.value  : '';
+  const days     = $date.value ? parseInt($date.value) : null;
+  const cutoff   = days ? Date.now()-days*86400000 : null;
 
   const pool = getPool();
   FILTERED = pool.filter(r=>{
-    if(city    && r.city!==city)       return false;
-    if(company && r.company!==company) return false;
-    if(category&& r.category!==category)return false;
-    
+    if(city      && r.city!==city)           return false;
+    if(company   && r.company!==company)     return false;
+    if(category  && r.category!==category)   return false;
+    if(srcFilter && r.source!==srcFilter)    return false;
+    if(wtFilter  && (r.workType||'')!==wtFilter) return false;
     if(q && !(r.title.toLowerCase().includes(q)||r.fnArea.includes(q))) return false;
     if(cutoff){
       const d = parseDate(r.updated);
-      // techmap: strict. LinkedIn: skip if no date, filter if date exists and is old
       if(r.source==='techmap' && (!d||d.getTime()<cutoff)) return false;
-      if(r.source==='linkedin' && d && d.getTime()<cutoff) return false;
+      if(r.source!=='techmap' && d && d.getTime()<cutoff)  return false;
     }
     return true;
   });
