@@ -59,7 +59,7 @@
   /* ─── Source pills ─── */
 
   /* ─── Filters ─── */
-  .filters{display:grid;grid-template-columns:1.5fr repeat(6,1fr) auto;gap:12px;
+  .filters{display:grid;grid-template-columns:1.5fr repeat(7,1fr) auto;gap:12px;
     padding:22px 48px;border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:10;
     backdrop-filter:blur(12px);background-color:rgba(245,241,232,.88);}
   .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -239,6 +239,25 @@
     </select>
   </div>
   <div class="field">
+    <label for="sector">Sector</label>
+    <select id="sector">
+      <option value="">All sectors</option>
+      <option value="cyber">Cyber</option>
+      <option value="fintech">Fintech</option>
+      <option value="health">Health</option>
+      <option value="media">Media</option>
+      <option value="hardware">Hardware</option>
+      <option value="defence">Defence</option>
+      <option value="automotive">Automotive</option>
+      <option value="gaming">Gaming</option>
+      <option value="public">Public Sector</option>
+      <option value="industrial">Industrial</option>
+      <option value="retail">Retail</option>
+      <option value="agrotech">Agrotech</option>
+      <option value="foodtech">Foodtech</option>
+    </select>
+  </div>
+  <div class="field">
     <label for="source">Source</label>
     <select id="source">
       <option value="">All sources</option>
@@ -322,6 +341,7 @@ const $lastBuild= document.getElementById('lastBuild');
 const $export   = document.getElementById('export');
 const $liStatus  = document.getElementById('liStatusText');
 const $segment   = document.getElementById('segment');
+const $sector    = document.getElementById('sector');
 const $source    = document.getElementById('source');
 const $worktype  = document.getElementById('worktype');
 const $cmStatus = document.getElementById('cmStatusText');
@@ -701,12 +721,91 @@ function classifySegment(title) {
   return '';
 }
 
+
+// ─── SECTOR CLASSIFIER ───────────────────────────────────────────────────────
+// Known Israeli companies → sector (checked first, most reliable)
+const KNOWN_COMPANIES = {
+  'check point':'cyber','checkpoint':'cyber','cyberark':'cyber','wiz':'cyber',
+  'palo alto':'cyber','sentinelone':'cyber','claroty':'cyber','tenable':'cyber',
+  'snyk':'cyber','pentera':'cyber','armis':'cyber','cyera':'cyber',
+  'aqua security':'cyber','aquasec':'cyber','hunters':'cyber',
+  'sweet security':'cyber','orca security':'cyber','axonius':'cyber',
+  'wing security':'cyber','island':'cyber','cato networks':'cyber','cato':'cyber',
+  'perimeter 81':'cyber','cheq':'cyber','transmit security':'cyber',
+  'xm cyber':'cyber','vulcan':'cyber','radiflow':'cyber','cyolo':'cyber',
+  'tufin':'cyber','forescout':'cyber','varonis':'cyber','illusive':'cyber',
+  'morphisec':'cyber','silverfort':'cyber','cymulate':'cyber','sygnia':'cyber',
+  'grip security':'cyber','seemplicity':'cyber','veriti':'cyber','zafran':'cyber',
+  'fireblocks':'cyber','chainalysis':'cyber','opus security':'cyber',
+  'payoneer':'fintech','tipalti':'fintech','rapyd':'fintech','lemonade':'fintech',
+  'riskified':'fintech','forter':'fintech','melio':'fintech','etoro':'fintech',
+  'plus500':'fintech','fundbox':'fintech','hippo':'fintech',
+  'next insurance':'fintech','personetics':'fintech','sunbit':'fintech',
+  'credorax':'fintech','bluesnap':'fintech','simplex':'fintech','nuvei':'fintech',
+  'pagaya':'fintech','capitolis':'fintech','behalf':'fintech','lendbuzz':'fintech',
+  'orca bio':'health','zebra medical':'health','nanox':'health','brainsway':'health',
+  'earlysense':'health','itamar medical':'health','medigus':'health',
+  'todos medical':'health','nucleai':'health','ibex medical':'health',
+  'mdclone':'health','kahun':'health','aidoc':'health','tyto care':'health',
+  'datos health':'health','orcamp':'health',
+  'taboola':'media','outbrain':'media','kaltura':'media','perion':'media',
+  'ironsource':'media','wix':'media','sizmek':'media','undertone':'media',
+  'minute media':'media','minutemedia':'media',
+  'intel':'hardware','nvidia':'hardware','mobileye':'hardware','mellanox':'hardware',
+  'ceva':'hardware','tower semiconductor':'hardware','hailo':'hardware',
+  'valens':'hardware','sifive':'hardware','arbe':'hardware','innoviz':'hardware',
+  'elbit systems':'defence','rafael':'defence','iai':'defence',
+  'israel aerospace':'defence','controp':'defence','mer systems':'defence',
+  'elta systems':'defence','aeronautics':'defence','uvision':'defence','xtend':'defence',
+  'optibus':'automotive','via':'automotive','electreon':'automotive',
+  'ituran':'automotive','nexar':'automotive','autofleet':'automotive',
+  'karamba':'automotive','foretellix':'automotive','cipia':'automotive',
+  'playtika':'gaming','moon active':'gaming','papaya gaming':'gaming',
+  'plarium':'gaming','bagelcode':'gaming','jelly button':'gaming',
+  'dynamic yield':'retail','yotpo':'retail','global-e':'retail','global e':'retail',
+  'syte':'retail','finaloop':'retail','feedvisor':'retail',
+  'netafim':'agrotech','taranis':'agrotech','phytech':'agrotech',
+  'cropx':'agrotech','weedout':'agrotech','prospera':'agrotech',
+  'aleph farms':'foodtech','supermeat':'foodtech','future meat':'foodtech',
+  'redefine meat':'foodtech','remilk':'foodtech','imagindairy':'foodtech',
+}
+
+const SECTOR_KW = {
+  cyber:      /\b(cyber|cybersec|security(?!.*food|.*health|.*home)|firewall|malware|threat(?! intel)|siem|soar|edr\b|xdr\b|endpoint|zero.?trust|vulnerabilit|phish|penetrat|forensic|iam\b|encryption|ransomware|ciso|soc\b|deception|cspm|ciem|cnapp|appsec|devsecops)\b/i,
+  fintech:    /\b(fintech|payment|pay(?!pal)|bank(?!ing app)|financial(?! health)|credit(?! score firm)|insur(?!anc.*health)|invest(?!igation)|trading(?! card)|forex|crypto|blockchain|defi|wallet|lending|loan|mortgage|payroll|invoice|regtech|remittanc|treasury|neobank|open.?banking)\b/i,
+  health:     /\b(health(?! insurance tech)|medical|med(?:ical|tech|device)|bio(?:tech|pharma|med|informatic)|pharma|genomic|genetic|clinical|patient|therap|diagnos|imaging|surgic|oncol|cancer|drug(?! testing company)|digital health|telemedicin|wellness(?! app)|dental|cardio|neuro|radiol|patholog|specimen|laboratory|hospital)\b/i,
+  media:      /\b(media|adtech|ad.?tech|advertis|publisher|broadcast|streaming|video(?! security)|audio|entertainment|influencer|creator(?! tool)|content(?! security)|news(?!letter)|magazine|social(?! security))\b/i,
+  hardware:   /\b(semiconductor|chip(?! security)|silicon|processor|fpga|asic|embedded(?! security)|firmware|pcb\b|electronic|sensor(?! security)|radar|lidar|antenna|rf\b|optical|laser|photonic|robotic(?! security)|circuit|wafer|fab\b|foundry)\b/i,
+  defence:    /\b(defense|defence|military|army|navy|air force|weapon|missile|uav\b|unmanned|aerial(?! vehicle security)|aerospace|tactical|ballistic|idf\b|combat|surveillance(?! cyber)|countermeasure|drone(?! delivery)|ammunition)\b/i,
+  automotive: /\b(automotive|vehicle(?! security)|fleet(?! security)|\bev\b|electric vehicle|autonomous(?! security)|adas\b|self.?driving|telematics|v2x\b|connected car|smart(?! security).*car|mobility(?! pay)|charging(?! ev security))\b/i,
+  gaming:     /\b(gaming|casino|esport|lottery|mobile game|game studio|game developer|slot|poker|bingo|fantasy sport|metaverse(?! security))\b/i,
+  public:     /\b(government|municipal|govtech|gov.?tech|ministry|utilities|smart city|public sector|civic tech|e.?gov|federal|national(?! security))\b/i,
+  industrial: /\b(industrial(?! security)|manufacturing|factory|plant(?! based)|production(?! studio)|supply chain|logistics(?! tech)|warehouse|scada|plc\b|automation(?! marketing)|process control|iot(?! security)|industry 4|smart factory|predictive maintenance)\b/i,
+  retail:     /\b(retail|e.?commerce|ecommerce|marketplace|fashion|apparel|consumer goods|fmcg|grocery|supermarket|last.?mile|direct.?to.?consumer|dtc\b|brand(?! safety)|loyalty(?! security)|point.?of.?sale|pos\b)\b/i,
+  agrotech:   /\b(agro|agrotech|agriculture|agritech|farm(?!ed meat)|crop|irrigation|precision farm|soil(?! security)|fertilizer|livestock|dairy(?! tech)|plant(?! base).*tech|field(?! security)|harvest)\b/i,
+  foodtech:   /\b(food(?! security)|foodtech|food.?tech|nutrition|protein(?! security)|plant.?based|cultivated meat|cell.*meat|fermentation(?! bio)|beverage|restaurant(?! tech)|culinary|food safety|alternative protein|meat.*alternative)\b/i,
+};
+
+function classifySector(company) {
+  const c = company.toLowerCase().trim();
+  // Check known companies first
+  for (const [name, sector] of Object.entries(KNOWN_COMPANIES)) {
+    if (c.includes(name)) return sector;
+  }
+  // Keyword fallback
+  for (const [sector, re] of Object.entries(SECTOR_KW)) {
+    if (re.test(c)) return sector;
+  }
+  return '';
+}
+
 // ─── FILTER ──────────────────────────────────────────────────────────────────
 function applyFilters(){
   const q        = $q.value.trim().toLowerCase();
   const city     = $city.value;
   const company  = $company.value;
-  const segFilter = $segment  ? $segment.value  : '';
+  const segFilter  = $segment  ? $segment.value  : '';
+  const secFilter  = $sector   ? $sector.value   : '';
   const srcFilter= $source   ? $source.value   : '';
   const wtFilter = $worktype ? $worktype.value  : '';
   const days     = $date.value ? parseInt($date.value) : null;
@@ -716,7 +815,8 @@ function applyFilters(){
   FILTERED = pool.filter(r=>{
     if(city      && r.city!==city)           return false;
     if(company   && r.company!==company)     return false;
-    if(segFilter && classifySegment(r.title)!==segFilter) return false;
+    if(segFilter && classifySegment(r.title)!==segFilter)   return false;
+    if(secFilter && classifySector(r.company)!==secFilter)   return false;
     if(srcFilter && r.source!==srcFilter)    return false;
     if(wtFilter  && (r.workType||'')!==wtFilter) return false;
     if(q && !(r.title.toLowerCase().includes(q)||r.fnArea.includes(q))) return false;
@@ -784,10 +884,11 @@ function exportCSV(){
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
 let qTimer;
 $q.addEventListener('input',()=>{clearTimeout(qTimer);qTimer=setTimeout(applyFilters,120);});
-[$city,$company,$date,$segment,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
+[$city,$company,$date,$segment,$sector,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
 $reset.addEventListener('click',()=>{
   $q.value='';$city.value='';$company.value='';$date.value='';
   if($segment)$segment.value='';
+  if($sector)$sector.value='';
   if($source)$source.value='';
   if($worktype)$worktype.value='';
   applyFilters();
