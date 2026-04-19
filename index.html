@@ -61,7 +61,7 @@
   /* ─── Source pills ─── */
 
   /* ─── Filters ─── */
-  .filters{display:grid;grid-template-columns:1.5fr repeat(7,1fr) auto;gap:12px;
+  .filters{display:grid;grid-template-columns:1.5fr repeat(8,1fr) auto;gap:12px;
     padding:22px 48px;border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:10;
     backdrop-filter:blur(12px);background-color:rgba(245,241,232,.88);}
   .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -261,6 +261,17 @@
     </select>
   </div>
   <div class="field">
+    <label for="level">Level</label>
+    <select id="level">
+      <option value="">All levels</option>
+      <option value="entry">Entry / Junior</option>
+      <option value="mid">Mid</option>
+      <option value="senior">Senior</option>
+      <option value="advanced">Staff / Principal</option>
+      <option value="director">Director+</option>
+    </select>
+  </div>
+  <div class="field">
     <label for="date">Posted</label>
     <select id="date">
       <option value="">Any time</option>
@@ -438,6 +449,7 @@ const $stamp    = document.getElementById('stamp');
 const $lastBuild= document.getElementById('lastBuild');
 const $export   = document.getElementById('export');
 const $liStatus  = document.getElementById('liStatusText');
+const $level     = document.getElementById('level');
 const $segment   = document.getElementById('segment');
 const $abStatus  = document.getElementById('abStatusText');
 const $wkStatus  = document.getElementById('wkStatusText');
@@ -866,6 +878,22 @@ function classifySegment(title) {
 }
 
 
+
+// ─── LEVEL CLASSIFIER ────────────────────────────────────────────────────────
+function classifyLevel(title) {
+  // Director+ (check first — "Senior Director" should be director)
+  if (/\b(director|\bvp\b|vice president|head of|\bchief\b|\bcto\b|\bceo\b|\bcoo\b|\bcpo\b|\bciso\b|\bcmo\b|\bcfo\b|general manager|\bgm\b|president(?! of the))\b/i.test(title)) return 'director';
+  // Advanced: Staff / Principal / Lead / Architect / L4–L5
+  if (/\b(staff|principal|distinguished|fellow|\blead\b(?!.*generation)|architect|\bl[45]\b|level [45]|\biv\b(?= |$))\b/i.test(title)) return 'advanced';
+  // Senior
+  if (/\b(senior|\bsr\.?\b|experienced|\bl[3]\b|level 3|\biii\b(?= |$))\b/i.test(title)) return 'senior';
+  // Mid
+  if (/\b(mid[- ]?level|mid[- ]?senior|intermediate|\bl2\b|level 2|\bii\b(?= |$))\b/i.test(title)) return 'mid';
+  // Entry / Junior
+  if (/\b(junior|\bjr\.?\b|entry[- ]?level|associate(?! (director|vp|manager|lead|dean))|new grad|graduate(?! (program manager|director))|fresher|trainee|\bl1\b|level 1|\bi\b(?= |$))\b/i.test(title)) return 'entry';
+  return '';
+}
+
 // ─── SECTOR CLASSIFIER ───────────────────────────────────────────────────────
 // Known Israeli companies → sector (checked first, most reliable)
 const KNOWN_COMPANIES = {
@@ -949,6 +977,7 @@ function applyFilters(){
   const city     = $city.value;
   const company  = $company.value;
   const segFilter  = $segment  ? $segment.value  : '';
+  const lvlFilter  = $level    ? $level.value    : '';
   const secFilter  = $sector   ? $sector.value   : '';
   const srcFilter= $source   ? $source.value   : '';
   const wtFilter = $worktype ? $worktype.value  : '';
@@ -960,6 +989,7 @@ function applyFilters(){
     if(city      && r.city!==city)           return false;
     if(company   && r.company!==company)     return false;
     if(segFilter && classifySegment(r.title)!==segFilter)   return false;
+    if(lvlFilter && classifyLevel(r.title)!==lvlFilter)       return false;
     if(secFilter && classifySector(r.company)!==secFilter)   return false;
     if(srcFilter && r.source!==srcFilter)    return false;
     if(wtFilter  && (r.workType||'')!==wtFilter) return false;
@@ -1031,9 +1061,10 @@ function exportCSV(){
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
 let qTimer;
 $q.addEventListener('input',()=>{clearTimeout(qTimer);qTimer=setTimeout(applyFilters,120);});
-[$city,$company,$date,$segment,$sector,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
+[$city,$company,$date,$level,$segment,$sector,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
 $reset.addEventListener('click',()=>{
   $q.value='';$city.value='';$company.value='';$date.value='';
+  if($level)$level.value='';
   if($segment)$segment.value='';
   if($sector)$sector.value='';
   if($source)$source.value='';
