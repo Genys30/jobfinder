@@ -93,6 +93,14 @@
 
   .an-select{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;padding:4px 8px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:3px;cursor:pointer;}
   .an-select:focus{border-color:var(--accent);outline:none;}
+  /* ─── View toggle ─── */
+  .view-toggle{display:flex;gap:0;border-bottom:1px solid var(--rule);background:rgba(245,241,232,.6);}
+  .vbtn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    padding:12px 32px;border:none;background:transparent;color:var(--ink-dim);cursor:pointer;
+    border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+  .vbtn:hover{color:var(--ink);}
+  .vbtn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(201,127,12,.04);}
+
   /* ─── Analytics panel ─── */
   #analyticsPanel{padding:32px 48px 64px;display:none;}
   .an-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
@@ -204,6 +212,10 @@
 </div>
 
 <!-- Filters -->
+<div class="view-toggle">
+  <button class="vbtn active" id="vbtnJobs">&#128269; Jobs</button>
+  <button class="vbtn" id="vbtnAnalytics">&#128202; Analytics</button>
+</div>
 <section class="filters">
   <input id="q" type="text" placeholder="Position…" autocomplete="off" />
   <select id="city"><option value="">City</option></select>
@@ -314,9 +326,8 @@
       <div class="an-box-title" style="margin-bottom:0" id="trendTitle">Hiring trend over time</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <select id="trendMetric" class="an-select">
-          <optgroup label="Overview"><option value="total">Total jobs</option></optgroup>
           <optgroup label="Role type">
-            <option value="rd">R&amp;D / Engineering</option>
+            <option value="rd" selected>R&amp;D / Engineering</option>
             <option value="product">Product</option>
             <option value="data">Data &amp; Analytics</option>
             <option value="sales">Sales</option>
@@ -367,13 +378,6 @@
       <div class="an-box-title">Work type</div>
       <canvas id="chartWorkType" height="200"></canvas>
     </div>
-  </div>
-
-  <!-- Row: Sector bar (full width) -->
-  <div class="an-box" style="margin-bottom:20px;">
-    <div class="an-box-title">Jobs by sector</div>
-    <canvas id="chartSector" height="120"></canvas>
-    <div class="an-note">Click → filter by sector</div>
   </div>
 
   <!-- Row: Top 20 companies + Source split -->
@@ -1252,18 +1256,7 @@ async function renderAnalytics(){
     data:{labels:wtData.map(([k])=>wtMap[k]||k),datasets:[{data:wtData.map(([,v])=>v),backgroundColor:['#2e7d32','#0a66c2','#c97f0c','#d9d2c2']}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},
       onClick:(_,els)=>{ if(els[0]!=null){ switchToJobs(()=>{ if($worktype)$worktype.value=wtData[els[0].index][0]; }); } }}
-  });
-
-  // ── Sector horizontal bar ──
-  destroyChart('sector');
-  const secData=topN(bySector,13);
-  CHART_INSTANCES['sector']=new Chart(document.getElementById('chartSector'),{
-    type:'bar',
-    data:{labels:secData.map(([k])=>SECTOR_LABELS[k]||k),datasets:[{data:secData.map(([,v])=>v),backgroundColor:'#c97f0c',borderRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x} jobs`}}},
-      scales:{x:{grid:{color:'rgba(0,0,0,.05)'}},y:{ticks:{font:{size:11}}}},
-      onClick:(_,els)=>{ if(els[0]!=null){ switchToJobs(()=>{ if($sector)$sector.value=secData[els[0].index][0]; }); } }}
+  }); } }}
   });
 
   // ── Top 20 companies ──
