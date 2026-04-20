@@ -69,7 +69,7 @@
   .filters input::placeholder{color:var(--ink-faint);}
   .filters select{-webkit-appearance:none;appearance:none;padding-right:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-color:#fff;}
   .filters select:focus,.filters input:focus{border-color:var(--accent);}
-  .reset{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;background:none;border:1px solid var(--rule);color:var(--ink-dim);padding:5px 12px;cursor:pointer;height:30px;border-radius:3px;transition:all .15s;margin-left:auto;}
+  .reset{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;background:none;border:1px solid var(--rule);color:var(--ink-dim);padding:5px 12px;cursor:pointer;height:30px;border-radius:3px;transition:all .15s;}
   .reset:hover{border-color:var(--accent);color:var(--accent);}
   .status{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--rule);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-faint);}
   .export{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;background:none;border:1px solid var(--rule);color:var(--ink-dim);padding:5px 12px;cursor:pointer;transition:all .15s;border-radius:3px;}
@@ -937,12 +937,12 @@ function applyFilters(){
   });
   // Sort by date descending — most recent first
   FILTERED.sort((a,b)=>{
-    const da = a.updated||'';
-    const db = b.updated||'';
+    const da = parseDate(a.updated);
+    const db = parseDate(b.updated);
     if(!da && !db) return 0;
-    if(!da) return 1;   // empty dates go to bottom
+    if(!da) return 1;   // no date → bottom
     if(!db) return -1;
-    return db.localeCompare(da);  // newest first
+    return db - da;     // newest first
   });
   visible = PAGE;
   render();
