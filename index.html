@@ -922,7 +922,17 @@ function applyFilters(){
   const srcFilter= $source   ? $source.value   : '';
   const wtFilter = $worktype ? $worktype.value  : '';
   const days     = $date.value ? parseInt($date.value) : null;
-  const cutoff   = days ? Date.now()-days*86400000 : null;
+  const cutoff = (()=>{
+    if(!days) return null;
+    const d = new Date();
+    if(days===1){
+      // "Today" = since midnight local time
+      d.setHours(0,0,0,0);
+      return d.getTime();
+    }
+    // Other ranges = rolling N days back from now
+    return Date.now() - days*86400000;
+  })();
 
   const pool = getPool();
   FILTERED = pool.filter(r=>{
