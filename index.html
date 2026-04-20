@@ -400,7 +400,7 @@
 </div>
 
 <footer>
-  <span>techmap · ODbL v1.0 · linkedin via github.com/Genys30/jobfinder1</span>
+  <span>techmap · ODbL v1.0 · linkedin via github.com/Genys30/jobfinder</span>
   <span id="stamp"></span>
 </footer>
 
@@ -415,7 +415,7 @@ const TECHMAP_FNS = [
 const TECHMAP_BASE = 'https://raw.githubusercontent.com/mluggy/techmap/main/jobs/';
 
 // Your repo — the code will auto-discover all linkedin_jobs_*.csv files
-const LI_REPO    = 'Genys30/jobfinder1';
+const LI_REPO    = 'Genys30/jobfinder';
 const LI_RAW     = 'https://raw.githubusercontent.com/' + LI_REPO + '/main/';
 // Pattern: linkedin_jobs_YYYY-MM-DD.csv  OR  linkedin_jobs.csv
 
@@ -1114,24 +1114,47 @@ function switchToJobs(filterFn){
   applyFilters();
 }
 
-// ── Trend chart: load multiple dated LinkedIn CSVs ──────────────────────────
-async function loadTrendData(){
-  const results = [];
-  for(let i=13; i>=0; i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
-    const fname = `linkedin_jobs_${y}-${m}-${day}.csv`;
-    const label = `${day}/${m}`;
-    try{
-      const r = await fetch(LI_RAW+fname);
-      if(!r.ok){ results.push({label,count:0}); continue; }
-      const text = await r.text();
-      const parsed = Papa.parse(text,{header:true,skipEmptyLines:true,
-        transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase()});
-      results.push({label, count: parsed.data.filter(row=>row.title||row.company).length});
-    }catch(e){ results.push({label,count:0}); }
-  }
-  return results;
+// ── History CSV loader ───────────────────────────────────────────────────────
+let HISTORY_DATA = null;
+
+async function loadHistoryCSV(){
+  if(HISTORY_DATA) return HISTORY_DATA;
+  try{
+    const r = await fetch(LI_RAW + 'history.csv');
+    if(!r.ok) return [];
+    const text = await r.text();
+    const parsed = Papa.parse(text,{header:true,skipEmptyLines:true,
+      transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase()});
+    HISTORY_DATA = parsed.data;
+    return HISTORY_DATA;
+  }catch(e){ return []; }
+}
+
+function renderTrendChart(histData, metric, days){
+  const subset = days<999 ? histData.slice(-days) : histData;
+  const labels  = subset.map(r=>{ const d=r.date||'?'; return d.slice(5); }); // MM-DD
+  const values  = subset.map(r=>parseInt(r[metric]||0,10));
+  const metricSelect = document.getElementById('trendMetric');
+  const label = metricSelect ? metricSelect.options[metricSelect.selectedIndex].text : metric;
+  document.getElementById('trendTitle').textContent = label + ' over time';
+  const hasData = values.some(v=>v>0);
+  document.getElementById('trendNote').textContent = hasData
+    ? `${subset.length} days of data — grows automatically each night`
+    : 'No history yet — history.csv builds after first nightly run';
+  destroyChart('trend');
+  if(!hasData) return;
+  CHART_INSTANCES['trend'] = new Chart(document.getElementById('chartTrend'),{
+    type:'line',
+    data:{labels, datasets:[{
+      data:values, borderColor:'#c97f0c', backgroundColor:'rgba(201,127,12,.1)',
+      fill:true, tension:.4, pointRadius:subset.length>30?2:4,
+      pointBackgroundColor:'#c97f0c', pointBorderColor:'#c97f0c'
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y} ${label}`}}},
+      scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.05)'}},
+              x:{grid:{display:false},ticks:{maxTicksLimit:14}}}}
+  });
 }
 
 async function renderAnalytics(){
@@ -1227,24 +1250,21 @@ async function renderAnalytics(){
   });
 
   // ── Trend (async, loads after other charts) ──
-  document.getElementById('chartTrend').closest('.an-box').querySelector('.an-box-title').textContent='Daily hiring activity — loading…';
-  loadTrendData().then(trendData=>{
-    destroyChart('trend');
-    CHART_INSTANCES['trend'] = new Chart(document.getElementById('chartTrend'),{
-      type:'line',
-      data:{labels:trendData.map(d=>d.label),
-        datasets:[{data:trendData.map(d=>d.count),
-          borderColor:'#c97f0c',backgroundColor:'rgba(201,127,12,.1)',
-          fill:true,tension:.4,pointRadius:5,
-          pointBackgroundColor:trendData.map(d=>d.count>0?'#c97f0c':'transparent'),
-          pointBorderColor:trendData.map(d=>d.count>0?'#c97f0c':'transparent')}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y} LinkedIn jobs`}}},
-        scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false}}}}
+  loadHistoryCSV().then(histData=>{
+    const metric = document.getElementById('trendMetric')?.value || 'total';
+    const days   = parseInt(document.getElementById('trendDays')?.value || 14, 10);
+    renderTrendChart(histData, metric, days);
+    // Wire up controls
+    document.getElementById('trendMetric')?.addEventListener('change', ()=>{
+      const m=document.getElementById('trendMetric').value;
+      const d=parseInt(document.getElementById('trendDays').value,10);
+      renderTrendChart(histData, m, d);
     });
-    document.getElementById('chartTrend').closest('.an-box').querySelector('.an-box-title').textContent='Daily hiring activity — LinkedIn jobs posted per day (last 14 days)';
-  }).catch(()=>{
-    document.getElementById('chartTrend').closest('.an-box').querySelector('.an-box-title').textContent='Daily hiring activity — upload LinkedIn CSVs daily to build history';
+    document.getElementById('trendDays')?.addEventListener('change', ()=>{
+      const m=document.getElementById('trendMetric').value;
+      const d=parseInt(document.getElementById('trendDays').value,10);
+      renderTrendChart(histData, m, d);
+    });
   });
 }
 
