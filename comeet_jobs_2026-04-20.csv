@@ -34,13 +34,13 @@ Freelancer - GenAI Experts,Alice,New York,2026-04-15,https://alice.io/positions/
 Freelancer - OSINT/WEBINT Experts,Alice,New York,2026-04-20,https://alice.io/positions/position-AC_06A#apply-form,Freelancers,Remote
 GenAI Account Executive,Alice,New York,2026-04-19,https://alice.io/positions/position-BB_368,Sales,Remote
 GenAI Account Executive,Alice,London,2026-04-19,https://alice.io/positions/position-BB_368,Sales,Remote
-GenAI Analyst (Israel/UK/Poland),Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-F5_468,Intelligence,Hybrid
-GenAI Security Specialist,Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-00_C55#apply-form,Intelligence,Hybrid
+GenAI Analyst (Israel/UK/Poland),Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-F5_468#apply-form,Intelligence,Hybrid
+GenAI Security Specialist,Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-00_C55,Intelligence,Hybrid
 Geopolitical Risk Project Lead,Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-60_662?t=1776234244574,Intelligence,Hybrid
 Infrastructure Red Team Specialist (Maternity Leave Rep),Alice,Ramat Gan,2026-04-17,https://alice.io/positions/position-15_766,Intelligence,Hybrid
 Intel Desk Team Lead,Alice,Ramat Gan,2026-04-16,https://alice.io/positions/position-1E_86C,Intelligence,Hybrid
 Intelligence Infrastructure Expert (Maternity leave replacement),Alice,Ramat Gan,2026-04-16,https://alice.io/positions/position-87_76F,Intelligence,Hybrid
-Malware Researcher,Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-5D_46F,Security,Hybrid
+Malware Researcher,Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-5D_46F?t=1776668151703,Security,Hybrid
 Malware Researcher (Mid-Level),Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-B0_757?t=1774284936757&t=1776272777825,Security,On-site
 Marketing Automation Specialist (Maternity Leave Cover),Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-C7_369,Finance,Hybrid
 Office Manager & Welfare Operations (Maternity Leave Cover),Alice,Ramat Gan,2026-04-20,https://alice.io/positions/position-D9_669?t=1772978488402,Human Resources,On-site
@@ -56,7 +56,7 @@ Senior Team Lead,Optibus,Tel Aviv-Yafo,2026-02-24,https://optibus.com/company/ca
 Software Architect,Optibus,Tel Aviv-Yafo,2026-04-18,https://optibus.com/company/careers/jobs/co/israel/52.A53/software-architect/all/,Engineering,Hybrid
 "Software Engineer, Gen AI",Optibus,Tel Aviv-Yafo,2026-04-13,https://optibus.com/company/careers/jobs/co/israel/B4.861/software-engineer-gen-ai/all/,,On-site
 AI Engineer,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-20,https://www.onezerobank.com/en/career/position/?positionID=63.560,R&D,Hybrid
-AI Transformation Lead,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-20,https://www.onezerobank.com/en/career/position/?positionID=B3.968,R&D,Hybrid
+AI Transformation Lead,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-20,https://www.onezerobank.com/career/position/?positionID=B3.968,R&D,Hybrid
 Back Office – Trading Operations,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-20,https://www.onezerobank.com/en/career/position/?positionID=DC.76F,Finance & Accounting,Hybrid
 Backend Tech Lead,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-20,https://www.onezerobank.com/en/career/position/?positionID=0C.463,R&D,Hybrid
 Controller – Banking Experience,ONE ZERO Digital Bank,Tel Aviv-Yafo,2026-04-19,https://www.onezerobank.com/career/position/?positionID=50.762,Finance & Accounting,Hybrid
@@ -116,7 +116,7 @@ Business Partners Manager,Atera,Tel Aviv-Yafo,2026-04-19,https://www.atera.com/c
 Chief of Staff to the CEO,Atera,Tel Aviv-Yafo,2026-04-20,https://www.atera.com/careers/co/tel-aviv/66.46B/chief-of-staff-to-the-ceo/all/?t=1773838306950&fbclid=IwY2xjawQ4Z9FleHRuA2FlbQIxMABicmlkETFkQ3V6SUVGWlU4VnQ3VlBvc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHvl2rI7LJ5hthUyTndSi1Of5FO_t44otjLcTUqQqOytIfGvDh1ZeLAwvhVPM_aem_0MLNdR9UJP4L6H-rYe4N_A,People & Operations,Hybrid
 Enablement Team Lead,Atera,Tel Aviv-Yafo,2026-04-15,https://www.atera.com/careers/co/tel-aviv/33.769/enablement-team-lead/all/,Revenue,Hybrid
 Enterprise Professional Services Engineer,Atera,Tel Aviv-Yafo,2026-04-17,https://www.atera.com/careers/co/tel-aviv/19.76F/enterprise-professional-services-engineer/all/,Customer Success,Hybrid
-Executive Assistant to the CEO,Atera,Tel Aviv-Yafo,2026-04-20,https://www.atera.com/careers/co/tel-aviv/4B.460/executive-assistant-to-the-ceo/all/?t=1773838315067,People & Operations,On-site
+Executive Assistant to the CEO,Atera,Tel Aviv-Yafo,2026-04-20,https://www.atera.com/careers/co/tel-aviv/4B.460/executive-assistant-to-the-ceo/all/,People & Operations,On-site
 Full Stack Developer,Atera,Tel Aviv-Yafo,2026-04-16,https://www.atera.com/careers/co/tel-aviv/ED.850/full-stack-developer/all/,R&D,On-site
 Full Stack Team Lead,Atera,Tel Aviv-Yafo,2026-03-31,https://www.atera.com/careers/co/tel-aviv/2C.E5E/full-stack-team-lead/all/,R&D,On-site
 Global Talent Acquisition Director,Atera,Tel Aviv-Yafo,2026-04-15,https://www.atera.com/careers/co/tel-aviv/9B.566/global-talent-acquisition-director/all/,HR,On-site
@@ -156,7 +156,7 @@ Experienced Mechanical Engineer,SolarEdge,Modi'in,2026-04-15,https://corporate.s
 Experienced Mechanical Engineer,SolarEdge,Modi'in,2026-04-13,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-D7769,Data centers,On-site
 Failure Analysis Practical Engineer,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-9D862&_gl=1*1fnetpr*_up*MQ..*_ga*MTA2MjU2MDQxMC4xNzc2Njg0MzA4*_ga_EB80EEY8WM*czE3NzY2ODQzMDgkbzEkZzEkdDE3NzY2ODQ5OTgkajQxJGwwJGgw*_ga_VLCW84G8SB*czE3NzY2ODQzMDgkbzEkZzEkdDE3NzY2ODQ5OTgkajQxJGwwJGgw,Q&R,On-site
 Forecast Analyst,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-4D460&_gl=1*15f2rf*_up*MQ..*_ga*MjA0OTUwODg2NC4xNzc2NjkzNDc0*_ga_EB80EEY8WM*czE3NzY2OTM0NzMkbzEkZzAkdDE3NzY2OTM0NzMkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY2OTM0NzMkbzEkZzAkdDE3NzY2OTM0NzMkajYwJGwwJGgw,Sales Operations,Hybrid
-Growth Specialist,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-7B366,Product Management,Hybrid
+Growth Specialist,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-7B366&_gl=1*1432uyz*_up*MQ..*_ga*NjMzOTcyODIuMTc3NjY5NDM0Ng..*_ga_EB80EEY8WM*czE3NzY2OTQzNDUkbzEkZzAkdDE3NzY2OTQzNDUkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY2OTQzNDUkbzEkZzAkdDE3NzY2OTQzNDUkajYwJGwwJGgw,Product Management,Hybrid
 Hardware Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-42368,R&D - Hardware,On-site
 Hardware Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-0A768,R&D - Hardware,On-site
 Inside Sales Account Executive,SolarEdge,Chicago,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-E356E,Sales,Remote
@@ -168,7 +168,7 @@ Maintenance Technician,SolarEdge,Nazareth Iliit,2026-04-11,https://corporate.sol
 Mechanical Engineer,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-79568,Core Tech,On-site
 NPI Mechanical Practical Engineer,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-BA769&_gl=1*12sbr6r*_up*MQ..*_ga*NDAzNDM3MTY4LjE3NzYyNzMxNzk.*_ga_EB80EEY8WM*czE3NzYyNzMxNzgkbzEkZzAkdDE3NzYyNzMxNzgkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzYyNzMxNzgkbzEkZzAkdDE3NzYyNzMxNzgkajYwJGwwJGgw,R&D - Mechanics,On-site
 NPI Project Lead,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-9B360,Sales - ROW,Hybrid
-Operations Forecast Lead,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-D7363,Operations,On-site
+Operations Forecast Lead,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-D7363&_gl=1*14ek9kc*_up*MQ..*_ga*MTMwNjE4Mzg5Ni4xNzc2NTk5Nzgz*_ga_EB80EEY8WM*czE3NzY1OTk3ODIkbzEkZzAkdDE3NzY1OTk3ODIkajYwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY1OTk3ODIkbzEkZzAkdDE3NzY1OTk3ODIkajYwJGwwJGgw,Operations,On-site
 Oracle ERP Implementer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-D6462,IT,On-site
 Planner,SolarEdge,Herzliya,2026-04-20,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-2E468,Operations,On-site
 Power Electronics Engineer,SolarEdge,Herzliya,2026-04-19,https://corporate.solaredge.com/en/careers/open-positions?position=comeet-7076F&_gl=1*1vzatay*_up*MQ..*_ga*NTcyODA5NTMyLjE3NzY2MzA0NTE.*_ga_EB80EEY8WM*czE3NzY2MzA0NTAkbzEkZzEkdDE3NzY2MzA0NzAkajQwJGwwJGgw*_ga_VLCW84G8SB*czE3NzY2MzA0NTAkbzEkZzEkdDE3NzY2MzA0NzAkajQwJGwwJGgw,R&D - Hardware,On-site
@@ -405,9 +405,9 @@ Senior Fullstack Developer,365scores,Tel Aviv-Yafo,2026-04-17,https://corporate.
 AI & Advanced Technologies - Senior Software Engineer,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/careers/69-764/,Engineering,Hybrid
 Assistant Controller,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/jobs/assistant-controller,Finance,Hybrid
 Business Development Manager (DACH),Global-e,London,2026-04-19,https://www.global-e.com/careers/16-764/,Sales,Remote
-Data Analyst,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/careers/09-766/,Finance,Hybrid
+Data Analyst,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/jobs/data-analyst,Finance,Hybrid
 Delivery Solution Engineer,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/careers/26-861/,Professional Services,Hybrid
-Director of Analytics - Growth,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/e1-367/,Growth,Hybrid
+Director of Analytics - Growth,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/en/careers/e1-367/,Growth,Hybrid
 Duty Drawback Specialist,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/careers/85-867/,Operations,Hybrid
 Full Stack Developer,Global-e,Petah-Tikva,2026-04-20,https://www.global-e.com/careers/dd-663/?t=1776328843218,Engineering,Hybrid
 Indirect Tax Analyst- Temporary,Global-e,Petah-Tikva,2026-04-19,https://www.global-e.com/jobs/indirect-tax-analyst--temporary,Finance,Hybrid
@@ -431,7 +431,7 @@ Data Engineer,Lusha,Tel Aviv-Yafo,2026-04-12,https://www.lusha.com/careers/co/te
 Data Infra Tech Lead,Lusha,Tel Aviv-Yafo,2026-04-14,https://www.lusha.com/careers/co/tel-aviv/9E.86E/data-infra-tech-lead/,R&D,Hybrid
 Lead Enterprise Account Manager (Player-Coach),Lusha,Tel Aviv-Yafo,2026-04-20,https://www.lusha.com/careers/co/tel-aviv/EC.564/account-manager/?t=1770883366074,Sales,Hybrid
 Mid-Market & Enterprise Account Executive,Lusha,Tel Aviv-Yafo,2026-04-20,https://www.lusha.com/careers/co/tel-aviv/0C.561/mid-market-enterprise-account-executive/,Sales,Hybrid
-"R&D Director, Core Solutions",Lusha,Tel Aviv-Yafo,2026-04-20,https://www.lusha.com/careers/co/tel-aviv/42.96A/rd-director-core-solutions/?_gl=1*1sa1f87*_up*MQ..*_ga*MTI1Mzc2MjUxMi4xNzc2NjkxMTQy*_ga_7C6N0WZ5Q3*czE3NzY2OTExNDEkbzEkZzEkdDE3NzY2OTEzMDYkajU3JGwwJGgw,R&D,Hybrid
+"R&D Director, Core Solutions",Lusha,Tel Aviv-Yafo,2026-04-20,https://www.lusha.com/careers/co/tel-aviv/42.96A/rd-director-core-solutions/,R&D,Hybrid
 Senior BI Data Engineer,Lusha,Tel Aviv-Yafo,2026-04-19,https://www.lusha.com/careers/co/tel-aviv/6F.26C/senior-bi-data-engineer/,R&D,Hybrid
 Senior Business Analyst,Lusha,Tel Aviv-Yafo,2026-04-20,https://www.lusha.com/careers/co/tel-aviv/6D.86A/senior-business-analyst/?_gl=1*ute0ue*_up*MQ..*_ga*MTI1Mzc2MjUxMi4xNzc2NjkxMTQy*_ga_7C6N0WZ5Q3*czE3NzY2OTExNDEkbzEkZzEkdDE3NzY2OTEyMTIkajYwJGwwJGgw&__cf_chl_tk=t08NaFD_AswgwIi40J1mzGTf9RaAQsnyUufOzn3mHC8-1776691278-1.0.1.1-KaM54AokmwNKlUUBb.aNlzE983vilJICTS1A9Dh9Vvc,HQ,Hybrid
 Senior Data Analyst,Lusha,Tel Aviv-Yafo,2026-04-18,https://www.lusha.com/careers/co/tel-aviv/FE.86F/senior-data-analyst/,R&D,Hybrid
@@ -586,13 +586,13 @@ Strategic Customer Success Manager,Silverfort,United States,2026-04-17,https://w
 Talent Acquisition Partner - EMEA & APJ,Silverfort,Tel Aviv-Yafo,2026-04-12,https://www.comeet.com/jobs/silverfort/54.007/talent-acquisition-partner---emea--apj/39.768,HR,On-site
 Test Reliability Engineer,Silverfort,Tel Aviv-Yafo,2026-04-20,https://www.comeet.com/jobs/silverfort/54.007/test-reliability-engineer/C2.666,R&D,Hybrid
 Algorithm Developer GenAI,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/algorithm-developer-genai/,Engineering,Hybrid
-Backend Engineer,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/backend-engineer/,Engineering,Hybrid
+Backend Engineer,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/backend-engineer/?t=1776603862694,Engineering,Hybrid
 Backend Tech Lead,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/backend-tech-lead/,Engineering,Hybrid
 Business Development Manager,WSC Sports,Madrid,2026-04-20,https://wsc-sports.com/career/business-development-manager/?t=1776594340220&t=1776670808663,Revenue,Remote
 Business Operations Manager,WSC Sports,Ramat-Gan,2026-04-19,https://wsc-sports.com/career/business-operations-manager/,Revenue,Hybrid
 Cloud FinOps Engineer,WSC Sports,Ramat-Gan,2026-04-17,https://wsc-sports.com/career/cloud-finops-engineer/,Engineering,Hybrid
 Data Engineer,WSC Sports,Ramat-Gan,2026-04-15,https://wsc-sports.com/career/data-engineer/,Engineering,Hybrid
-Director of Global Marketing,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/director-of-global-marketing/?t=1775985290555,Marketing,Hybrid
+Director of Global Marketing,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/director-of-global-marketing/,Marketing,Hybrid
 Director of Product,WSC Sports,Ramat-Gan,2026-04-17,https://wsc-sports.com/career/director-of-product/,Product,Hybrid
 FP&A Analyst,WSC Sports,Ramat-Gan,2026-04-17,https://wsc-sports.com/career/fpa-analyst/,Finance,Hybrid
 Generative AI Evangelist,WSC Sports,Ramat-Gan,2026-04-20,https://wsc-sports.com/career/generative-ai-evangelist/,Engineering,Hybrid
@@ -637,7 +637,7 @@ Senior Product Manager- Cybersecurity,IONIX,Tel Aviv-Yafo,2026-04-10,https://www
 Senior Sales Engineer,IONIX,Remote,2026-04-10,https://www.ionix.io/careers/co/germany-remote/70.94F/senior-sales-engineer/,Sales,Remote
 Senior Technical Customer Success Manager,IONIX,Remote,2026-04-14,https://www.ionix.io/careers/co/east-or-tola-remote/70.161/senior-technical-customer-success-manager/,Sales,Remote
 Technical Support Engineer,IONIX,Remote,2026-04-20,https://www.ionix.io/careers/co/us-est-or-tola-remote/80.162/technical-support-engineer/?t=1774976052934,Sales,Remote
-Data Scientist,Rise,Tel Aviv-Jaffa,2026-04-19,https://cloudfront.risecodes.com/?pagename=careers-rise&comeet_cat=tel-aviv-israel&comeet_pos=36.C44&comeet_all=all&rd,Data,On-site
+Data Scientist,Rise,Tel Aviv-Jaffa,2026-04-20,https://cloudfront.risecodes.com/careers-rise/co/tel-aviv-israel/36.C44/data-scientist/all/,Data,On-site
 Director of Data Engineering,Rise,Tel Aviv-Jaffa,2026-04-08,https://cloudfront.risecodes.com/careers-rise/co/tel-aviv-israel/06.860/director-of-data-engineering/all/,R&D,Hybrid
 Legal Counsel,Rise,Tel Aviv-Jaffa,2026-04-20,https://cloudfront.risecodes.com/careers-rise/co/tel-aviv-israel/06.765/legal-counsel/all/,Legal,Hybrid
 Senior Bookkeeper & Payroll,8fig,Tel Aviv-Yafo,2026-04-16,https://www.8fig.co/jobs/comeet/tel-aviv-israel/BB.762/senior-bookkeeper-payroll/all/,Finance,Hybrid
@@ -704,43 +704,43 @@ Treasury Associate Analyst,SodaStream,Kefar Sava,2026-01-28,https://www.comeet.c
 נציג/ת מכירות,SodaStream,Kefar Sava,2025-05-22,https://www.comeet.com/jobs/sodastream/40.008/None/5D.040,Sales,On-site
 נציג/ת שירות לקוחות,SodaStream,Kefar Sava,2025-05-15,https://www.comeet.com/jobs/sodastream/40.008/--/4D.04F,Customer Service,On-site
 "ר""צ איכות- החלפה לחל""ד",SodaStream,Rahat,2026-03-15,https://www.comeet.com/jobs/sodastream/40.008/----/E5.569,Assembly,On-site
-AI Algorithms Team Lead,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/8B.E50/ai-algorithms-team-lead/all/,A.I.,Hybrid
+AI Algorithms Team Lead,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/8B.E50/ai-algorithms-team-lead/all/#positions,A.I.,Hybrid
 AI Algorithms Tech Lead,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/31.94A/ai-algorithms-tech-lead/all/,A.I.,Hybrid
 AI Software Team Leader - ML Platform,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/56.460/ai-software-team-leader-ml-platform/all/,A.I.,Hybrid
 "AI Software Tech Lead, ML Platform",Aidoc,Tel Aviv-Yafo,2026-04-19,https://www.aidoc.com/about/careers/co/tel-aviv/7A.E5D/ai-software-tech-lead-ml-platform/all/,A.I.,Hybrid
-Backend Tech Lead,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/E1.F51/backend-tech-lead/all/#positions,Engineering,Hybrid
-Core Backend Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/71.36C/core-backend-engineer/all/#positions,Engineering,On-site
+Backend Tech Lead,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/E1.F51/backend-tech-lead/all/,Engineering,Hybrid
+Core Backend Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/71.36C/core-backend-engineer/all/,Engineering,On-site
 Corporate Controller,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/BB.466/corporate-controller/all/,Finance,Hybrid
-Customer Success Manager (Central),Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/A5.465/customer-success-manager-central/all/#positions,Customer Success,Remote
-Customer Success Manager (Eastern US),Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/39.061/customer-success-manager-eastern-us/all/,Customer Success,Remote
+Customer Success Manager (Central),Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/A5.465/customer-success-manager-central/all/,Customer Success,Remote
+Customer Success Manager (Eastern US),Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/39.061/customer-success-manager-eastern-us/all/?#positions,Customer Success,Remote
 Customer Success Manager - DACH region,Aidoc,Berlin,2026-04-20,https://www.aidoc.com/about/careers/co/eu/C0.F5F/customer-success-manager-dach-region/all/#positions?ref=trueup,Customer Success,Remote
 "Customer Success Manager, West",Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/EB.A54/customer-success-manager-west/all/#positions,Customer Success,Remote
-Implementation Manager,Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/F9.667/implementation-manager/all/#positions,Delivery,Remote
+Implementation Manager,Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/F9.667/implementation-manager/all/,Delivery,Remote
 Marketing Design Lead,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/C4.760/marketing-design-lead/all/,Marketing,Hybrid
-Post Market Surveillance & QMS Specialist,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/55.760/post-market-surveillance-qms-specialist/all/#positions,Regulatory Affairs and Legal,On-site
+Post Market Surveillance & QMS Specialist,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/55.760/post-market-surveillance-qms-specialist/all/,Regulatory Affairs and Legal,On-site
 Principal Software Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/DC.651/principal-software-engineer/all/,Engineering,Hybrid
 "Principal Software Engineer, ML Platform",Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/8A.E52/principal-software-engineer-ml-platform/all/,A.I.,Hybrid
-Product Analyst Team Lead,Aidoc,Tel Aviv,2026-04-20,https://www.aidoc.com/about/careers/co/israel/8E.661/product-analyst-team-lead/all/#positions,CTO - Analytics,Hybrid
-Production Quality Specialist,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/19.66B/production-quality-specialist/all/#positions,Regulatory Affairs and Legal,Hybrid
-Professional Services Engineer,Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/73.568/professional-services-engineer/all/#positions,Delivery,Remote
-Regional Account Director (Exploratory),Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/92.25A/regional-account-director-exploratory/all/,Business Development & Sales,Remote
-Senior AI Solution Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/0F.E55/senior-ai-solution-engineer/all/#positions,Delivery,Hybrid
+Product Analyst Team Lead,Aidoc,Tel Aviv,2026-04-20,https://www.aidoc.com/about/careers/co/israel/8E.661/product-analyst-team-lead/all/,CTO - Analytics,Hybrid
+Production Quality Specialist,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/19.66B/production-quality-specialist/all/,Regulatory Affairs and Legal,Hybrid
+Professional Services Engineer,Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/73.568/professional-services-engineer/all/,Delivery,Remote
+Regional Account Director (Exploratory),Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/92.25A/regional-account-director-exploratory/all/#positions,Business Development & Sales,Remote
+Senior AI Solution Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/0F.E55/senior-ai-solution-engineer/all/,Delivery,Hybrid
 Senior DevOps Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/C2.260/senior-devops-engineer/all/,DevOps and Cloud Platforms,Hybrid
-Senior Full Stack Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/D8.06B/senior-full-stack-engineer/all/#positions,Delivery,Hybrid
+Senior Full Stack Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/D8.06B/senior-full-stack-engineer/all/,Delivery,Hybrid
 Senior Full Stack Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/24.56A/senior-full-stack-engineer/all/,Engineering,Hybrid
-Senior Platform Product Manager - Infrastructure,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/63.361/senior-platform-product-manager-infrastructure/all/#positions,Product,Hybrid
-Senior Product Analyst,Aidoc,Tel Aviv,2026-04-20,https://www.aidoc.com/about/careers/co/israel/A0.76A/senior-product-analyst/all/#positions,CTO - Analytics,Hybrid
-Senior Software Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/24.565/senior-software-engineer/all/#positions,Engineering,Hybrid
+Senior Platform Product Manager - Infrastructure,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/63.361/senior-platform-product-manager-infrastructure/all/,Product,Hybrid
+Senior Product Analyst,Aidoc,Tel Aviv,2026-04-20,https://www.aidoc.com/about/careers/co/israel/A0.76A/senior-product-analyst/all/,CTO - Analytics,Hybrid
+Senior Software Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/24.565/senior-software-engineer/all/,Engineering,Hybrid
 "Senior Software Engineer, ML Platform",Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/9F.150/senior-software-engineer-ml-platform/all/,A.I.,Hybrid
 "Sr. Director, Growth Marketing",Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/united-states/DF.F55/sr-director-growth-marketing/all/#positions,Marketing,Remote
 Staff Software Engineer,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/4B.461/staff-software-engineer/all/,Engineering,Hybrid
-Strategic Business Data Scientist,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/7E.462/strategic-business-data-scientist/all/#positions,Operations,Hybrid
-Strategic Product Analyst,Aidoc,Tel Aviv,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/1D.545/strategic-product-analyst/all/,CTO - Analytics,Hybrid
-Talent Acquisition Partner,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/83.461/talent-acquisition-partner/all/#positions,People,Hybrid
-"Talent Acquisition Partner, GTM Healthtech",Aidoc,Remote,2026-04-20,https://www.aidoc.com/about/careers/co/remote/0F.260/talent-acquisition-partner-gtm-healthtech/all/#positions,People,Remote
-"Talent Acquisition Partner, GTM Healthtech",Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/remote/0F.260/talent-acquisition-partner-gtm-healthtech/all/#positions,People,Remote
+Strategic Business Data Scientist,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/7E.462/strategic-business-data-scientist/all/,Operations,Hybrid
+Strategic Product Analyst,Aidoc,Tel Aviv,2026-04-20,https://www.aidoc.com/about/careers/co/israel/1D.545/strategic-product-analyst/all/,CTO - Analytics,Hybrid
+Talent Acquisition Partner,Aidoc,Tel Aviv-Yafo,2026-04-20,https://www.aidoc.com/about/careers/co/tel-aviv/83.461/talent-acquisition-partner/all/,People,Hybrid
+"Talent Acquisition Partner, GTM Healthtech",Aidoc,Remote,2026-04-20,https://www.aidoc.com/about/careers/co/remote/0F.260/talent-acquisition-partner-gtm-healthtech/all/,People,Remote
+"Talent Acquisition Partner, GTM Healthtech",Aidoc,New York,2026-04-20,https://www.aidoc.com/about/careers/co/remote/0F.260/talent-acquisition-partner-gtm-healthtech/all/,People,Remote
 Backend Engineer,Imagen,Giv'atayim,2026-04-20,https://imagen-ai.com/careers/co/careers/A0.661/backend-engineer/all/,R&D,Hybrid
-Backend Team Lead,Imagen,Giv'atayim,2026-04-20,https://imagen-ai.com/careers/co/careers/57.F58/backend-team-lead/all/,R&D,Hybrid
+Backend Team Lead,Imagen,Giv'atayim,2026-04-20,https://imagen-ai.com/careers/co/careers/57.F58/backend-team-lead/all/?t=1776666704384&fbclid=Iwb21leARTFIVjbGNrBFMUgGV4dG4DYWVtAjExAHNydGMGYXBwX2lkDDM1MDY4NTUzMTcyOAABHqivC9wMgPin8Rru-D_KH3BvoHpnsS4G6kPcJ02loAgEbdVdzDnW2_PMk3xS_aem_c2jWKbGCBhCWYqG310HY-w,R&D,Hybrid
 Deep Learning Algorithm Engineer,Imagen,Giv'atayim,2026-04-20,https://imagen-ai.com/careers/co/careers/C9.062/deep-learning-algorithm-engineer/all/,R&D,Hybrid
 Deep Learning Algorithm Intern,Imagen,Giv'atayim,2026-04-20,https://imagen-ai.com/careers/co/careers/5C.769/deep-learning-algorithm-intern/all/?tag1=Entail&tag2=Entail&tg=SEO&v=1j,R&D,Hybrid
 Head of Engineering,Imagen,Giv'atayim,2026-04-20,https://imagen-ai.com/careers/co/careers/FC.06C/head-of-engineering/all/?tag1=Entail&tag2=Entail&v=0i,R&D,Hybrid
@@ -795,7 +795,7 @@ Product Manager,Coralogix,Ramat Gan,2026-04-13,https://coralogix.com/careers/co/
 Senior Backend Engineer - OpenTelemetry,Coralogix,Berlin,2026-04-20,https://coralogix.com/careers/co/berlin-germany/EE.842/senior-backend-engineer-opentelemetry/all/?t=1776332972276,Engineering,Remote
 Senior Full Stack Engineer (Integrations Onboarding),Coralogix,Berlin,2026-04-19,https://coralogix.com/careers/co/berlin-germany/B9.668/senior-full-stack-engineer-integrations-onboarding/all/,Engineering,Remote
 Senior Infrastructure Engineer,Coralogix,Ramat Gan,2026-04-15,https://coralogix.com/careers/co/ramat-gan-israel/62.264/senior-infrastructure-engineer/all/,Engineering,Hybrid
-Site Reliability Engineer (FedRAMP / Security),Coralogix,New York,2026-04-20,https://coralogix.com/careers/co/boston-ma/33.C5F/site-reliability-engineer/all/,Engineering,Remote
+Site Reliability Engineer (FedRAMP / Security),Coralogix,New York,2026-04-20,https://coralogix.com/careers/co/new-york-us/33.C5F/site-reliability-engineer-fedramp-security/all/,Engineering,Remote
 Software Engineer (Coralogix AI),Coralogix,Ramat Gan,2026-04-20,https://coralogix.com/careers/co/ramat-gan-israel/FB.254/software-engineer-coralogix-ai/all/,Engineering,Hybrid
 Software Engineer - Data Ingestion,Coralogix,Ramat Gan,2026-04-18,https://coralogix.com/careers/co/ramat-gan-israel/C2.66C/software-engineer-data-ingestion/all/,Engineering,Hybrid
 Solution Engineer,Coralogix,New York,2026-04-20,https://coralogix.com/careers/co/new-york-us/45.B52/solution-engineer/all/,Sales,Remote
@@ -803,7 +803,7 @@ SRE Networking Team Lead,Coralogix,Berlin,2026-04-19,https://coralogix.com/caree
 SRE Team Lead (FedRAMP / Security),Coralogix,New York,2026-04-18,https://coralogix.com/careers/co/new-york-us/A5.868/sre-team-lead-fedramp-security/all/,Engineering,Remote
 "Team Lead, Technical Account Manager",Coralogix,Ramat Gan,2026-04-14,https://coralogix.com/careers/co/ramat-gan-israel/4B.75E/team-lead-technical-account-manager/all/,Customer Success,Hybrid
 Technical Account Manager,Coralogix,Ramat Gan,2026-04-18,https://coralogix.com/careers/co/ramat-gan-israel/34.C3C/technical-account-manager/all/,Customer Success,Hybrid
-VP Legal,Coralogix,Ramat Gan,2026-04-19,https://coralogix.com/careers/co/ramat-gan-israel/CF.86C/vp-legal/all/,Legal,Hybrid
+VP Legal,Coralogix,Ramat Gan,2026-04-20,https://coralogix.com/careers/co/ramat-gan-israel/CF.86C/vp-legal/all/?_gl=1*lwsaro*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjw-pHPBhCdARIsAHXYWP8yI9YCyyfUgRJ0k6gPtZ8rZgxpj5cJ5hN7dzdkArblqu5cLySxCfMaAhNkEALw_wcB&gbraid=0AAAAAobtWqXqELoK7CjvI9MoNkqUeH7Pu,Legal,Hybrid
 DevEx Team Leader,Skai,Tel Aviv-Yafo,2026-04-13,https://skai.io/company/careers/tel-aviv-israel/devex-team-leader/,Dev Ops/Production,Hybrid
 Senior Data Scientist,Skai,Tel Aviv-Yafo,2026-04-20,https://skai.io/company/careers/tel-aviv-israel/senior-data-scientist/,Data Science,Hybrid
 Senior DevOps Engineer,Skai,Tel Aviv-Yafo,2026-04-13,https://skai.io/company/careers/tel-aviv-israel/senior-devops-engineer/,Dev Ops/Production,Hybrid
@@ -840,7 +840,6 @@ Corporate Counsel,NextSilicon,Giv'atayim,2026-04-07,https://www.nextsilicon.com/
 Emulation Engineer,NextSilicon,Giv'atayim,2026-03-19,https://www.nextsilicon.com/careers/emulation-engineer,Hardware,On-site
 Hardware Classroom Program,NextSilicon,Giv'atayim,2026-04-16,https://www.nextsilicon.com/careers/hardware-classroom-program,Hardware,On-site
 Hardware Technical Program Manager,NextSilicon,Giv'atayim,2026-03-31,https://www.nextsilicon.com/careers/hardware-technical-program-manager,Hardware,Hybrid
-HPC Technical Post Sales Engineer,NextSilicon,Minneapolis,2026-01-11,https://www.nextsilicon.com/careers/hpc-technical-post-sales-engineer,Business,Remote
 Linux Internals (Memory) Software Engineer,NextSilicon,Giv'atayim,2026-04-13,https://www.nextsilicon.com/careers/linux-internals-memory-software-engineer,Software,Hybrid
 Network Software Engineer,NextSilicon,Giv'atayim,2026-04-14,https://www.nextsilicon.com/careers/network-software-engineer?t=1776167451324,Software,Hybrid
 PCIe Silicon Validation Engineer,NextSilicon,Giv'atayim,2026-04-13,https://www.nextsilicon.com/careers/pcie-silicon-validation-engineer,Hardware,On-site
@@ -990,7 +989,7 @@ Marketing Creative Producer,Moon Active,Warszawa,2026-04-15,https://www.moonacti
 Marketing Creative Producer,Moon Active,Remote,2026-04-02,https://www.moonactive.com/moonactive-position/?uid=14.462,Marketing,Remote
 Mobile User Acquisition Manager,Moon Active,Tel Aviv-Yafo,2026-04-12,https://www.moonactive.com/moonactive-position/?uid=75.C11,Marketing,On-site
 Product Economy Manager,Moon Active,Tel Aviv-Yafo,2026-04-19,https://www.moonactive.com/moonactive-position/?uid=6D.F24,Product,On-site
-Product Game Designer,Moon Active,Tel Aviv-Yafo,2026-04-20,https://www.moonactive.com/moonactive-position/?uid=78.813,Product,On-site
+Product Game Designer,Moon Active,Tel Aviv-Yafo,2026-04-20,https://www.moonactive.com/moonactive-position/?uid=78.813&t=1776692849547,Product,On-site
 Product Manager,Moon Active,Tel Aviv-Yafo,2026-04-19,https://www.moonactive.com/moonactive-position/?uid=A1.503,Product,On-site
 Product Manager,Moon Active,Tel Aviv-Yafo,2026-04-20,https://www.moonactive.com/moonactive-position/?uid=B3.96E,Product,On-site
 Product Monetization Manager,Moon Active,Tel Aviv-Yafo,2026-04-16,https://www.moonactive.com/moonactive-position/?uid=22.90A,Monetization ,On-site
@@ -1018,7 +1017,7 @@ NOC Engineer,Personetics,Manila,2026-04-20,https://personetics.com/us/careers-4/
 QA Engineer - Front-End,Personetics,Giv'atayim,2026-04-15,https://personetics.com/us/careers-4/co/tel-aviv-israel/30.26A/qa-engineer-front-end/all/,R&D,Hybrid
 Software Architect,Personetics,Giv'atayim,2026-02-24,https://personetics.com/us/careers-4/co/tel-aviv-israel/9D.A5C/software-architect/all/,R&D,Hybrid
 UX Designer,Personetics,Giv'atayim,2026-04-14,https://personetics.com/us/careers-4/co/tel-aviv-israel/0C.461/ux-designer/all/,Product,Hybrid
-Controller,Aqua Security,Ramat Gan,2026-04-20,https://www.aquasec.com/about-us/careers/co/ramat-gan-israel/DD.86F/controller/all/,Finance & Operations,Hybrid
+Controller,Aqua Security,Ramat Gan,2026-04-20,https://www.aquasec.com/about-us/careers/co/ramat-gan-israel/DD.86F/junior-controller/all/,Finance & Operations,Hybrid
 Engineering Platform Manager,Aqua Security,Ramat Gan,2026-04-13,https://www.aquasec.com/about-us/careers/co/ramat-gan-israel/CD.86E/engineering-platform-manager/all/,Engineering,Hybrid
 Lead Software Architect (Platform),Aqua Security,Ramat Gan,2026-04-20,https://www.aquasec.com/about-us/careers/co/ramat-gan-israel/50.768/lead-software-architect-platform/all/,Engineering,Hybrid
 Product Security Lead,Aqua Security,Ramat Gan,2026-04-14,https://www.aquasec.com/about-us/careers/co/ramat-gan-israel/F8.868/product-security-lead/all/,CTO Office,On-site
@@ -1137,7 +1136,7 @@ Logistics Manager,Innoviz Technologies,Rosh Ha'Ayin,2026-04-20,https://innoviz.t
 Process Engineer,Innoviz Technologies,Rosh Ha'Ayin,2026-04-19,https://innoviz.tech/careers-3/co/israel/F8.76C/process-engineer/all,Operations,On-site
 Product Marketing Manager – SMART Solutions (Non-Automotive),Innoviz Technologies,Rosh Ha'Ayin,2026-04-19,https://innoviz.tech/careers-3/co/israel/46.761/product-marketing-manager-smart-solutions-non-automotive/all,Business,On-site
 System Engineer,Innoviz Technologies,Rosh Ha'Ayin,2026-04-20,https://innoviz.tech/careers-3/co/israel/27.66F/system-engineer/all,R&D,On-site
-System Production Team Leader,Innoviz Technologies,Rosh Ha'Ayin,2026-04-20,https://innoviz.tech/careers-3/co/israel/9F.569/system-production-team-leader,Operations,On-site
+System Production Team Leader,Innoviz Technologies,Rosh Ha'Ayin,2026-04-20,https://innoviz.tech/careers-3/co/israel/9F.569/system-production-team-leader/all,Operations,On-site
 System Technician- Lidar Platform Components Team,Innoviz Technologies,Rosh Ha'Ayin,2026-04-20,https://innoviz.tech/careers-3/co/rd/32.964/system-technician-lidar-platform-components-team,R&D,On-site
 Technical Project Manager – HW Stream,Innoviz Technologies,Rosh Ha'Ayin,2026-04-20,https://innoviz.tech/careers-3/co/israel/9D.466/technical-project-manager-hw-stream/all,R&D,On-site
 Aircrafts electrical engineer,BIRD Aerosystems,Herzliya,2026-03-29,https://www.comeet.com/jobs/birdaero/97.006/aircrafts-electrical-engineer/51.05B,Solutions,On-site
@@ -1192,7 +1191,7 @@ Sales Associate,Waterfall Security,Rosh Haayin,2026-04-19,https://waterfall-secu
 Sales Director (Southwest),Waterfall Security,US,2026-04-19,https://waterfall-security.com/about-waterfall/careers/co/us/5C.56F/sales-director-southwest/all/,Sales US,Remote
 Customer Success Manager (CSM),Upstream Security,Boston,2026-04-20,https://upstream.auto/career/customer-success-manager-csm/87.664/,Customer Success Management,Remote
 Marketing Specialist – Part-time,Upstream Security,Herzliya,2026-03-30,https://upstream.auto/career/marketing-specialist--part-time/A5.869/,Marketing,On-site
-Sales Director,Upstream Security,Boston,2026-04-15,https://upstream.auto/career/sales-director/1B.56B/,Sales,Remote
+Sales Director,Upstream Security,Boston,2026-04-20,https://upstream.auto/career/sales-director/1B.56B/?_gl=1*1td5i44*_up*MQ..*_ga*OTIwODUxMDc4LjE3NzY2OTQ2NDM.*_ga_FBXN2GNR5E*czE3NzY2OTQ2NDIkbzEkZzAkdDE3NzY2OTQ2NDIkajYwJGwwJGgw,Sales,Remote
 Sales Director,Upstream Security,Amsterdam,2026-04-14,https://upstream.auto/career/sales-director/60.86A/,Sales,Remote
 Business Applications Manager,Fullpath,Tel Aviv-Yafo,2026-04-20,https://www.fullpath.com/careers/co/israel-tel-aviv/C7.66A/business-applications-manager/all/?#positions,Operations,Hybrid
 Business Applications Manager,Fullpath,Jerusalem,2026-04-20,https://www.fullpath.com/careers/co/israel-tel-aviv/C7.66A/business-applications-manager/all/?#positions,Operations,Hybrid
