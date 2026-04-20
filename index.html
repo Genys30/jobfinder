@@ -158,8 +158,8 @@
 
 
   /* ─── Filters ─── */
-  .filters{display:grid;grid-template-columns:1.5fr repeat(8,1fr) auto;gap:0;border-bottom:1px solid var(--rule);background:rgba(245,241,232,.6);}
-  .field{display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-right:1px solid var(--rule);}
+  .filters{display:grid;grid-template-columns:1.4fr repeat(8,.9fr) auto;gap:0;border-bottom:1px solid var(--rule);background:rgba(245,241,232,.6);}
+  .field{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-right:1px solid var(--rule);}
   .field label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);}
   .field input,.field select{font-family:'Carlito','Calibri',sans-serif;font-size:13px;color:var(--ink);background:transparent;border:none;outline:none;padding:0;cursor:pointer;}
   .field select{-webkit-appearance:none;appearance:none;}
@@ -236,41 +236,41 @@
 <!-- Filters -->
 <section class="filters">
   <div class="field">
-    <label for="q">Position · free text</label>
-    <input id="q" type="text" placeholder="e.g. backend, product, devops…" autocomplete="off" />
+    <label for="q">Position</label>
+    <input id="q" type="text" placeholder="title, skill…" autocomplete="off" />
   </div>
   <div class="field">
     <label for="city">City</label>
-    <select id="city"><option value="">All cities</option></select>
+    <select id="city"><option value="">City</option></select>
   </div>
   <div class="field">
     <label for="company">Company</label>
-    <select id="company"><option value="">All companies</option></select>
+    <select id="company"><option value="">Company</option></select>
   </div>
   <div class="field">
     <label for="segment">Role type</label>
     <select id="segment">
-      <option value="">All roles</option>
-      <option value="rd">R&amp;D / Engineering</option>
+      <option value="">Role</option>
+      <option value="rd">R&amp;D / Eng</option>
       <option value="product">Product</option>
       <option value="data">Data &amp; Analytics</option>
       <option value="design">Design</option>
       <option value="sales">Sales</option>
       <option value="marketing">Marketing</option>
       <option value="operations">Operations</option>
-      <option value="support">Customer Success</option>
+      <option value="support">Cust. Success</option>
       <option value="management">Management</option>
-      <option value="intern">Student / Intern</option>
+      <option value="intern">Intern</option>
     </select>
   </div>
   <div class="field">
     <label for="level">Level</label>
     <select id="level">
-      <option value="">All levels</option>
-      <option value="entry">Entry / Junior</option>
+      <option value="">Level</option>
+      <option value="entry">Junior</option>
       <option value="mid">Mid</option>
       <option value="senior">Senior</option>
-      <option value="advanced">Staff / Principal</option>
+      <option value="advanced">Staff / Lead</option>
       <option value="director">Director+</option>
     </select>
   </div>
@@ -288,7 +288,7 @@
   <div class="field">
     <label for="sector">Sector</label>
     <select id="sector">
-      <option value="">All sectors</option>
+      <option value="">Sector</option>
       <option value="cyber">Cyber</option>
       <option value="fintech">Fintech</option>
       <option value="health">Health</option>
@@ -297,7 +297,7 @@
       <option value="defence">Defence</option>
       <option value="automotive">Automotive</option>
       <option value="gaming">Gaming</option>
-      <option value="public">Public Sector</option>
+      <option value="public">Public</option>
       <option value="industrial">Industrial</option>
       <option value="retail">Retail</option>
       <option value="agritech">Agritech</option>
@@ -307,7 +307,7 @@
   <div class="field">
     <label for="source">Source</label>
     <select id="source">
-      <option value="">All sources</option>
+      <option value="">Source</option>
       <option value="linkedin">LinkedIn</option>
       <option value="comeet">Comeet</option>
       <option value="greenhouse">Greenhouse</option>
@@ -319,7 +319,7 @@
   <div class="field">
     <label for="worktype">Work type</label>
     <select id="worktype">
-      <option value="">All types</option>
+      <option value="">Type</option>
       <option value="remote">Remote</option>
       <option value="hybrid">Hybrid</option>
       <option value="onsite">On-site</option>
@@ -1020,9 +1020,12 @@ function applyFilters(){
   });
   // Sort by date descending — most recent first
   FILTERED.sort((a,b)=>{
-    const da = a.updated||a.date||'';
-    const db = b.updated||b.date||'';
-    return db.localeCompare(da);
+    const da = a.updated||'';
+    const db = b.updated||'';
+    if(!da && !db) return 0;
+    if(!da) return 1;   // empty dates go to bottom
+    if(!db) return -1;
+    return db.localeCompare(da);  // newest first
   });
   visible = PAGE;
   render();
