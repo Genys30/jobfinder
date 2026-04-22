@@ -426,7 +426,7 @@
 
 </div>
 
-<div id="appsPanel">
+<div id="appsPanel" style="display:none">
   <div class="apps-toolbar">
     <span class="apps-title">&#128236; My Applications</span>
     <div style="display:flex;gap:8px;">
@@ -1116,18 +1116,18 @@ function render(){
     const lvBadge = r.source==='lv'?'<span class="lv-badge">LV</span>':'';
     const abBadge = r.source==='ab'?'<span class="ab-badge">AB</span>':'';
     const wkBadge = r.source==='wk'?'<span class="wk-badge">WK</span>':'';
-
     const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row'})[r.source]||'';
+    const jobId   = r.url||(r.title+r.company);
+    const tracked = isTracked(jobId);
     return '<a class="job'+rowCls+'" href="'+esc(href)+'" '+target+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
       +'<span class="title">'+esc(r.title)+levelBadge+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="category">'+esc(r.category||'—')+'</span>'
       +'<span class="city">'+esc(r.city||'—')+'</span>'
-            +'<span class="arrow">➝</span>'
-      +'<button class="track-btn'+(isTracked(r.url||r.title+r.company)?' sent':'')
-      +'" data-id="'+esc(r.url||r.title+r.company)
-      +'" onclick="event.preventDefault();event.stopPropagation();toggleTrack(this.dataset.id)">&#128236;</button></a>';
+      +'<span class="arrow">➝</span>'
+      +'<button class="track-btn'+(tracked?' sent':'')+'" data-id="'+esc(jobId)+'" onclick="event.preventDefault();event.stopPropagation();toggleTrack(this.dataset.id)" title="Mark as sent">&#128236;</button>'
+      +'</a>';
   }).join('');
   $moreWrap.style.display = FILTERED.length>visible?'block':'none';
 }
