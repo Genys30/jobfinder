@@ -1428,7 +1428,7 @@ function renderApps(){
   const el = document.getElementById('appsList');
   if(!el) return;
   if(!apps.length){
-    el.innerHTML='<div class="apps-empty">No applications tracked yet.<br>Click ⧉ on any job row to mark it as sent.</div>';
+    el.innerHTML='<div class="apps-empty">No applications tracked yet.<br>Click \u29c9 on any job row to mark it as sent.</div>';
     return;
   }
   const COLS = [
@@ -1437,51 +1437,66 @@ function renderApps(){
     {id:'offer',     label:'Offer',     cls:'col-offer'},
     {id:'rejected',  label:'Rejected',  cls:'col-rejected'},
   ];
-  const NEXT = {applied:'interview', interview:'offer', offer:null, rejected:null};
-  const PREV = {applied:null, interview:'applied', offer:'interview', rejected:null};
   const srcCls = {linkedin:'li',comeet:'comeet',greenhouse:'greenhouse',lv:'lv'};
 
-  function cardHTML(a){
-    const next = NEXT[a.status||'applied'];
-    const prev = PREV[a.status||'applied'];
+  function cardHTML(a, idx){
+    const status = a.status||'applied';
     const sc = srcCls[a.source]||'';
-    const aid = a.id.replace(/'/g,"\'");
-    return '<div class="kanban-card">'
+    const colIdx = COLS.findIndex(c=>c.id===status);
+    const prevCol = colIdx > 0 ? COLS[colIdx-1] : null;
+    const nextCol = colIdx < COLS.length-2 ? COLS[colIdx+1] : null;
+    return '<div class="kanban-card" data-idx="'+idx+'">'
       +'<div class="kanban-card-title"><a href="'+esc(a.url||'#')+'" target="_blank" rel="noopener">'+esc(a.title)+'</a></div>'
-      +'<div class="kanban-card-company">'+esc(a.company)+(a.city?' · '+esc(a.city.split(',')[0]):'')+'</div>'
+      +'<div class="kanban-card-company">'+esc(a.company)+(a.city?' \u00b7 '+esc(a.city.split(',')[0]):'')+'</div>'
       +'<div class="kanban-card-meta">'
-      +'<span class="kanban-card-date">'+esc(a.sentDate)+'</span>'
-      +(sc?'<span class="kanban-src '+sc+'">'+esc(a.source)+'</span>':'')
+        +'<span class="kanban-card-date">'+esc(a.sentDate)+'</span>'
+        +(sc?'<span class="kanban-src '+sc+'">'+esc(a.source)+'</span>':'')
       +'</div>'
       +'<div class="kanban-card-actions">'
-      +(prev?'<button class="kanban-move-btn" onclick="moveCard(''+aid+'',''+prev+'')">← '+COLS.find(c=>c.id===prev).label+'</button>':'')
-      +(next?'<button class="kanban-move-btn" onclick="moveCard(''+aid+'',''+next+'')">→ '+COLS.find(c=>c.id===next).label+'</button>':'')
-      +((a.status||'applied')!=='rejected'?'<button class="kanban-move-btn" onclick="moveCard(''+aid+'','rejected')">Reject</button>':'')
-      +'<button class="kanban-del-btn" onclick="deleteApp(''+aid+'')">×</button>'
+        +(prevCol?'<button class="kanban-move-btn" data-idx="'+idx+'" data-status="'+prevCol.id+'">\u2190 '+prevCol.label+'</button>':'')
+        +(nextCol?'<button class="kanban-move-btn" data-idx="'+idx+'" data-status="'+nextCol.id+'">\u2192 '+nextCol.label+'</button>':'')
+        +(status!=='rejected'?'<button class="kanban-move-btn" data-idx="'+idx+'" data-status="rejected">Reject</button>':'')
+        +'<button class="kanban-del-btn" data-idx="'+idx+'">\u00d7</button>'
       +'</div>'
       +'</div>';
   }
 
   const board = COLS.map(col=>{
-    const cards = apps.filter(a=>(a.status||'applied')===col.id);
+    const cards = apps.map((a,i)=>({a,i})).filter(({a})=>(a.status||'applied')===col.id);
     return '<div class="kanban-col '+col.cls+'">'
       +'<div class="kanban-col-header">'
-      +'<span class="kanban-col-title">'+col.label+'</span>'
-      +'<span class="kanban-col-count">'+cards.length+'</span>'
+        +'<span class="kanban-col-title">'+col.label+'</span>'
+        +'<span class="kanban-col-count">'+cards.length+'</span>'
       +'</div>'
       +(cards.length
-        ? cards.sort((a,b)=>b.sentDate.localeCompare(a.sentDate)).map(cardHTML).join('')
+        ? cards.sort((x,y)=>y.a.sentDate.localeCompare(x.a.sentDate)).map(({a,i})=>cardHTML(a,i)).join('')
         : '<div class="kanban-empty">empty</div>')
       +'</div>';
   }).join('');
-  el.innerHTML = '<div class="kanban-board">'+board+'</div>';
+
+  el.innerHTML = '<div class="kanban-board" id="kanbanBoard">'+board+'</div>';
+
+  // Event delegation - one listener handles all buttons
+  document.getElementById('kanbanBoard').addEventListener('click', function(e){
+    const moveBtn = e.target.closest('.kanban-move-btn');
+    const delBtn  = e.target.closest('.kanban-del-btn');
+    if(moveBtn){
+      const idx = parseInt(moveBtn.dataset.idx);
+      const status = moveBtn.dataset.status;
+      const apps = getApps();
+      if(apps[idx]){ apps[idx].status = status; saveApps(apps); renderApps(); }
+    } else if(delBtn){
+      const idx = parseInt(delBtn.dataset.idx);
+      const apps = getApps();
+      apps.splice(idx, 1);
+      saveApps(apps);
+      renderApps();
+    }
+  });
 }
 
 
-function moveCard(id, status){
-  const apps = getApps();
-  const a = apps.find(x=>x.id===id);
-  if(a){ a.status = status; saveApps(apps); renderApps(); }
+function moveCard(id,status){ const apps=getApps(); const a=apps.find(x=>x.id===id); if(a){a.status=status;saveApps(apps);renderApps();} }
 }
 
 function deleteApp(id){ saveApps(getApps().filter(a=>a.id!==id)); renderApps(); }
