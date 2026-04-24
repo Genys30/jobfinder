@@ -1,0 +1,15 @@
+
+===================================
+ JobFinder — Fetching jobs...
+===================================
+
+Project folder: C:\Users\Anna\Desktop\Projects\jobfinder
+
+Checking Python dependencies...
+  All dependencies OK.
+
+[1/4] Pulling latest from GitHub...
+Saved working directory and index state WIP on main: 604ace0 chore: jobs update 2026-04-21
+Already up to date.
+
+[2/4] Fetching jobs from Comeet, Greenhouse, Lever...
