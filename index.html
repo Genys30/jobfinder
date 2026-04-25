@@ -900,8 +900,7 @@ function normTaasuka(row, fname){
     workType: 'onsite', updated: g('date') || fnDate};
 }
 
-async function loadTaasuka(),
-    loadSponsored(){
+async function loadTaasuka(){
   // Taasuka is a live feed — only load the most recent dated CSV
   const rows=[];
   for(let i=0;i<=6;i++){
