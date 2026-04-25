@@ -864,8 +864,7 @@ async function loadAshby(){
   AB_JOBS=rows;
   if($abStatus) $abStatus.innerHTML=rows.length?`Ashby: <strong>${rows.length} jobs</strong>`:`Ashby: <span style="color:var(--ink-faint)">no file yet — run workflow</span>`;
 }
-async function loadWorkable(),
-    loadTaasuka(){
+async function loadWorkable(){
   const dates=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);dates.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);}
   const rows=[];
   await Promise.all(dates.map(async dt=>{
@@ -1258,7 +1257,10 @@ render();
     loadLinkedIn(),
     loadComeet(),
     loadGreenhouse(),
-    loadLever()
+    loadLever(),
+    loadAshby(),
+    loadWorkable(),
+    loadTaasuka()
   ]).catch(e=>{
     console.error('load error', e);
   });
