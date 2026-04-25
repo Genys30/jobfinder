@@ -19,6 +19,7 @@
   --ab:#7c3aed;--ab-pale:rgba(124,58,237,0.07);
   --wk:#0369a1;--wk-pale:rgba(3,105,161,0.07);
   --ta:#1a7f5a;--ta-pale:rgba(26,127,90,0.07);
+  --sp:#c97f0c;--sp-pale:rgba(201,127,12,0.07);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--ink);font-family:'Carlito','Calibri','Gill Sans MT',sans-serif;
@@ -79,6 +80,8 @@
 
   /* ─── Source badges ─── */
   .li-badge,.cm-badge,.gh-badge,.lv-badge,.ab-badge,.wk-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);}
+  .sp-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--sp);}
+  .sp-row:hover .title{color:var(--sp);}
   .ta-badge{display:inline-block;margin-left:6px;font-family:\'JetBrains Mono\',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--ta);}
   .ta-row:hover .title{color:var(--ta);}
   .li-badge{background:var(--li);}
@@ -87,6 +90,8 @@
   .lv-badge{background:var(--lv);}
   .ab-badge{background:var(--ab);}
   .wk-badge{background:var(--wk);}
+  .sp-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--sp);}
+  .sp-row:hover .title{color:var(--sp);}
   .ta-badge{display:inline-block;margin-left:6px;font-family:\'JetBrains Mono\',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--ta);}
   .ta-row:hover .title{color:var(--ta);}
   .li-row:hover .title{color:var(--li);}
@@ -271,6 +276,8 @@
   <div class="datasrc"><span class="src-dot" style="background:var(--lv)"></span><span id="lvStatusText">Lever: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--ta)"></span><span id="taStatusText">Taasuka: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--sp)"></span><span id="spStatusText">Direct: loading…</span></div>
 </div>
 
 <!-- Filters -->
@@ -337,6 +344,7 @@
     <option value="ab">Ashby</option>
     <option value="wk">Workable</option>
       <option value="ta">Taasuka</option>
+      <option value="direct">Direct</option>
   </select>
   <select id="worktype">
     <option value="">Type</option>
@@ -503,7 +511,8 @@ let GH_JOBS  = [];   // greenhouse
 let LV_JOBS  = [];   // lever
 let AB_JOBS  = [];   // ashby
 let WK_JOBS  = [];
-let TA_JOBS  = [];   // taasuka   // workable
+let TA_JOBS  = [];   // taasuka
+let SP_JOBS  = [];   // sponsored   // workable
 let FILTERED = [];
 let visible  = PAGE;
 let activeSrc = 'all';
@@ -528,6 +537,7 @@ const $count     = document.getElementById('countBar');
 const $abStatus  = document.getElementById('abStatusText');
 const $wkStatus  = document.getElementById('wkStatusText');
 const $taStatus  = document.getElementById('taStatusText');
+const $spStatus  = document.getElementById('spStatusText');
 const $sector    = document.getElementById('sector');
 const $source    = document.getElementById('source');
 const $worktype  = document.getElementById('worktype');
@@ -890,7 +900,8 @@ function normTaasuka(row, fname){
     workType: 'onsite', updated: g('date') || fnDate};
 }
 
-async function loadTaasuka(){
+async function loadTaasuka(),
+    loadSponsored(){
   // Taasuka is a live feed — only load the most recent dated CSV
   const rows=[];
   for(let i=0;i<=6;i++){
@@ -914,6 +925,38 @@ async function loadTaasuka(){
   if($taStatus) $taStatus.innerHTML=TA_JOBS.length
     ? `Taasuka: <strong>${rows.length} jobs</strong>`
     : `Taasuka: <span style="color:var(--ink-faint)">no file yet</span>`;
+}
+
+function normSponsored(row, fname){
+  const g = k => (row[k]==null?'':String(row[k]).trim());
+  return {source:'direct', fnArea:'direct',
+    title:   g('title'),
+    company: g('company'),
+    location:g('location'),
+    date:    g('date'),
+    url:     g('url'),
+    department: '',
+    workType: (g('workplace_type')||'onsite').toLowerCase(),
+    updated: g('date')};
+}
+
+async function loadSponsored(){
+  const rows=[];
+  try{
+    const r=await fetch(LI_RAW+'direct_jobs.csv');
+    if(!r.ok) throw new Error('not found');
+    const text=await r.text();
+    Papa.parse(text,{header:true,skipEmptyLines:true,
+      transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase(),
+      complete:res=>res.data.forEach(row=>{
+        const n=normSponsored(row,'direct_jobs.csv');
+        if(n.title && n.url) rows.push(n);
+      })});
+  }catch(e){}
+  SP_JOBS=rows;
+  if($spStatus) $spStatus.innerHTML=rows.length
+    ? `Direct: <strong>${rows.length} jobs</strong>`
+    : `Sponsored: <span style="color:var(--ink-faint)">none</span>`;
 }
 
 async function loadLever(){
@@ -960,8 +1003,9 @@ function getPool(){
   if(activeSrc==='ab') return AB_JOBS;
   if(activeSrc==='wk') return WK_JOBS;
   if(activeSrc==='ta') return TA_JOBS;
+  if(activeSrc==='direct') return SP_JOBS;
   const seen = new Set();
-  return [...TM_JOBS,...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TA_JOBS].filter(r=>{
+  return [...TM_JOBS,...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TA_JOBS,...SP_JOBS].filter(r=>{
     const k = r.url||(r.company+'|'+r.title+'|'+r.city);
     if(seen.has(k)) return false; seen.add(k); return true;
   });
@@ -1204,12 +1248,13 @@ function render(){
     const abBadge = r.source==='ab'?'<span class="ab-badge">AB</span>':'';
     const wkBadge = r.source==='wk'?'<span class="wk-badge">WK</span>':'';
     const taBadge = r.source==='ta'?'<span class="ta-badge">TA</span>':'';
-    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',ta:' ta-row'})[r.source]||'';
+    const spBadge = r.source==='direct'?'<span class="sp-badge">★</span>':'';
+    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',ta:' ta-row',direct:' sp-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
     return '<a class="job'+rowCls+'" href="'+esc(href)+'" '+target+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+levelBadge+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+taBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+levelBadge+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+taBadge+spBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="category">'+esc(r.category||'—')+'</span>'
       +'<span class="city">'+esc(r.city||'—')+'</span>'
@@ -1261,7 +1306,8 @@ render();
     loadLever(),
     loadAshby(),
     loadWorkable(),
-    loadTaasuka()
+    loadTaasuka(),
+    loadSponsored()
   ]).catch(e=>{
     console.error('load error', e);
   });
@@ -1340,7 +1386,7 @@ async function renderAnalytics(){
   const panel = document.getElementById('analyticsPanel');
   if(!panel || panel.style.display==='none') return;
 
-  const pool = [...TM_JOBS,...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TA_JOBS];
+  const pool = [...TM_JOBS,...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TA_JOBS,...SP_JOBS];
   const seen=new Set();
   const jobs=pool.filter(r=>{ const k=r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
   if(!jobs.length) return;
