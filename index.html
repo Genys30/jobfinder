@@ -1434,8 +1434,6 @@ function makeSearchable(selectEl) {
 
 // ─── BOOT ────────────────────────────────────────────────────────────────────
 render();
-makeSearchable($city);
-makeSearchable($company);
 (async()=>{
   // Load LinkedIn + Comeet in parallel
   await Promise.all([
@@ -1452,6 +1450,8 @@ makeSearchable($company);
   });
   $lastBuild.textContent='live · '+new Date().toISOString().slice(0,10);
   populateDropdowns();
+  makeSearchable($city);
+  makeSearchable($company);
   applyFilters();
 
   // Load techmap in background
