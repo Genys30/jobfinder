@@ -1019,14 +1019,25 @@ function getPool(){
 function populateDropdowns(){
   const pool = getPool();
   const heLocale = (a,b)=>a.localeCompare(b,'he');
+  // Fill datalist (for searchable inputs)
+  const fillDatalist = (dlId, key) => {
+    const dl = document.getElementById(dlId);
+    if(!dl) return;
+    dl.innerHTML = '';
+    [...new Set(pool.map(r=>r[key]).filter(Boolean))].sort(heLocale)
+      .forEach(v=>{ const o=document.createElement('option'); o.value=v; dl.appendChild(o); });
+  };
+  // Fill select (for regular dropdowns)
   const fill = (sel, key) => {
+    if(!sel) return;
     const cur = sel.value;
     while(sel.options.length>1) sel.remove(1);
     [...new Set(pool.map(r=>r[key]).filter(Boolean))].sort(heLocale)
       .forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
     if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
   };
-  fill($city,'city'); fill($company,'company'); 
+  fillDatalist('city-list','city');
+  fillDatalist('company-list','company');
 }
 
 
@@ -1252,8 +1263,8 @@ function applyFilters(){
 
   const pool = getPool();
   FILTERED = pool.filter(r=>{
-    if(city      && r.city!==city)           return false;
-    if(company   && r.company!==company)     return false;
+    if(city      && !(r.city||'').toLowerCase().includes(city.toLowerCase())) return false;
+    if(company   && !(r.company||'').toLowerCase().includes(company.toLowerCase())) return false;
     if(segFilter && classifySegment(r.title)!==segFilter)   return false;
     if(lvlFilter && classifyLevel(r.title)!==lvlFilter)       return false;
     if(secFilter && classifySector(r.company,r.title,r.source)!==secFilter)   return false;
@@ -1340,9 +1351,10 @@ function exportCSV(){
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
 let qTimer;
 $q.addEventListener('input',()=>{clearTimeout(qTimer);qTimer=setTimeout(applyFilters,120);});
-[$city,$company,$date,$level,$segment,$sector,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
+[$date,$level,$segment,$sector,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
+[$city,$company].forEach(el=>{ if(el) el.addEventListener('input',()=>{ clearTimeout(qTimer); qTimer=setTimeout(applyFilters,150); }); });
 $reset.addEventListener('click',()=>{
-  $q.value='';$city.value='';$company.value='';$date.value='';
+  $q.value='';if($city) $city.value=''; if($company) $company.value='';$date.value='';
   if($level)$level.value='';
   if($segment)$segment.value='';
   if($sector)$sector.value='';
