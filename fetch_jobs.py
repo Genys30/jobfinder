@@ -300,23 +300,21 @@ def run_bgu():
             if len(cells) < 3: continue
             texts = [c.get_text(strip=True) for c in cells]
             if any(h in texts for h in ["שם המשרה", "מס' משרה", "Name"]): continue
-            title    = texts[1] if len(texts) > 1 else ""
-            date_str = texts[3] if len(texts) > 3 else (texts[2] if len(texts) > 2 else "")
-            link = row.find("a", href=True)
-            url = ""
-            if link:
-                href = link.get("href","")
-                url = href if href.startswith("http") else "https://bguhr.my.salesforce-sites.com" + href
-            if not title or not title.strip(): continue
-            k = title + url
-            if k in seen: continue
-            seen.add(k)
-            jobs.append({"title": title.strip(),
+            job_id   = texts[0].strip() if texts else ""
+            title    = texts[1].strip() if len(texts) > 1 else ""
+            date_str = texts[3].strip() if len(texts) > 3 else (texts[2].strip() if len(texts) > 2 else "")
+            if not title: continue
+            # Use job_id as dedup key since all URLs are the same
+            if job_id in seen: continue
+            seen.add(job_id or title)
+            # Append job ID to title for identification
+            display_title = f"{title} (מס' {job_id})" if job_id else title
+            jobs.append({"title": display_title,
                 "company": "אוניברסיטת בן-גוריון בנגב",
                 "location": "באר שבע",
                 "date": TODAY,
                 "deadline": parse_date(date_str) if date_str else "",
-                "url": url or URL,
+                "url": URL,
                 "department": "", "workplace_type": "onsite"})
         print(f"  + {len(jobs)}")
         write_csv(jobs, ["title","company","location","date","deadline","url","department","workplace_type"],
