@@ -51,42 +51,22 @@ def parse_jobs(soup: BeautifulSoup) -> list[dict]:
     # Each job card: article or div with a link + h4 title
     # From HTML: img, company name, h4 title, date, location, "לכל הפרטים" link
     cards = (
-        soup.select("article.type-post")
-        or soup.select("article")
-        or soup.select(".job-listing, .job_listing")
+        soup.select("article")
+        or soup.select(".jet-listing-grid__item")
         or soup.select(".elementor-post")
     )
 
-    # Fallback: find all "לכל הפרטים" links and work backwards
-    if not cards:
-        detail_links = soup.select("a[href*='/jobs/']")
-        detail_links = [a for a in detail_links
-                        if a.get_text(strip=True) in ("לכל הפרטים", "לפרטים נוספים", "קרא עוד")
-                        or re.search(r'/jobs/[^/]+/$', a.get("href", ""))]
-        for link in detail_links:
-            href = link.get("href", "")
-            if not href or href.rstrip("/") == BASE + "/jobs":
-                continue
-            # Walk up to find the card container
-            container = link.parent
-            for _ in range(5):
-                if container is None:
-                    break
-                container = container.parent
-
-            if container:
-                cards.append(container)
-
     for card in cards:
-        # Title
-        title_el = (card.select_one("h4") or card.select_one("h3") or
-                    card.select_one("h2") or card.select_one(".job-title"))
+        # JetEngine: title in h4.jet-listing-dynamic-field__content
+        title_el = (card.select_one("h4.jet-listing-dynamic-field__content")
+                    or card.select_one("h4") or card.select_one("h3"))
         title = title_el.get_text(strip=True) if title_el else ""
         if not title:
             continue
 
-        # URL
-        link_el = card.select_one("a[href*='/jobs/']")
+        # URL from elementor button
+        link_el = (card.select_one("a.elementor-button")
+                   or card.select_one("a[href*='/jobs/']"))
         url = ""
         if link_el:
             href = link_el.get("href", "")

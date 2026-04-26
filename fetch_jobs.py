@@ -395,12 +395,15 @@ def run_huji():
 
     def parse(soup):
         jobs = []
-        cards = (soup.select("article") or soup.select(".elementor-post"))
+        # JetEngine listing: each card is an article, title in h4.jet-listing-dynamic-field__content
+        cards = soup.select("article") or soup.select(".jet-listing-grid__item")
         for card in cards:
-            title_el = card.select_one("h4") or card.select_one("h3") or card.select_one("h2")
+            title_el = card.select_one("h4.jet-listing-dynamic-field__content") or \
+                       card.select_one("h4") or card.select_one("h3")
             title = title_el.get_text(strip=True) if title_el else ""
             if not title: continue
-            link_el = card.select_one("a[href*='/jobs/']")
+            # URL from elementor button link
+            link_el = card.select_one("a.elementor-button") or card.select_one("a[href*='/jobs/']")
             url = ""
             if link_el:
                 href = link_el.get("href","")
@@ -410,6 +413,8 @@ def run_huji():
             text = card.get_text(" ", strip=True)
             img = card.select_one("img[alt]")
             company = img.get("alt","").strip() if img else ""
+            # Clean up company name (remove "ירושלים" etc if it leaked in)
+            if company and len(company) > 40: company = ""
             pub_date = ""
             m = _re.search(r'(\d{2}/\d{2}/\d{4})', text)
             if m:
