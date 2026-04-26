@@ -501,6 +501,49 @@ def run_huji():
         f"huji_jobs_{TODAY}.csv")
 
 
+# ══ TECHNION HR (טכניון - מכון טכנולוגי לישראל) ══════════════════════════════
+def run_technion():
+    print("\n-- Technion HR (טכניון) ---------------------------------------------")
+    from bs4 import BeautifulSoup as _BS
+    URL = "https://hr.technion.ac.il/positions/"
+    try:
+        r = requests.get(URL, headers={**HEADERS,
+            "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
+            "Referer": "https://hr.technion.ac.il/"}, timeout=30)
+        r.raise_for_status()
+        soup = _BS(r.text, "html.parser")
+        jobs = []
+        seen = set()
+        for card in soup.select("div.wrapper-job"):
+            title_el = card.select_one("span.col-3")
+            dept_el  = card.select_one("span.col-2")
+            num_el   = card.select_one("span.col-1")
+            link_el  = card.select_one("a.wrap-btn") or card.select_one("div.wrap-btn a")
+            title = title_el.get_text(strip=True) if title_el else ""
+            if not title: continue
+            dept  = dept_el.get_text(strip=True)  if dept_el  else ""
+            jobid = ""
+            url   = URL
+            if link_el:
+                href = link_el.get("href", "")
+                if "jobid=" in href:
+                    jobid = href.split("jobid=")[-1]
+                    url = f"https://hr.technion.ac.il/positions/?jobid={jobid}"
+                elif href.startswith("http"):
+                    url = href
+            key = jobid or title
+            if key in seen: continue
+            seen.add(key)
+            jobs.append({"title": title, "company": "הטכניון - מכון טכנולוגי לישראל",
+                "location": "חיפה", "date": TODAY, "url": url,
+                "department": dept, "workplace_type": "onsite"})
+        print(f"  + {len(jobs)}")
+        write_csv(jobs, ["title","company","location","date","url","department","workplace_type"],
+            f"technion_jobs_{TODAY}.csv")
+    except Exception as e:
+        print(f"  x {e}")
+
+
 # ── History snapshot ─────────────────────────────────────────────────────────
 def update_history():
     import os, csv as _csv
@@ -636,6 +679,7 @@ def main():
     run_weizmann()
     run_bgu()
     run_huji()
+    run_technion()
     print("\nUpdating history...")
     update_history()
     print("\n=== All done ===")

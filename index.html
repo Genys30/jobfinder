@@ -1120,7 +1120,7 @@ function normAcademic(row, fname) {
 
 async function loadAcademic() {
   if ($acStatus) $acStatus.innerHTML = 'Academic: <span style="color:var(--ink-faint)">loading…</span>';
-  const sources = ['weizmann', 'bgu'];
+  const sources = ['weizmann', 'bgu', 'technion'];
   const allRows = (await Promise.all(sources.map(async src => {
     const rows = [];
     for (let i = 0; i < 7; i++) {
