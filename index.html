@@ -1250,14 +1250,14 @@ function populateDropdowns(){
 const SEGMENTS = {
   intern:     /\b(intern|internship|student|trainee|apprentice|co-op|coop|graduate program|סטודנט|מתמחה|מתנדב)\b/i,
   management: /\b(vp|vice president|cto|coo|cpo|ciso|cmo|cfo|ceo|head of|director|general manager|gm\b|chief |ראש אגף|ראש תחום|מנהל.?ת אגף|מנהל.?ת מערך|מנכ"ל|סמנכ"ל|ראש צוות|מנהל.?ת מחלקה|מנהל.?ת המרכז|מנהל.?ת מערך)\b/i,
-  rd:         /\b(engineer|developer|dev\b|devops|sre|architect|backend|front.?end|full.?stack|mobile|ios|android|firmware|embedded|infrastructure|platform|security research|reverse engineer|qa\b|quality assurance|tester|testing|sdet|software|r&d|research and develop|מהנדס|מהנדסת|מפתח|מפתחת|איש.?אשת סיסטם|תומך.?ת מחשוב|תומך.?ת IT|מנהל.?ת מעבדה|מהנדס.?ת מעבדה|ביואינפורמטיק|לבורנט|טכנאי|טכנאית|מומחה.?ית מולטימדיה|אחראי.?ת ניהול זהויות|מנהח"ש|כלכלנ|מיישמ)\b/i,
-  product:    /\b(product manager|product owner|pm\b|product lead|product director|vp product|program manager|project manager|scrum|agile coach|מנהל.?ת פרויקט|מנהל.?ת תוכנית|מנהל.?ת תכנון)\b/i,
-  data:       /\b(data scientist|data engineer|data analyst|analytics engineer|ml engineer|machine learning|deep learning|ai engineer|artificial intelligence|bi engineer|business intelligence|data architect|data platform|nlp|computer vision|llm|model|datawarehouse|data warehouse|מפתח.?ת AI|מפתח.?ת DATAWAREHOUSE|BI)\b/i,
-  design:     /\b(designer|ux|ui\b|user experience|user interface|figma|product design|visual design|graphic|illustrat|אדריכל|מעצב)\b/i,
-  sales:      /\b(account executive|account manager|sales engineer|sales manager|business development|bd\b|sdr\b|bdr\b|pre.?sales|presales|revenue|partnership|channel|alliances|enterprise sales|deal|רכז.?ת קשרי תעשיה|רכז.?ת שיווק|פיתוח עסקי)\b/i,
-  marketing:  /\b(marketing|growth|content|seo|sem|brand|demand generation|campaign|copywriter|social media|pr\b|public relations|communications|field marketing|product marketing|שיווק|קמפיין|תקשורת)\b/i,
-  support:    /\b(customer success|customer support|technical support|implementation|solutions engineer|solution consultant|integration engineer|onboarding|professional services|client success|support engineer|יועץ.?ת חינוכי|ייעוץ)\b/i,
-  operations: /\b(hr\b|human resources|recruiter|talent acquisition|people ops|finance|accounting|legal|counsel|procurement|office manager|operations|ops\b|admin|executive assistant|ea\b|it manager|information technology|supply chain|logistics|biz ops|revenue ops|sales ops|רכז.?ת|ראש לשכה|מנהל.?ת לשכה|משאבי אנוש|גיוס|כספ|חשבות|ביקורת פנים|בטיחות|ספרי|ספרנ|אחזקה|שינוע)\b/i,
+  rd:         /\b(engineer|developer|dev\b|devops|sre|architect|backend|front.?end|full.?stack|mobile|ios|android|firmware|embedded|infrastructure|platform|security research|reverse engineer|qa\b|quality assurance|tester|testing|sdet|software|r&d|research and develop)\b|מהנדס|מפתח|איש.אשת סיסטם|תומך.ת מחשוב|תומך.ת IT|מנהל.ת מעבדה|מהנדס.ת מעבדה|ביואינפורמטיק|לבורנט|טכנאי|מומחה.ית מולטימדיה|אחראי.ת ניהול זהויות|מיישמ/i,
+  product:    /\b(product manager|product owner|pm\b|product lead|product director|vp product|program manager|project manager|scrum|agile coach)\b|מנהל.ת פרויקט|מנהל.ת תוכנית|מנהל.ת תכנון/i,
+  data:       /\b(data scientist|data engineer|data analyst|analytics engineer|ml engineer|machine learning|deep learning|ai engineer|artificial intelligence|bi engineer|business intelligence|data architect|data platform|nlp|computer vision|llm|model|datawarehouse|data warehouse)\b|מפתח.ת AI|מפתח.ת DATAWAREHOUSE/i,
+  design:     /\b(designer|ux|ui\b|user experience|user interface|figma|product design|visual design|graphic|illustrat)\b|אדריכל|מעצב/i,
+  sales:      /\b(account executive|account manager|sales engineer|sales manager|business development|bd\b|sdr\b|bdr\b|pre.?sales|presales|revenue|partnership|channel|alliances|enterprise sales|deal)\b|רכז.ת קשרי תעשיה|פיתוח עסקי/i,
+  marketing:  /\b(marketing|growth|content|seo|sem|brand|demand generation|campaign|copywriter|social media|pr\b|public relations|communications|field marketing|product marketing)\b|שיווק|קמפיין/i,
+  support:    /\b(customer success|customer support|technical support|implementation|solutions engineer|solution consultant|integration engineer|onboarding|professional services|client success|support engineer)\b|יועץ.ת חינוכי/i,
+  operations: /\b(hr\b|human resources|recruiter|talent acquisition|people ops|finance|accounting|legal|counsel|procurement|office manager|operations|ops\b|admin|executive assistant|ea\b|it manager|information technology|supply chain|logistics|biz ops|revenue ops|sales ops)\b|ראש לשכה|מנהל.ת לשכה|משאבי אנוש|רכז.ת|ביקורת פנים|בטיחות|ספרי|ספרנ|אחזקה|כלכלנ|חשבות|מנהח"ש/i,
 };
 
 function classifySegment(title) {
@@ -1274,16 +1274,11 @@ function classifySegment(title) {
 
 // ─── LEVEL CLASSIFIER ────────────────────────────────────────────────────────
 function classifyLevel(title) {
-  // Director+ (check first — "Senior Director" should be director)
-  if (/\b(director|\bvp\b|vice president|head of|\bchief\b|\bcto\b|\bceo\b|\bcoo\b|\bcpo\b|\bciso\b|\bcmo\b|\bcfo\b|general manager|\bgm\b|president(?! of the)|ראש אגף|סמנכ"ל|מנכ"ל|ראש תחום|מנהל.?ת אגף|מנהל.?ת מערך|מנהל.?ת מחלקה)\b/i.test(title)) return 'director';
-  // Advanced: Staff / Principal / Lead / Architect / L4–L5
+  if (/\b(director|\bvp\b|vice president|head of|\bchief\b|\bcto\b|\bceo\b|\bcoo\b|\bcpo\b|\bciso\b|\bcmo\b|\bcfo\b|general manager|\bgm\b|president(?! of the))\b/i.test(title) || /ראש אגף|סמנכ"ל|מנכ"ל|ראש תחום|מנהל.ת אגף|מנהל.ת מערך|מנהל.ת מחלקה/.test(title)) return 'director';
   if (/\b(staff|principal|distinguished|fellow|\blead\b(?!.*generation)|architect|\bl[45]\b|level [45]|\biv\b(?= |$))\b/i.test(title)) return 'advanced';
-  // Senior
-  if (/\b(senior|\bsr\.?\b|experienced|\bl[3]\b|level 3|\biii\b(?= |$)|בכיר|בכירה|ראשי|ראשית|אחראי.?ת)\b/i.test(title)) return 'senior';
-  // Mid
-  if (/\b(mid[- ]?level|mid[- ]?senior|intermediate|\bl2\b|level 2|\bii\b(?= |$)|מוסמך|מומחה|מומחית|מהנדס.?ת ראשי|רכז.?ת|מנהל.?ת מעבדה|מיישמ)\b/i.test(title)) return 'mid';
-  // Entry / Junior
-  if (/\b(junior|\bjr\.?\b|entry[- ]?level|associate(?! (director|vp|manager|lead|dean))|new grad|graduate(?! (program manager|director))|fresher|trainee|\bl1\b|level 1|\bi\b(?= |$)|סטודנט|מתמחה|לבורנט)\b/i.test(title)) return 'entry';
+  if (/\b(senior|\bsr\.?\b|experienced|\bl[3]\b|level 3|\biii\b(?= |$))\b/i.test(title) || /בכיר|בכירה|ראשי|ראשית|אחראי.ת/.test(title)) return 'senior';
+  if (/\b(mid[- ]?level|mid[- ]?senior|intermediate|\bl2\b|level 2|\bii\b(?= |$))\b/i.test(title) || /מומחה|מומחית|רכז.ת|מנהל.ת מעבדה|מיישמ|מהנדס.ת ראשי/.test(title)) return 'mid';
+  if (/\b(junior|\bjr\.?\b|entry[- ]?level|associate(?! (director|vp|manager|lead|dean))|new grad|graduate(?! (program manager|director))|fresher|trainee|\bl1\b|level 1|\bi\b(?= |$))\b/i.test(title) || /סטודנט|מתמחה|לבורנט/.test(title)) return 'entry';
   return '';
 }
 
