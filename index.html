@@ -1146,7 +1146,9 @@ async function loadAcademic() {
   }
   const seen = new Set();
   AC_JOBS = allRows.filter(r => {
-    const k = r.url || (r.company + '|' + r.title);
+    const k = r.url && r.url !== 'https://bguhr.my.salesforce-sites.com/Gius?mode=external'
+      ? r.url
+      : (r.company + '|' + r.title);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
   if ($acStatus) $acStatus.innerHTML = `Academic: <strong>${AC_JOBS.length.toLocaleString()} jobs</strong>`;
