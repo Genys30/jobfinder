@@ -1449,6 +1449,7 @@ function applyFilters(){
   const lvlFilter  = $level    ? $level.value    : '';
   const secFilter  = $sector   ? $sector.value   : '';
   const srcFilter= $source   ? $source.value   : '';
+  activeSrc = srcFilter || 'all';
   const wtFilter = $worktype ? $worktype.value  : '';
   const days     = $date.value ? parseInt($date.value) : null;
   const cutoff = (()=>{
