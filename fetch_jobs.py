@@ -273,6 +273,57 @@ def run_workable(tm):
     write_csv(dedup_jobs(jobs), ['title','company','location','date','url','department','workplace_type'], f'workable_jobs_{TODAY}.csv')
 
 
+# ══ BGU (אוניברסיטת בן-גוריון) ═══════════════════════════════════════════════
+def run_bgu():
+    print("\n-- BGU External Positions (בן-גוריון) -------------------------------")
+    import re as _re
+    from bs4 import BeautifulSoup as _BS
+    URL = "https://bguhr.my.salesforce-sites.com/Gius?mode=external"
+
+    def parse_date(s):
+        m = _re.search(r'(\d{1,2})/(\d{1,2})/(\d{2,4})', s)
+        if not m: return TODAY
+        d, mo, y = m.group(1), m.group(2), m.group(3)
+        if len(y) == 2: y = "20" + y
+        return f"{y}-{mo.zfill(2)}-{d.zfill(2)}"
+
+    try:
+        r = requests.get(URL, headers={**HEADERS,
+            "Accept": "text/html,application/xhtml+xml",
+            "Referer": "https://bguhr.my.salesforce-sites.com/"}, timeout=30)
+        r.raise_for_status()
+        soup = _BS(r.text, "html.parser")
+        jobs = []
+        seen = set()
+        for row in soup.select("table tr"):
+            cells = row.find_all("td")
+            if len(cells) < 3: continue
+            texts = [c.get_text(strip=True) for c in cells]
+            if any(h in texts for h in ["שם המשרה", "מס' משרה", "Name"]): continue
+            title    = texts[1] if len(texts) > 1 else ""
+            date_str = texts[3] if len(texts) > 3 else (texts[2] if len(texts) > 2 else "")
+            link = row.find("a", href=True)
+            url = ""
+            if link:
+                href = link.get("href","")
+                url = href if href.startswith("http") else "https://bguhr.my.salesforce-sites.com" + href
+            if not title or not title.strip(): continue
+            k = title + url
+            if k in seen: continue
+            seen.add(k)
+            jobs.append({"title": title.strip(),
+                "company": "אוניברסיטת בן-גוריון בנגב",
+                "location": "באר שבע",
+                "date": parse_date(date_str) if date_str else TODAY,
+                "url": url or URL,
+                "department": "", "workplace_type": "onsite"})
+        print(f"  + {len(jobs)}")
+        write_csv(jobs, ["title","company","location","date","url","department","workplace_type"],
+            f"bgu_jobs_{TODAY}.csv")
+    except Exception as e:
+        print(f"  x {e}")
+
+
 # ══ WEIZMANN (Academic) ═══════════════════════════════════════════════════════
 def run_weizmann():
     print("\n-- Weizmann Institute (אקדמי) ---------------------------------------")
@@ -584,6 +635,7 @@ def main():
     run_workable({})
     run_mitam()
     run_weizmann()
+    run_bgu()
     run_huji()
     print("\nUpdating history...")
     update_history()

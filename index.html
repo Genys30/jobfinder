@@ -1109,7 +1109,7 @@ function normAcademic(row, fname) {
 
 async function loadAcademic() {
   if ($acStatus) $acStatus.innerHTML = 'Academic: <span style="color:var(--ink-faint)">loading…</span>';
-  const sources = ['weizmann'];
+  const sources = ['weizmann', 'bgu'];
   const allRows = (await Promise.all(sources.map(async src => {
     const rows = [];
     for (let i = 0; i < 7; i++) {
@@ -1123,7 +1123,7 @@ async function loadAcademic() {
         const parsed = Papa.parse(text, { header: true, skipEmptyLines: true,
           transformHeader: h => h.replace(/^\uFEFF/, '').trim().toLowerCase() });
         parsed.data.forEach(row => { const n = normAcademic(row, fname); if (n) rows.push(n); });
-        break; // found a file for this source, stop looking back
+        break;
       } catch(e) {}
     }
     return rows;
