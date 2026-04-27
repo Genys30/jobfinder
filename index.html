@@ -1072,8 +1072,7 @@ function normAcademic(row, fname) {
   const src = fname.startsWith('weizmann') ? 'weizmann'
             : fname.startsWith('bgu')      ? 'bgu'
             : fname.startsWith('technion') ? 'technion'
-            : 'ac';
-  return {
+            : 'ac';  return {
     source: src, fnArea: 'ac',
     title, company: g('company') || 'אקדמי',
     category: g('department') || 'ac',
@@ -1088,7 +1087,7 @@ function normAcademic(row, fname) {
 
 async function loadAcademic() {
   if ($acStatus) $acStatus.innerHTML = 'Academic: <span style="color:var(--ink-faint)">loading…</span>';
-  const sources = ['weizmann', 'bgu', 'technion'];
+  const sources = ['weizmann', 'bgu', 'technion', 'bgu_extra'];
   const allRows = (await Promise.all(sources.map(async src => {
     const rows = [];
     for (let i = 0; i < 7; i++) {
