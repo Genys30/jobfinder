@@ -95,20 +95,31 @@ echo.
 
 :: ── Step 1: Pull ──────────────────────────────────────────────────────────
 echo [1/4] Pulling latest from GitHub...
+
+:: Back up LinkedIn CSVs before clean (git clean deletes untracked files)
+if not exist "%TEMP%\li_backup" mkdir "%TEMP%\li_backup"
+for %%f in (linkedin_jobs_*.csv) do (
+    echo   Backing up %%f...
+    copy /Y "%%f" "%TEMP%\li_backup\%%f" >nul
+)
+
 git reset --hard HEAD >nul 2>&1
-git clean -fd --exclude=linkedin_jobs_*.csv --exclude=output.txt --exclude=run_fetch.bat >nul 2>&1
 git pull
 if errorlevel 1 (
     echo ERROR: git pull failed. Check your internet connection or GitHub credentials.
     pause
     exit /b 1
 )
+
+:: Restore LinkedIn CSVs after clean
+for %%f in ("%TEMP%\li_backup\linkedin_jobs_*.csv") do (
+    echo   Restoring %%~nxf...
+    copy /Y "%%f" "%PROJECT_DIR%\%%~nxf" >nul
+)
+rd /s /q "%TEMP%\li_backup" >nul 2>&1
 echo.
 
-:: ── Step 1.5: Dedup LinkedIn CSVs ─────────────────────────────────────────
-echo Deduplicating LinkedIn CSVs...
-%PYTHON_CMD% dedup_linkedin.py
-echo.
+
 
 :: ── Step 2: Fetch jobs ────────────────────────────────────────────────────
 echo [2/4] Fetching jobs from Comeet, Greenhouse, Lever, Taasuka...
@@ -118,12 +129,7 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
-%PYTHON_CMD% fetch_taasuka.py
-if errorlevel 1 (
-    echo ERROR: fetch_taasuka.py failed. See error above.
-    pause
-    exit /b 1
-)
+
 echo.
 
 :: ── Step 3: Commit CSVs ───────────────────────────────────────────────────
