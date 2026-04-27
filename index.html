@@ -16,6 +16,7 @@
   --cm:#00897b;--cm-pale:rgba(0,137,123,0.07);
   --mt:#7b3fa0;--mt-pale:rgba(123,63,160,0.07);
   --ac:#1a6b3a;--ac-pale:rgba(26,107,58,0.07);
+  --wz:#1a6b3a;--bg:#2d6b1a;--tn:#6b3a1a;
   --hj:#1a3a6b;--hj-pale:rgba(26,58,107,0.07);
   --gh:#2e7d32;--gh-pale:rgba(46,125,50,0.07);
   --lv:#c2410c;--lv-pale:rgba(194,65,12,0.07);
@@ -298,7 +299,11 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--mt)"></span><span id="mtStatusText">Mitam: loading…</span></div>
   <span class="databar-sep">·</span>
-  <div class="datasrc"><span class="src-dot" style="background:var(--ac)"></span><span id="acStatusText">Academic: loading…</span></div>
+  <div class="datasrc"><span class="src-dot" style="background:var(--wz)"></span><span id="wzStatusText">Weizmann: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--bg)"></span><span id="bgStatusText">BGU: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--tn)"></span><span id="tnStatusText">Technion: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--hj)"></span><span id="hjStatusText">HUJI Career: loading…</span></div>
 </div>
@@ -361,7 +366,9 @@
     <option value="wk">Workable</option>
       <option value="direct">Direct</option>
       <option value="mt">Mitam 🏛️</option>
-      <option value="ac">Academic 🎓</option>
+      <option value="weizmann">Weizmann 🔬</option>
+      <option value="bgu">BGU 🎓</option>
+      <option value="technion">Technion 🎓</option>
       <option value="huji">HUJI Career</option>
   </select>
   <select id="worktype">
@@ -1056,8 +1063,13 @@ function normAcademic(row, fname) {
   const title = g('title').split('\n')[0].trim();
   if (!title) return null;
   const fnDate = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  // derive source from filename
+  const src = fname.startsWith('weizmann') ? 'weizmann'
+            : fname.startsWith('bgu')      ? 'bgu'
+            : fname.startsWith('technion') ? 'technion'
+            : 'ac';
   return {
-    source: 'ac', fnArea: 'ac',
+    source: src, fnArea: 'ac',
     title, company: g('company') || 'אקדמי',
     category: g('department') || 'ac',
     size: '', level: '',
@@ -1103,6 +1115,15 @@ async function loadAcademic() {
     if (seen.has(k)) return false; seen.add(k); return true;
   });
   if ($acStatus) $acStatus.innerHTML = `Academic: <strong>${AC_JOBS.length.toLocaleString()} jobs</strong>`;
+  const wzCount=AC_JOBS.filter(r=>r.source==='weizmann').length;
+  const bgCount=AC_JOBS.filter(r=>r.source==='bgu').length;
+  const tnCount=AC_JOBS.filter(r=>r.source==='technion').length;
+  const $wzStatus=document.getElementById('wzStatusText');
+  const $bgStatus=document.getElementById('bgStatusText');
+  const $tnStatus=document.getElementById('tnStatusText');
+  if($wzStatus) $wzStatus.innerHTML=`Weizmann: <strong>${wzCount} jobs</strong>`;
+  if($bgStatus) $bgStatus.innerHTML=`BGU: <strong>${bgCount} jobs</strong>`;
+  if($tnStatus) $tnStatus.innerHTML=`Technion: <strong>${tnCount} jobs</strong>`;
 }
 
 // ─── LOAD HUJI CAREER ────────────────────────────────────────────────────────
@@ -1168,6 +1189,9 @@ function getPool(){
   if(activeSrc==='wk') return WK_JOBS;
   if(activeSrc==='direct') return SP_JOBS;
   if(activeSrc==='mt') return MT_JOBS;
+  if(activeSrc==='weizmann') return AC_JOBS.filter(r=>r.source==='weizmann');
+  if(activeSrc==='bgu') return AC_JOBS.filter(r=>r.source==='bgu');
+  if(activeSrc==='technion') return AC_JOBS.filter(r=>r.source==='technion');
   if(activeSrc==='ac') return AC_JOBS;
   if(activeSrc==='huji') return HJ_JOBS;
   const seen = new Set();
@@ -1325,7 +1349,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'lv':'startup', 'ab':'startup', 'wk':'startup',
   'linkedin':'private',
   'mt':'nonprofit',
-  'ac':'academic',
+  'ac':'academic','weizmann':'academic','bgu':'academic','technion':'academic',
   'huji':'academic',
 };
 
