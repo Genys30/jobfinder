@@ -41,7 +41,7 @@ CHANNEL       = "biltiformali"
 SESSION_FILE  = "tg_session"          # Telethon session — keep out of git
 SEEN_FILE     = Path("seen_telegram_biltiformali.txt")
 OUT_DIR       = Path(".")             # where dated CSVs land
-SOURCE_NAME   = "Telegram: מציאת עבודה"
+SOURCE_NAME   = "Biltiformali-Telegram"
 
 TG_API_ID     = int(os.environ["TG_API_ID"])
 TG_API_HASH   = os.environ["TG_API_HASH"]
@@ -50,9 +50,8 @@ ANTHROPIC_KEY = os.environ["ANTHROPIC_API_KEY"]
 CSV_COLUMNS = [
     "id", "title", "company", "city", "url",
     "date_posted", "source", "work_type", "sector", "level",
-    "raw_text",
+    "employer_type", "raw_text",
 ]
-
 # ── Claude parsing ───────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """
@@ -182,6 +181,7 @@ async def scrape(days: int | None = 7, fetch_all: bool = False):
                 "city":        parsed.get("city") or "",
                 "url":         msg_url,
                 "date_posted": msg.date.strftime("%Y-%m-%d"),
+                "employer_type": "Nonprofit/NGO",
                 "source":      SOURCE_NAME,
                 "work_type":   parsed.get("work_type") or "",
                 "sector":      parsed.get("sector") or "",
