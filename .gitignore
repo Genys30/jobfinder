@@ -34,3 +34,5 @@ desktop.ini
 *.log
 tg_session.session 
 tg_session.session 
+patch_bat.py 
+patch_telegram.py 
