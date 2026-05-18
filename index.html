@@ -1047,7 +1047,9 @@ function normComeet(row, filename){
     city: g('location'),
     url:  g('url'),
     updated: g('date')||fnDate,
-    workType
+    workType,
+    description: g('description'),
+    requirements: ''
   };
 }
 
@@ -1068,7 +1070,9 @@ function normGreenhouse(row, filename){
     city:  g('location'),
     url:   g('url'),
     updated: g('date')||fnDate,
-    workType
+    workType,
+    description: g('description'),
+    requirements: ''
   };
 }
 
@@ -1259,7 +1263,8 @@ function normLever(row, filename){
   const wt=g('workplace_type').toLowerCase();
   const workType=wt.includes('remote')?'remote':wt.includes('hybrid')?'hybrid':wt.includes('on-site')||wt.includes('onsite')?'onsite':'onsite';
   return{source:'lv',fnArea:'lv',title,company,category:g('department')||'lv',
-    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType};
+    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType,
+    description:g('description'),requirements:''};
 }
 
 async function loadAshby(){
@@ -2884,7 +2889,6 @@ const $popDesc   = document.getElementById('job-popup-desc-section');
 const $popReqs   = document.getElementById('job-popup-reqs-section');
 const $popApply  = document.getElementById('job-popup-apply');
 
-// Strip HTML tags and decode entities for clean text display
 function stripHtml(html) {
   if (!html) return '';
   const tmp = document.createElement('div');
@@ -2898,14 +2902,12 @@ function openPopup(r) {
   $popMeta.textContent = metaParts.join(' · ');
   $popApply.href = r.url || '#';
 
-  // Description — strip HTML tags/entities before display
   const descText = stripHtml(r.description);
   if (descText) {
     $popDesc.innerHTML = '<h4>About the role</h4><p>' + esc(descText) + '</p>';
   } else {
     $popDesc.innerHTML = '<p class="no-desc">No description available — click Apply to view on the source site.</p>';
   }
-  // Requirements
   const reqsText = stripHtml(r.requirements);
   if (reqsText) {
     $popReqs.innerHTML = '<h4>Requirements</h4><p>' + esc(reqsText) + '</p>';
