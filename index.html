@@ -1047,9 +1047,7 @@ function normComeet(row, filename){
     city: g('location'),
     url:  g('url'),
     updated: g('date')||fnDate,
-    workType,
-    description: g('description'),
-    requirements: ''
+    workType
   };
 }
 
@@ -1070,9 +1068,7 @@ function normGreenhouse(row, filename){
     city:  g('location'),
     url:   g('url'),
     updated: g('date')||fnDate,
-    workType,
-    description: g('description'),
-    requirements: ''
+    workType
   };
 }
 
@@ -1117,7 +1113,7 @@ async function loadLinkedIn(){
   $liStatus.innerHTML='LinkedIn: <span style="color:var(--ink-faint)">loading…</span>';
 
   const filenames=[];
-  for(let i=0;i<7;i++){
+  for(let i=0;i<2;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
     const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
     filenames.push('linkedin_jobs_'+y+'-'+m+'-'+day+'.csv');
@@ -1160,7 +1156,7 @@ async function loadComeet(){
   if($cmStatus) $cmStatus.innerHTML='Comeet: <span style="color:var(--ink-faint)">loading…</span>';
 
   const filenames=[];
-  for(let i=0;i<7;i++){
+  for(let i=0;i<2;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
     const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
     filenames.push('comeet_jobs_'+y+'-'+m+'-'+day+'.csv');
@@ -1198,7 +1194,7 @@ async function loadComeet(){
 async function loadGreenhouse(){
   if($ghStatus) $ghStatus.innerHTML='Greenhouse: <span style="color:var(--ink-faint)">loading…</span>';
   const filenames=[];
-  for(let i=0;i<7;i++){
+  for(let i=0;i<2;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
     const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
     filenames.push('greenhouse_jobs_'+y+'-'+m+'-'+day+'.csv');
@@ -1263,8 +1259,7 @@ function normLever(row, filename){
   const wt=g('workplace_type').toLowerCase();
   const workType=wt.includes('remote')?'remote':wt.includes('hybrid')?'hybrid':wt.includes('on-site')||wt.includes('onsite')?'onsite':'onsite';
   return{source:'lv',fnArea:'lv',title,company,category:g('department')||'lv',
-    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType,
-    description:g('description'),requirements:''};
+    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType};
 }
 
 async function loadAshby(){
@@ -1335,7 +1330,7 @@ async function loadSponsored(){
 async function loadLever(){
   if($lvStatus) $lvStatus.innerHTML='Lever: <span style="color:var(--ink-faint)">loading…</span>';
   const filenames=[];
-  for(let i=0;i<7;i++){
+  for(let i=0;i<2;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
     const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
     filenames.push('lever_jobs_'+y+'-'+m+'-'+day+'.csv');
@@ -1391,7 +1386,7 @@ async function loadOsem(){
   const $osemStatus = document.getElementById('osemStatusText');
   if($osemStatus) $osemStatus.innerHTML='Osem-Nestlé: <span style="color:var(--ink-faint)">loading…</span>';
   const filenames=[];
-  for(let i=0;i<7;i++){
+  for(let i=0;i<2;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
     const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
     filenames.push('osem_jobs_'+y+'-'+m+'-'+day+'.csv');
@@ -2889,28 +2884,21 @@ const $popDesc   = document.getElementById('job-popup-desc-section');
 const $popReqs   = document.getElementById('job-popup-reqs-section');
 const $popApply  = document.getElementById('job-popup-apply');
 
-function stripHtml(html) {
-  if (!html) return '';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return (tmp.textContent || tmp.innerText || '').trim();
-}
-
 function openPopup(r) {
   $popTitle.textContent = r.title;
   const metaParts = [r.company, r.city, r.updated ? formatDate(r.updated) : ''].filter(Boolean);
   $popMeta.textContent = metaParts.join(' · ');
   $popApply.href = r.url || '#';
 
-  const descText = stripHtml(r.description);
-  if (descText) {
-    $popDesc.innerHTML = '<h4>About the role</h4><p>' + esc(descText) + '</p>';
+  // Description
+  if (r.description && r.description.trim()) {
+    $popDesc.innerHTML = '<h4>About the role</h4><p>' + esc(r.description.trim()) + '</p>';
   } else {
     $popDesc.innerHTML = '<p class="no-desc">No description available — click Apply to view on the source site.</p>';
   }
-  const reqsText = stripHtml(r.requirements);
-  if (reqsText) {
-    $popReqs.innerHTML = '<h4>Requirements</h4><p>' + esc(reqsText) + '</p>';
+  // Requirements
+  if (r.requirements && r.requirements.trim()) {
+    $popReqs.innerHTML = '<h4>Requirements</h4><p>' + esc(r.requirements.trim()) + '</p>';
   } else {
     $popReqs.innerHTML = '';
   }
@@ -3054,7 +3042,7 @@ function normGotFriends(row, fname) {
 async function loadGotFriends() {
   if ($gfStatus) $gfStatus.innerHTML = 'GotFriends: <span style="color:var(--ink-faint)">loading\u2026</span>';
   const filenames = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 2; i++) {
     const d = new Date(); d.setDate(d.getDate() - i);
     const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
     filenames.push(`gotfriends_jobs_${y}-${m}-${day}.csv`);
