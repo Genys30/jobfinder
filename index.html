@@ -213,8 +213,8 @@
   .emek-row:hover .title{color:var(--emek);}
   .loewenstein-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--loewenstein);}
   .loewenstein-row:hover .title{color:var(--loewenstein);}
-  .carmel-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--carmel);}
-  .carmel-row:hover .title{color:var(--carmel);}
+  .carmel-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--carmel);--tg:#0088cc;}
+  .carmel-row:hover .title{color:var(--carmel);--tg:#0088cc;}
   .li-row:hover .title{color:var(--li);}
   .cm-row:hover .title{color:var(--cm);}
   .gh-row:hover .title{color:var(--gh);}
@@ -543,7 +543,9 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--loewenstein)"></span><span id="loewensteinStatusText">Loewenstein: loading…</span></div>
   <span class="databar-sep">·</span>
-  <div class="datasrc"><span class="src-dot" style="background:var(--carmel)"></span><span id="carmelStatusText">Carmel: loading…</span></div>
+  <div class="datasrc"><span class="src-dot" style="background:var(--carmel);--tg:#0088cc"></span><span id="carmelStatusText">Carmel: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--tg)"></span><span id="tgStatusText">Biltiformali: loading…</span></div>
   </div>
 </div>
 
@@ -3626,6 +3628,10 @@ async function loadTelegram() {
     seen.add(k);
     return true;
   });
+  TOTALS['telegram'] = TG_JOBS.length;
+  const $tgStatus = document.getElementById('tgStatusText');
+  if($tgStatus) $tgStatus.innerHTML='Biltiformali: <strong>'+TG_JOBS.length.toLocaleString()+' jobs</strong>';
+  populateDropdowns();
   applyFilters();
 }
 
