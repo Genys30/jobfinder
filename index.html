@@ -47,7 +47,6 @@
   --sz:#8b1a1a;--sz-pale:rgba(139,26,26,0.07);
   --hd:#2e6b3e;--hd-pale:rgba(46,107,62,0.07);
   --cl:#1a5f8a;--cl-pale:rgba(26,95,138,0.07);
-  --mod:#4a5568;--mod-pale:rgba(74,85,104,0.07);
   --rabin:#7b3f8f;--rabin-pale:rgba(0,0,0,0.07);
   --meir:#2e7d52;--meir-pale:rgba(0,0,0,0.07);
   --kaplan:#8b5e1a;--kaplan-pale:rgba(0,0,0,0.07);
@@ -183,8 +182,6 @@
   .bar-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--bar);}
   .bar-row:hover .title{color:var(--bar);}
   .bis-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--bis);}
-  .mod-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--mod);}
-  .mod-row:hover .title{color:var(--mod);}
   .bis-row:hover .title{color:var(--bis);}
   .gf-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--gf);}
   .gf-row:hover .title{color:var(--gf);}
@@ -486,8 +483,6 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:#e8792a"></span><span id="osemStatusText">Osem-Nestlé: loading…</span></div>
   <span class="databar-sep">·</span>
-  <div class="datasrc"><span class="src-dot" style="background:var(--mod)"></span><span id="modStatusText">MOD: loading…</span></div>
-  <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--sp)"></span><span id="spStatusText">Direct: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--mt)"></span><span id="mtStatusText">Mitam: loading…</span></div>
@@ -647,7 +642,6 @@
       <option value="szmc">Shaare Zedek 🏥</option>
       <option value="hadassah">Hadassah 🏥</option>
       <option value="clalit">Clalit 🏥</option>
-      <option value="mod">משרד הביטחון 🏛️</option>
       <option value="rabin">Rabin 🏥</option>
       <option value="meir">Meir 🏥</option>
       <option value="kaplan">Kaplan 🏥</option>
@@ -838,7 +832,6 @@ let TM_JOBS  = [];   // techmap
 let LI_JOBS  = [];   // linkedin
 let CM_JOBS  = [];   // comeet
 let OSEM_JOBS = [];  // osem-nestle
-let MOD_JOBS  = [];  // משרד הביטחון
 let GH_JOBS  = [];   // greenhouse
 let LV_JOBS  = [];   // lever
 let AB_JOBS  = [];   // ashby
@@ -1054,7 +1047,9 @@ function normComeet(row, filename){
     city: g('location'),
     url:  g('url'),
     updated: g('date')||fnDate,
-    workType
+    workType,
+    description: g('description'),
+    requirements: ''
   };
 }
 
@@ -1075,7 +1070,9 @@ function normGreenhouse(row, filename){
     city:  g('location'),
     url:   g('url'),
     updated: g('date')||fnDate,
-    workType
+    workType,
+    description: g('description'),
+    requirements: ''
   };
 }
 
@@ -1266,7 +1263,8 @@ function normLever(row, filename){
   const wt=g('workplace_type').toLowerCase();
   const workType=wt.includes('remote')?'remote':wt.includes('hybrid')?'hybrid':wt.includes('on-site')||wt.includes('onsite')?'onsite':'onsite';
   return{source:'lv',fnArea:'lv',title,company,category:g('department')||'lv',
-    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType};
+    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType,
+    description:g('description'),requirements:''};
 }
 
 async function loadAshby(){
@@ -1387,58 +1385,6 @@ function normOsem(row, filename){
     updated: g('date')||fnDate,
     workType: 'onsite'
   };
-}
-
-// ─── LOAD MOD (משרד הביטחון) ─────────────────────────────────────────────────
-async function loadMod() {
-  const $modStatus = document.getElementById('modStatusText');
-  if ($modStatus) $modStatus.innerHTML = 'MOD: <span style="color:var(--ink-faint)">loading…</span>';
-  const today = new Date();
-  const filenames = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today); d.setDate(d.getDate() - i);
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    filenames.push(`mod_jobs_${y}-${m}-${day}.csv`);
-  }
-  const seen = new Set();
-  const allRows = (await Promise.all(filenames.map(async fname => {
-    try {
-      const r = await fetch(fname); if (!r.ok) return [];
-      const text = await r.text();
-      return Papa.parse(text, {header:true, skipEmptyLines:true}).data;
-    } catch(e) { return []; }
-  }))).flat();
-  if (!allRows.length) {
-    if ($modStatus) $modStatus.innerHTML = 'MOD: <span style="color:var(--ink-faint)">no file yet</span>';
-    return;
-  }
-  const g = (row, k) => (row[k]||'').trim();
-  MOD_JOBS = allRows.map(row => {
-    const summary    = g(row,'summary');
-    const education  = g(row,'education');
-    const experience = g(row,'experience');
-    const descParts  = [];
-    if (summary)    descParts.push(summary);
-    if (education)  descParts.push('השכלה: ' + education);
-    if (experience) descParts.push('ניסיון: ' + experience);
-    return {
-      source:      'mod',
-      fnArea:      'mod',
-      title:       g(row,'title'),
-      company:     g(row,'company') || 'משרד הביטחון',
-      city:        g(row,'location'),
-      updated:     g(row,'date_posted'),   // ← renderer reads r.updated
-      deadline:    g(row,'deadline'),
-      url:         g(row,'url'),
-      description: descParts.join('\n\n'), // ← popup reads r.description
-      category:    'mod',
-    };
-  }).filter(r => r.title && !seen.has(r.url) && seen.add(r.url));
-  if ($modStatus) $modStatus.innerHTML = `MOD: <strong>${MOD_JOBS.length.toLocaleString()} jobs</strong>`;
-  TOTALS['mod'] = MOD_JOBS.length;
-  populateDropdowns(); applyFilters();
 }
 
 async function loadOsem(){
@@ -2047,7 +1993,6 @@ function getPool(){
   if(activeSrc==='greenhouse') return GH_JOBS;
   if(activeSrc==='lv') return LV_JOBS;
   if(activeSrc==='osem') return OSEM_JOBS;
-  if(activeSrc==='mod')  return MOD_JOBS;
   if(activeSrc==='ab') return AB_JOBS;
   if(activeSrc==='wk') return WK_JOBS;
   if(activeSrc==='direct') return SP_JOBS;
@@ -2083,15 +2028,9 @@ function getPool(){
   if(activeSrc==='loewenstein')    return LOEWENSTEIN_JOBS;
   if(activeSrc==='carmel')    return CARMEL_JOBS;
   const seen = new Set();
-  const seenTitleCo = new Set();
-  // Priority order: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...MOD_JOBS,...LI_JOBS].filter(r=>{
-    const k = r.url;
-    const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
-    if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
-    if(k) seen.add(k);
-    seenTitleCo.add(k2);
-    return true;
+  return [...TM_JOBS,...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS].filter(r=>{
+    const k = r.url||(r.company+'|'+r.title+'|'+r.city);
+    if(seen.has(k)) return false; seen.add(k); return true;
   });
 }
 
@@ -2692,7 +2631,6 @@ const SOURCE_EMPLOYER_TYPE = {
   'hadassah':'public','hd':'public',
   'clalit':'public','cl':'public',
   'rabin':'public',
-  'mod':'public',
   'meir':'public',
   'kaplan':'public',
   'schneider':'public',
@@ -2748,7 +2686,6 @@ const DATABAR_SOURCES = [
   { id:'jntStatusText',       key:'joint',       label:'Joint' },
   { id:'barStatusText',       key:'bar',         label:'BAR' },
   { id:'bisStatusText',       key:'bis',         label:'BIS' },
-  { id:'modStatusText',       key:'mod',         label:'MOD' },
   { id:'gfStatusText',        key:'gf',          label:'GotFriends' },
   { id:'icStatusText',        key:'ichilov',     label:'Ichilov' },
   { id:'rbStatusText',        key:'rambam',      label:'Rambam' },
@@ -2906,7 +2843,6 @@ function render(){
     const jntBadge = r.source==='joint'?'<span class="jnt-badge">Joint</span>':'';
     const barBadge = r.source==='bar'?'<span class="bar-badge">BAR</span>':'';
     const bisBadge = r.source==='bis'?'<span class="bis-badge">BIS</span>':'';
-    const modBadge = r.source==='mod'?'<span class="mod-badge">MOD</span>':'';
     const gfBadge  = r.source==='gf'?'<span class="gf-badge">GF</span>':'';
     const icBadge  = r.source==='ichilov'?'<span class="ic-badge">Ichilov</span>':'';
     const rbBadge  = r.source==='rambam'?'<span class="rb-badge">Rambam</span>':'';
@@ -2923,14 +2859,14 @@ function render(){
     const emekBadge = r.source==='emek'?'<span class="emek-badge">Emek</span>':'';
     const loewensteinBadge = r.source==='loewenstein'?'<span class="loewenstein-badge">Loewenstein</span>':'';
     const carmelBadge = r.source==='carmel'?'<span class="carmel-badge">Carmel</span>':'';
-    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',mod:' mod-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row'})[r.source]||'';
+    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
     const popupClick = hasDesc ? 'onclick="event.preventDefault();var r=window._jobMap[\''+jobKey+'\'];if(r)openPopup(r);"' : '';
     const arrowLabel = hasDesc ? '📄' : '➝';
     return '<a class="job'+rowCls+(hasDesc?' has-desc':'')+'" href="'+esc(href)+'" '+(hasDesc?popupClick:'target="_blank" rel="noopener"')+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+modBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="city-cell">'+esc(r.city||'—')
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
@@ -3655,8 +3591,7 @@ render();
     loadSzmc(),
     loadHadassah(),
     loadClalit(),
-    loadOsem(),
-    loadMod()
+    loadOsem()
   ]).catch(e=>{
     console.error('load error', e);
   });
