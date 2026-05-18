@@ -133,6 +133,14 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 3: Commit CSVs ───────────────────────────────────────────────────
+
+echo [2b/4] Fetching Telegram @biltiformali...
+%PYTHON_CMD% fetch_telegram_biltiformali.py --days 1
+if errorlevel 1 (
+    echo WARNING: Telegram fetch failed - continuing anyway.
+)
+%PYTHON_CMD% -c "import os,glob; from datetime import date,timedelta; cutoff=str(date.today()-timedelta(days=30)); [os.remove(f) for f in glob.glob('jobs_telegram_biltiformali_*.csv') if f[-14:-4] < cutoff]"
+echo.
 echo [3/4] Committing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
