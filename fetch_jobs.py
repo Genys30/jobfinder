@@ -175,10 +175,13 @@ def run_greenhouse(tm):
                 job_id = job.get('id','')
                 description = ''
                 try:
+                    import html as _html
                     rd = requests.get(f'https://boards-api.greenhouse.io/v1/boards/{token}/jobs/{job_id}', timeout=20, headers=HEADERS)
                     if rd.ok:
                         raw = rd.json().get('content') or ''
-                        description = re.sub(r'<[^>]+>', ' ', raw)
+                        # Decode HTML entities first, then strip tags
+                        decoded = _html.unescape(raw)
+                        description = re.sub(r'<[^>]+>', ' ', decoded)
                         description = re.sub(r'\s{2,}', ' ', description).strip()[:1500]
                 except Exception: pass
                 import time as _t; _t.sleep(0.2)

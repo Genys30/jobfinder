@@ -1047,9 +1047,7 @@ function normComeet(row, filename){
     city: g('location'),
     url:  g('url'),
     updated: g('date')||fnDate,
-    workType,
-    description: g('description'),
-    requirements: ''
+    workType
   };
 }
 
@@ -1070,9 +1068,7 @@ function normGreenhouse(row, filename){
     city:  g('location'),
     url:   g('url'),
     updated: g('date')||fnDate,
-    workType,
-    description: g('description'),
-    requirements: ''
+    workType
   };
 }
 
@@ -1263,8 +1259,7 @@ function normLever(row, filename){
   const wt=g('workplace_type').toLowerCase();
   const workType=wt.includes('remote')?'remote':wt.includes('hybrid')?'hybrid':wt.includes('on-site')||wt.includes('onsite')?'onsite':'onsite';
   return{source:'lv',fnArea:'lv',title,company,category:g('department')||'lv',
-    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType,
-    description:g('description'),requirements:''};
+    size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType};
 }
 
 async function loadAshby(){
@@ -2889,21 +2884,31 @@ const $popDesc   = document.getElementById('job-popup-desc-section');
 const $popReqs   = document.getElementById('job-popup-reqs-section');
 const $popApply  = document.getElementById('job-popup-apply');
 
+// Strip HTML tags and decode entities for clean text display
+function stripHtml(html) {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || '').trim();
+}
+
 function openPopup(r) {
   $popTitle.textContent = r.title;
   const metaParts = [r.company, r.city, r.updated ? formatDate(r.updated) : ''].filter(Boolean);
   $popMeta.textContent = metaParts.join(' · ');
   $popApply.href = r.url || '#';
 
-  // Description
-  if (r.description && r.description.trim()) {
-    $popDesc.innerHTML = '<h4>About the role</h4><p>' + esc(r.description.trim()) + '</p>';
+  // Description — strip HTML tags/entities before display
+  const descText = stripHtml(r.description);
+  if (descText) {
+    $popDesc.innerHTML = '<h4>About the role</h4><p>' + esc(descText) + '</p>';
   } else {
     $popDesc.innerHTML = '<p class="no-desc">No description available — click Apply to view on the source site.</p>';
   }
   // Requirements
-  if (r.requirements && r.requirements.trim()) {
-    $popReqs.innerHTML = '<h4>Requirements</h4><p>' + esc(r.requirements.trim()) + '</p>';
+  const reqsText = stripHtml(r.requirements);
+  if (reqsText) {
+    $popReqs.innerHTML = '<h4>Requirements</h4><p>' + esc(reqsText) + '</p>';
   } else {
     $popReqs.innerHTML = '';
   }
