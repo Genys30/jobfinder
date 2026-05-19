@@ -173,7 +173,7 @@ def run_greenhouse(tm):
         token, name = c['token'], c.get('name', c['token'])
         print(f"  [{i}/{len(all_t)}] {name}")
         try:
-            r = requests.get(f'https://boards-api.greenhouse.io/v1/boards/{token}/jobs', timeout=30, headers=HEADERS)
+            r = requests.get(f'https://boards-api.greenhouse.io/v1/boards/{token}/jobs?content=true', timeout=30, headers=HEADERS)
             if not r.ok: print(f"    - {r.status_code}"); continue
             pos = []
             for job in r.json().get('jobs', []):
@@ -184,13 +184,17 @@ def run_greenhouse(tm):
                 if not is_israel(loc_name + ' ' + office_names, country): continue
                 wt = 'Remote' if re.search(r'\bremote\b', loc_name, re.I) else ('Hybrid' if re.search(r'\bhybrid\b', loc_name, re.I) else '')
                 dept = next((d.get('name','') for d in job.get('departments',[])), '')
+                raw_desc = job.get('content') or ''
+                description = re.sub(r'<[^>]+>', ' ', raw_desc)
+                description = re.sub(r'\s{2,}', ' ', description).strip()[:1500]
                 pos.append({'title': job.get('title',''), 'company': name,
                     'location': loc_name.split(',')[0].strip(),
                     'date': (job.get('updated_at') or '')[:10],
-                    'url': job.get('absolute_url',''), 'department': dept, 'workplace_type': wt})
+                    'url': job.get('absolute_url',''), 'department': dept,
+                    'workplace_type': wt, 'description': description})
             print(f"    + {len(pos)}"); jobs.extend(pos)
         except Exception as e: print(f"    x {e}")
-    write_csv(dedup_jobs(jobs), ['title','company','location','date','url','department','workplace_type'], f'greenhouse_jobs_{TODAY}.csv')
+    write_csv(dedup_jobs(jobs), ['title','company','location','date','url','department','workplace_type','description'], f'greenhouse_jobs_{TODAY}.csv')
 
 
 # ══ LEVER ════════════════════════════════════════════════════════════════════

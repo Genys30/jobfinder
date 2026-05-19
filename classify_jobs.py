@@ -45,13 +45,16 @@ For each job return:
 }
 
 Definitions:
-- core: R&D, Engineering, DevOps, Architecture, QA, Data Science, AI, Security Research
-- support: Product, Marketing, Sales, HR, Finance, Operations, CS, Legal, Admin
-- barrier_score: 1=open requirements, 5=very strict specific tech requirements
-- flexibility_score: 1=strict office only, 5=full remote flexible hours
-- requires_military_unit: true if mentions יחידה טכנולוגית/8200/ממר\"ם/מת\"ם or equivalent
-- years_experience_required: minimum years of experience mentioned (0 if none)
-- degree_required: true if תואר ראשון or degree explicitly required"""
+- core: hands-on R&D, Engineering, DevOps, Architecture, QA, Data Science, AI/ML, Security Research, hands-on coding/implementation roles
+- support: Product Management, Project Management, Marketing, Sales, HR, Finance, Operations, CS/CX, Legal, Admin, Social work, Business Development, Partnerships, Recruitment/Talent, IT Management, Cyber Management (CISO, Security Manager, Incident Response Manager, SOC Manager)
+- CRITICAL RULE: Manager/Director titles = support UNLESS role explicitly involves hands-on coding or research. "Security Engineer" = core. "Security Manager" = support. "Data Scientist" = core. "Data Team Lead" who manages without coding = support.
+- Hebrew core signals: מפתח/ת, מהנדס/ת, חוקר/ת, ארכיטקט, אלגוריתם, DevOps, QA, תשתיות, פיתוח
+- Hebrew support signals: מנהל/ת (manager), רכז/ת (coordinator), יועץ/ת (consultant), עסקי, שיווק, מכירות, גיוס, משאבי אנוש, פרויקט, לקוחות, תמיכה
+- barrier_score: 1=very open (any background welcome), 3=standard tech reqs, 5=very specific rare stack/unit required
+- flexibility_score: 1=strict office 9-6 only, 3=hybrid standard, 5=full remote flexible hours
+- requires_military_unit: true ONLY if explicitly mentions יחידה 8200/ממר"ם/מת"ם/81/הייטק צבאי or named elite unit
+- years_experience_required: minimum years explicitly stated (0 if not mentioned)
+- degree_required: true ONLY if תואר ראשון/אקדמאי explicitly required (not just "advantage")"""
 
 
 def load_jobs():
@@ -92,7 +95,7 @@ def load_jobs():
 
 def load_checkpoint():
     if Path(CHECKPOINT_FILE).exists():
-        return json.load(open(CHECKPOINT_FILE))
+        return json.load(open(CHECKPOINT_FILE, encoding='utf-8'))
     return {}
 
 
@@ -115,20 +118,20 @@ def classify_batch(batch, api_key):
         'max_tokens': 1000,
         'system': SYSTEM_PROMPT,
         'messages': [{'role': 'user', 'content': user_content}]
-    }).encode('utf-8')
+    }, ensure_ascii=False).encode('utf-8')
     
     req = urllib.request.Request(
         'https://api.anthropic.com/v1/messages',
         data=payload,
         headers={
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
             'x-api-key': api_key,
             'anthropic-version': '2023-06-01'
         }
     )
     
     with urllib.request.urlopen(req, timeout=60) as resp:
-        data = json.loads(resp.read())
+        data = json.loads(resp.read().decode('utf-8'))
     
     text = data['content'][0]['text'].strip()
     # Strip markdown if present
