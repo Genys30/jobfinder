@@ -54,7 +54,7 @@
   --yoseftal:#5a3580;--yoseftal-pale:rgba(0,0,0,0.07);
   --emek:#2d6b8a;--emek-pale:rgba(0,0,0,0.07);
   --loewenstein:#7a4020;--loewenstein-pale:rgba(0,0,0,0.07);
-  --carmel:#1a7a5e;--carmel-pale:rgba(0,0,0,0.07);
+  --mod:#2c5f8a;--mod-pale:rgba(44,95,138,0.07);--carmel:#1a7a5e;--carmel-pale:rgba(0,0,0,0.07);
   --sp:#c97f0c;--sp-pale:rgba(201,127,12,0.07);
   }
 
@@ -213,6 +213,8 @@
   .emek-row:hover .title{color:var(--emek);}
   .loewenstein-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--loewenstein);}
   .loewenstein-row:hover .title{color:var(--loewenstein);}
+  .mod-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--mod);}
+  .mod-row:hover .title{color:var(--mod);}
   .carmel-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--carmel);--tg:#0088cc;}
   .carmel-row:hover .title{color:var(--carmel);--tg:#0088cc;}
   .li-row:hover .title{color:var(--li);}
@@ -546,6 +548,8 @@
   <div class="datasrc"><span class="src-dot" style="background:var(--carmel);--tg:#0088cc"></span><span id="carmelStatusText">Carmel: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--tg)"></span><span id="tgStatusText">Biltiformali: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--mod)"></span><span id="modStatusText">MOD: loading…</span></div>
   </div>
 </div>
 
@@ -653,6 +657,7 @@
       <option value="loewenstein">Loewenstein 🏥</option>
       <option value="carmel">Carmel 🏥</option>
       <option value="Biltiformali-Telegram">Biltiformali 📱</option>
+      <option value="mod">MOD 🛡️</option>
   </select>
   <select id="worktype">
     <option value="">Type</option>
@@ -2052,10 +2057,11 @@ function getPool(){
   if(activeSrc==='emek')    return EMEK_JOBS;
   if(activeSrc==='loewenstein')    return LOEWENSTEIN_JOBS;
   if(activeSrc==='carmel')    return CARMEL_JOBS;
+  if(activeSrc==='mod')        return MOD_JOBS;
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -2655,6 +2661,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'kpmg':'private','deloitte':'private','ey':'private',
   'joint':'nonprofit',
   'Biltiformali-Telegram':'nonprofit',
+  'mod':'public',
   'bar':'academic','bis':'public',
   'ichilov':'public','ic':'public','rambam':'public','rb':'public',
   'beilinson':'public','bl':'public',
@@ -2735,6 +2742,7 @@ const DATABAR_SOURCES = [
   { id:'loewensteinStatusText', key:'loewenstein', label:'Loewenstein' },
   { id:'carmelStatusText', key:'carmel', label:'Carmel' },
   { id:'tgStatusText', key:'telegram', label:'Biltiformali' },
+  { id:'modStatusText', key:'mod', label:'MOD' },
 ];
 
 function updateDatabar() {
@@ -2892,14 +2900,15 @@ function render(){
     const emekBadge = r.source==='emek'?'<span class="emek-badge">Emek</span>':'';
     const loewensteinBadge = r.source==='loewenstein'?'<span class="loewenstein-badge">Loewenstein</span>':'';
     const carmelBadge = r.source==='carmel'?'<span class="carmel-badge">Carmel</span>':'';
-    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row'})[r.source]||'';
+    const modBadge = r.source==='mod'?'<span class="mod-badge">MOD</span>':'';
+    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
     const popupClick = hasDesc ? 'onclick="event.preventDefault();var r=window._jobMap[\''+jobKey+'\'];if(r)openPopup(r);"' : '';
     const arrowLabel = hasDesc ? '📄' : '➝';
     return '<a class="job'+rowCls+(hasDesc?' has-desc':'')+'" href="'+esc(href)+'" '+(hasDesc?popupClick:'target="_blank" rel="noopener"')+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="city-cell">'+esc(r.city||'—')
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
@@ -3602,6 +3611,7 @@ async function fetchActiveUsers() {
 
 // ─── LOAD TELEGRAM ───────────────────────────────────────────────────────────
 let TG_JOBS = [];
+let MOD_JOBS = [];  // Ministry of Defense
 async function loadTelegram() {
   const filenames = [];
   for (let i = 0; i < 3; i++) {
@@ -3638,6 +3648,65 @@ async function loadTelegram() {
   applyFilters();
 }
 
+
+// ─── MOD NORMALIZER ──────────────────────────────────────────────────────────
+function normMod(row) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const title = g('title');
+  if (!title) return null;
+  return {
+    source:      'mod',
+    title:       title,
+    company:     g('department') || 'משרד הביטחון',
+    city:        g('city'),
+    url:         g('url'),
+    updated:     g('date'),
+    description: g('description') || (g('education') ? 'דרישות השכלה: ' + g('education') : '') + (g('experience') ? ' ניסיון: ' + g('experience') : ''),
+    level:       '',
+    workType:    '',
+    category:    '',
+    size:        '',
+    fnArea:      '',
+  };
+}
+
+// ─── LOAD MOD ─────────────────────────────────────────────────────────────────
+async function loadMod() {
+  const filenames = [];
+  for (let i = 0; i < 3; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(),
+          m = String(d.getMonth() + 1).padStart(2, '0'),
+          day = String(d.getDate()).padStart(2, '0');
+    filenames.push('mod_jobs_' + y + '-' + m + '-' + day + '.csv');
+  }
+  const allRows = (await Promise.all(filenames.map(async fname => {
+    try {
+      const r = await fetch(LI_RAW + fname);
+      if (!r.ok) return [];
+      const text = await r.text();
+      const parsed = Papa.parse(text, {
+        header: true, skipEmptyLines: true,
+        transformHeader: h => h.replace(/^\uFEFF/, '').trim().toLowerCase()
+      });
+      return parsed.data.map(row => normMod(row)).filter(Boolean);
+    } catch (e) { return []; }
+  }))).flat();
+
+  const seen = new Set();
+  MOD_JOBS = allRows.filter(r => {
+    const k = r.url || (r.title + '|' + r.company);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+
+  TOTALS['mod'] = MOD_JOBS.length;
+  const $modStatus = document.getElementById('modStatusText');
+  if ($modStatus) $modStatus.innerHTML = 'MOD: <strong>' + MOD_JOBS.length.toLocaleString() + ' jobs</strong>';
+  applyFilters();
+}
+
 // ─── BOOT ────────────────────────────────────────────────────────────────────
 render();
 (async()=>{
@@ -3671,7 +3740,8 @@ render();
     loadHadassah(),
     loadClalit(),
     loadOsem(),
-    loadTelegram()
+    loadTelegram(),
+    loadMod()
   ]).catch(e=>{
     console.error('load error', e);
   });
