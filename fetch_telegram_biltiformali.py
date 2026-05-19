@@ -50,7 +50,7 @@ ANTHROPIC_KEY = os.environ["ANTHROPIC_API_KEY"]
 CSV_COLUMNS = [
     "id", "title", "company", "city", "url",
     "date_posted", "source", "work_type", "sector", "level",
-    "employer_type", "raw_text",
+    "employer_type", "description", "raw_text",
 ]
 # ── Claude parsing ───────────────────────────────────────────────────────────
 
@@ -114,7 +114,8 @@ def extract_url(message) -> str | None:
             return ent.url
         if isinstance(ent, MessageEntityUrl):
             txt = message.message or ""
-            return txt[ent.offset: ent.offset + ent.length]
+            raw = txt[ent.offset: ent.offset + ent.length]
+            return raw if raw.startswith('http') else 'https://' + raw.lstrip('s:/')
     # Fallback: regex in plain text
     urls = re.findall(r'https?://\S+', message.message or "")
     return urls[0] if urls else None
@@ -186,6 +187,7 @@ async def scrape(days: int | None = 7, fetch_all: bool = False):
                 "work_type":   parsed.get("work_type") or "",
                 "sector":      parsed.get("sector") or "",
                 "level":       parsed.get("level") or "",
+                "description": text[:1500].replace("\n", " "),
                 "raw_text":    text[:300].replace("\n", " "),
             })
 
