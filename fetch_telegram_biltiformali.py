@@ -96,10 +96,15 @@ def parse_message(text: str) -> dict | None:
             messages=[{"role": "user", "content": text}],
         )
         raw = response.content[0].text.strip()
+        raw = re.sub(r'^```json\s*', '', raw)
+        raw = re.sub(r'\s*```$', '', raw)
         data = json.loads(raw)
         return data if data.get("is_job") else None
-    except (json.JSONDecodeError, Exception) as e:
-        print(f"  [warn] Claude parse error: {e}")
+    except json.JSONDecodeError as e:
+        print(f"  [warn] JSON parse error: {e} | raw: {repr(raw[:100])}")
+        return None
+    except Exception as e:
+        print(f"  [warn] API error: {type(e).__name__}: {e}")
         return None
 
 
