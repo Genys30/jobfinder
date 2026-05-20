@@ -6,5 +6,6 @@
   {"slug": "claroty",         "uid": "FA.E52", "name": "Claroty"},
   {"slug": "drivenets",       "uid": "C1.D57", "name": "DriveNets"},
   {"slug": "buildots",        "uid": "E9.769", "name": "Buildots"},
-  {"slug": "quantummachines", "uid": "D6.000", "name": "Quantum Machines"}
+  {"slug": "quantummachines", "uid": "D6.000", "name": "Quantum Machines"},
+  {"slug": "arito",           "uid": "F9.00A", "name": "Arito"}
 ]
