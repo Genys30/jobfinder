@@ -1056,7 +1056,7 @@ function normComeet(row, filename){
     url:  g('url'),
     updated: g('date')||fnDate,
     workType,
-    description: g('description'),
+    description: g('description').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s{2,}/g,' ').trim(),
     requirements: ''
   };
 }
@@ -1079,7 +1079,7 @@ function normGreenhouse(row, filename){
     url:   g('url'),
     updated: g('date')||fnDate,
     workType,
-    description: g('description'),
+    description: g('description').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s{2,}/g,' ').trim(),
     requirements: ''
   };
 }
