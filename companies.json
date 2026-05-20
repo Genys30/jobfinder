@@ -140,6 +140,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Appnext",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "appnext/42.003",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Aqua Security",
     "greenhouse": null,
     "lever": null,
@@ -160,6 +170,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Ask-AI",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "askai/1A.00C",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Atera Networks",
     "greenhouse": null,
     "lever": null,
@@ -178,6 +198,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Autobrains",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "autobrains/57.004",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "Axonius",
@@ -550,6 +580,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Datawizz.AI",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": "datawizz",
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Dazz",
     "greenhouse": "dazzinc",
     "lever": null,
@@ -620,6 +660,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "DreaMed Diabetes",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "dreamedai/B9.002",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Driivz",
     "greenhouse": null,
     "lever": null,
@@ -678,6 +728,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Esh",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "esh/87.003",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "eToro",
@@ -758,6 +818,26 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Firefly",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "firefly/39.000",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
+    "name": "ForSight Robotics",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "forsightrobotics/E9.008",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "Forter",
@@ -950,6 +1030,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Insights.US",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": "insights-us",
+    "added_by": "manual"
+  },
+  {
     "name": "IONIX",
     "greenhouse": null,
     "lever": null,
@@ -968,6 +1058,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Jazz Security",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "jazz/6A.009",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "JFrog",
@@ -1040,6 +1140,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Leadspace",
+    "greenhouse": null,
+    "lever": "leadspace",
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Legit Security",
     "greenhouse": null,
     "lever": null,
@@ -1048,6 +1158,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Lema AI",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "lemalabs/EA.001",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "Lightricks",
@@ -1098,6 +1218,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Ludeo",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "edgegaming/D7.008",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "Lumenis",
@@ -1250,6 +1380,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Ocean Security",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "ocean_security/F9.001",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Octopus Systems",
     "greenhouse": null,
     "lever": "octopus",
@@ -1318,6 +1458,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "PandoLogic",
+    "greenhouse": "pandologic",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "Parallel Wireless",
@@ -1410,6 +1560,16 @@
     "added_by": "techmap"
   },
   {
+    "name": "Poptin",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "poptin",
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Prisma Photonics",
     "greenhouse": null,
     "lever": null,
@@ -1468,6 +1628,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Sauce",
+    "greenhouse": null,
+    "lever": "Sauce",
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "ScyllaDB",
@@ -1578,6 +1748,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "SuperCom",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "supercom/46.00A",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "SuperPlay",
@@ -1710,6 +1890,26 @@
     "added_by": "techmap"
   },
   {
+    "name": "Trustmi",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "trustmi",
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
+    "name": "Twingate",
+    "greenhouse": null,
+    "lever": "twingate",
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Upstream Security",
     "greenhouse": null,
     "lever": null,
@@ -1730,6 +1930,26 @@
     "added_by": "techmap"
   },
   {
+    "name": "Vault Platform",
+    "greenhouse": null,
+    "lever": "vaultplatform",
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
+    "name": "Vayyar Imaging",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "vayyar",
+    "breezy": null,
+    "added_by": "manual"
+  },
+  {
     "name": "Vectorious Medical Technologies",
     "greenhouse": null,
     "lever": null,
@@ -1748,6 +1968,16 @@
     "workable": null,
     "breezy": null,
     "added_by": "techmap"
+  },
+  {
+    "name": "Vetric",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "vetric/A9.009",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "manual"
   },
   {
     "name": "Viber",
@@ -1840,16 +2070,6 @@
     "added_by": "techmap"
   },
   {
-    "name": "ZoomInfo",
-    "greenhouse": "zoominfo",
-    "lever": null,
-    "comeet": null,
-    "ashby": null,
-    "workable": null,
-    "breezy": null,
-    "added_by": "techmap"
-  },
-  {
     "name": "Zeroport",
     "greenhouse": null,
     "lever": null,
@@ -1860,13 +2080,13 @@
     "added_by": "manual"
   },
   {
-  "name": "Ocean Security",
-  "greenhouse": null,
-  "lever": null,
-  "comeet": "ocean_security/F9.001",
-  "ashby": null,
-  "workable": null,
-  "breezy": null,
-  "added_by": "manual"
+    "name": "ZoomInfo",
+    "greenhouse": "zoominfo",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "added_by": "techmap"
   }
 ]
