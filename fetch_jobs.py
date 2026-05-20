@@ -125,7 +125,7 @@ def run_comeet(tm):
     for i, c in enumerate(all_c, 1):
         slug, uid, name = c['slug'], c['uid'], c.get('name', c['slug'])
         print(f"  [{i}/{len(all_c)}] {name}")
-        tok = comeet_token(slug, uid)
+        tok = c.get('token') or comeet_token(slug, uid)
         if not tok: print("    x token not found"); continue
         try:
             r = requests.get(f'https://www.comeet.co/careers-api/2.0/company/{uid}/positions?token={tok}&details=true', timeout=60, headers=HEADERS)
