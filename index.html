@@ -3812,6 +3812,8 @@ async function loadTelegram() {
     } catch (e) { return []; }
   }))).flat();
 
+  // Sort newest first so dedup keeps the most recent version
+  allRows.sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
   const seen = new Set();
   TG_JOBS = allRows.filter(r => {
     const k = (r.title || '').toLowerCase() + '|' + (r.company || '').toLowerCase();
