@@ -59,8 +59,18 @@
   }
 
   /* ─── Saved searches ─── */
-  .q-wrap{position:relative;display:inline-block;}
-  .q-wrap input{width:140px;}
+  .q-wrap{position:relative;display:inline-flex;align-items:center;gap:2px;}
+  .q-input-wrap{position:relative;display:inline-block;}
+  .q-input-wrap input{width:140px;padding-right:26px;}
+  .q-search-spinner{
+    position:absolute;right:7px;top:50%;
+    width:13px;height:13px;margin-top:-6.5px;
+    border:2px solid var(--rule);border-top-color:var(--accent);
+    border-radius:50%;pointer-events:none;
+    opacity:0;visibility:hidden;transition:opacity .12s ease;
+  }
+  .q-search-spinner.is-visible{opacity:1;visibility:visible;animation:q-spin .7s linear infinite;}
+  @keyframes q-spin{to{transform:rotate(360deg);}}
   .q-save-btn{font-family:'JetBrains Mono',monospace;font-size:11px;
     background:none;border:1px solid var(--rule);border-radius:3px;
     color:var(--ink-faint);cursor:pointer;height:30px;padding:0 7px;
@@ -134,6 +144,7 @@
   .filters input,.filters select{font-family:'Carlito','Calibri',sans-serif;font-size:13px;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:3px;padding:5px 8px;outline:none;cursor:pointer;height:30px;}
   .filters input{width:140px;}
   .filters select{max-width:110px;}
+  #sort{max-width:128px;}
   #city,#company{max-width:120px;}
   .filters input::placeholder{color:var(--ink-faint);}
   .filters select{-webkit-appearance:none;appearance:none;padding-right:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-color:#fff;}
@@ -301,7 +312,8 @@
     .filters{padding:8px 12px;gap:6px;}
     .filters input{width:100%;}
     .q-wrap{display:flex;flex-direction:row;width:100%;gap:4px;}
-    .q-wrap input{flex:1;width:auto!important;}
+    .q-input-wrap{flex:1;min-width:0;}
+    .q-input-wrap input{width:100%!important;}
     .q-save-btn{flex-shrink:0;}
     .filters select{max-width:none;flex:1;}
     .status{padding:6px 12px;font-size:10px;flex-wrap:wrap;gap:4px;}
@@ -561,7 +573,10 @@
 </div>
 <section class="filters">
   <div class="q-wrap">
-    <input id="q" type="text" placeholder="Position…" autocomplete="off" />
+    <div class="q-input-wrap">
+      <input id="q" type="text" placeholder="Position…" autocomplete="off" />
+      <span class="q-search-spinner" id="qSearchSpinner" role="status" aria-live="polite" aria-label="Searching"></span>
+    </div>
     <button class="q-save-btn" id="qSaveBtn" title="Save this search">☆</button>
     <div class="saved-dropdown" id="savedDropdown">
       <div class="saved-dropdown-header">Saved searches</div>
@@ -664,6 +679,10 @@
     <option value="remote">Remote</option>
     <option value="hybrid">Hybrid</option>
     <option value="onsite">On-site</option>
+  </select>
+  <select id="sort" aria-label="Sort results">
+    <option value="date">Newest</option>
+    <option value="relevance" disabled>Best match</option>
   </select>
   <button class="reset" id="reset">Reset</button>
 </section>
@@ -817,6 +836,15 @@
   <span id="stamp"></span>
 </footer>
 
+<script src="js/normalize.js"></script>
+<script src="js/search-synonyms.js"></script>
+<script src="js/job-store.js"></script>
+<script src="js/query.js"></script>
+<script src="js/ranking.js"></script>
+<script src="js/filter-scheduler.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/search-runner.js"></script>
+<script src="js/url-state.js"></script>
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 
@@ -833,6 +861,8 @@ const LI_RAW     = 'https://raw.githubusercontent.com/' + LI_REPO + '/main/';
 // Pattern: linkedin_jobs_YYYY-MM-DD.csv  OR  linkedin_jobs.csv
 
 const PAGE       = 50;
+const SEARCH_CHUNK_SIZE = 500;
+const SEARCH_RENDER_CAP = 200;
 const SIZE_LABEL = {s:'small',m:'mid',l:'large',xl:'enterprise'};
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
@@ -935,6 +965,7 @@ const $carmelStatus = document.getElementById('carmelStatusText');
 const $sector    = document.getElementById('sector');
 const $source    = document.getElementById('source');
 const $worktype  = document.getElementById('worktype');
+const $sort      = document.getElementById('sort');
 const $cmStatus = document.getElementById('cmStatusText');
 const $ghStatus = document.getElementById('ghStatusText');
 const $lvStatus = document.getElementById('lvStatusText');
@@ -2017,7 +2048,7 @@ async function loadBIS() {
 }
 
 // ─── POOL ────────────────────────────────────────────────────────────────────
-function getPool(){
+function getPoolInner(){
   if(activeSrc==='techmap')  return TM_JOBS;
   if(activeSrc==='linkedin') return LI_JOBS;
   if(activeSrc==='comeet')      return CM_JOBS;
@@ -2070,6 +2101,11 @@ function getPool(){
     seenTitleCo.add(k2);
     return true;
   });
+}
+
+function getPool(){
+  const pool = getPoolInner();
+  return typeof JobStore !== 'undefined' ? JobStore.enrichJobs(pool) : pool;
 }
 
 // ─── DROPDOWNS ───────────────────────────────────────────────────────────────
@@ -2493,11 +2529,11 @@ function classifyLevel(title) {
 
 // Highlight active filters
 function highlightFilters(){
-  [$q,$segment,$level,$date,$worktype,$company,$sector,$source].forEach(el=>{
+  [$q,$segment,$level,$date,$worktype,$sort,$company,$sector,$source].forEach(el=>{
     if(!el) return;
     const field = el.closest('.field');
     if(!field) return;
-    const active = el.value !== '' && el.value !== undefined;
+    const active = el.id === 'sort' ? el.value === 'relevance' : el.value !== '' && el.value !== undefined;
     field.classList.toggle('active', active);
   });
 }
@@ -2780,71 +2816,178 @@ function updateDatabar() {
   });
 }
 
-// ─── FILTER ──────────────────────────────────────────────────────────────────
-function applyFilters(){
-  // mark active filters
-  [$company,$segment,$level,$date,$sector,$source,$worktype].forEach(el=>{
+// ─── Position search spinner ───────────────────────────────────────────────────
+const $qSearchSpinner = document.getElementById('qSearchSpinner');
+
+function setQSearchLoading(on) {
+  if ($qSearchSpinner) $qSearchSpinner.classList.toggle('is-visible', !!on);
+}
+
+function updateSortUi() {
+  if (!$sort) return;
+  const hasQ = $q && $q.value.trim();
+  const relOpt = $sort.querySelector('option[value="relevance"]');
+  if (relOpt) relOpt.disabled = !hasQ;
+  if (!hasQ && $sort.value === 'relevance') $sort.value = 'date';
+}
+
+function updateFilterChrome(){
+  updateSortUi();
+  [$company,$segment,$level,$date,$sector,$source,$worktype,$sort].forEach(el=>{
     if(!el) return;
-    el.classList.toggle('is-active', el.value !== '');
+    if (el.id === 'sort') el.classList.toggle('is-active', el.value === 'relevance');
+    else el.classList.toggle('is-active', el.value !== '');
   });
   if($q) $q.classList.toggle('is-active', $q.value.trim() !== '');
   updateCityBtn();
-  const q        = $q.value.trim().toLowerCase();
-  const company  = $company.value;
+}
+
+function readFilterCriteria(){
+  const q          = $q ? $q.value.trim() : '';
+  const company    = $company ? $company.value : '';
   const segFilter  = $segment  ? $segment.value  : '';
   const lvlFilter  = $level    ? $level.value    : '';
   const secFilter  = $sector   ? $sector.value   : '';
-  const srcFilter= $source   ? $source.value   : '';
-  activeSrc = srcFilter || 'all';
-  const wtFilter = $worktype ? $worktype.value  : '';
-  const days     = $date.value ? parseInt($date.value) : null;
+  const srcFilter  = $source   ? $source.value   : '';
+  const wtFilter   = $worktype ? $worktype.value : '';
+  const sort       = $sort ? $sort.value : 'date';
+  const days       = $date && $date.value ? parseInt($date.value, 10) : null;
   const cutoff = (()=>{
     if(!days) return null;
     const d = new Date();
     if(days===1){
-      // "Today" = since midnight local time
       d.setHours(0,0,0,0);
       return d.getTime();
     }
-    // Other ranges = rolling N days back from now
     return Date.now() - days*86400000;
   })();
+  return {
+    q, company, segFilter, lvlFilter, secFilter, srcFilter, wtFilter, sort,
+    selectedCities, cutoff,
+    dateValue: $date ? $date.value : '',
+  };
+}
 
-  const pool = getPool();
-  FILTERED = pool.filter(r=>{
-    if(selectedCities.size && !selectedCities.has(normalizeCity(r.city))) return false;
-    if(company   && r.company!==company)     return false;
-    if(segFilter && classifySegment(r.title)!==segFilter)   return false;
-    if(lvlFilter && classifyLevel(r.title)!==lvlFilter)       return false;
-    if(secFilter && classifyEmployerType(r.company,r.title,r.source)!==secFilter)   return false;
-    if(srcFilter && r.source!==srcFilter)    return false;
-    if(wtFilter  && (r.workType||'')!==wtFilter && !(wtFilter==='remote' && r.city==='מהבית')) return false;
-    if(q && !(r.title.toLowerCase().includes(q)||r.fnArea.includes(q)||(r.description||'').toLowerCase().includes(q)||(r.requirements||'').toLowerCase().includes(q))) return false;
-    if(cutoff){
-      const d = parseDate(r.updated);
-      if(r.source==='techmap' && (!d||d.getTime()<cutoff)) return false;
-      if(r.source!=='techmap' && d && d.getTime()<cutoff)  return false;
-    }
-    return true;
+function getFilterHelpers(){
+  return {
+    normalizeCity, classifySegment, classifyLevel, classifyEmployerType, parseDate,
+  };
+}
+
+function syncFilterFallback(criteria, pool, filterHelpers){
+  FILTERED = pool.filter(function (r) {
+    return JobFilters.jobPassesFilters(r, criteria, filterHelpers);
   });
-  // Sort by date descending — most recent first
-  FILTERED.sort((a,b)=>{
-    const da = parseDate(a.updated);
-    const db = parseDate(b.updated);
-    if(!da && !db) return 0;
-    if(!da) return 1;   // no date → bottom
-    if(!db) return -1;
-    return db - da;     // newest first
-  });
-  visible = PAGE;
+  if (typeof SearchRank !== 'undefined' && SearchRank.applyResultSort) {
+    SearchRank.applyResultSort(FILTERED, {
+      q: criteria.q,
+      sort: criteria.sort || 'date',
+      parseDate: parseDate,
+    });
+  }
+  visible = Math.min(SEARCH_RENDER_CAP, FILTERED.length);
   updateDatabar();
   render();
+}
+
+function runSearchAsync(){
+  updateFilterChrome();
+  const criteria = readFilterCriteria();
+  activeSrc = criteria.srcFilter || 'all';
+
+  if (typeof UrlState !== 'undefined') {
+    UrlState.replaceFromCriteria({
+      q: criteria.q,
+      company: criteria.company,
+      segment: criteria.segFilter,
+      level: criteria.lvlFilter,
+      date: criteria.dateValue,
+      sector: criteria.secFilter,
+      source: criteria.srcFilter,
+      worktype: criteria.wtFilter,
+      sort: criteria.sort || 'date',
+      selectedCities: criteria.selectedCities,
+    });
+  }
+
+  const pool = getPool();
+  const filterHelpers = getFilterHelpers();
+
+  if (typeof SearchRunner === 'undefined') {
+    syncFilterFallback(criteria, pool, filterHelpers);
+    return;
+  }
+
+  SearchRunner.run({
+    jobs: pool,
+    criteria: criteria,
+    helpers: filterHelpers,
+    chunkSize: SEARCH_CHUNK_SIZE,
+    renderLimit: SEARCH_RENDER_CAP,
+    onStart: function () {
+      setQSearchLoading(!!criteria.q);
+    },
+    onStale: function () {},
+    onDone: function (payload) {
+      setQSearchLoading(false);
+      FILTERED = payload.results;
+      visible = payload.initialVisible;
+      updateDatabar();
+      render();
+    },
+  });
+}
+
+/** Re-order current FILTERED only (no chunk pass) — for sort dropdown changes. */
+function applyResort() {
+  updateFilterChrome();
+  const c = readFilterCriteria();
+  if (typeof UrlState !== 'undefined') {
+    UrlState.replaceFromCriteria({
+      q: c.q,
+      company: c.company,
+      segment: c.segFilter,
+      level: c.lvlFilter,
+      date: c.dateValue,
+      sector: c.secFilter,
+      source: c.srcFilter,
+      worktype: c.wtFilter,
+      sort: c.sort || 'date',
+      selectedCities: c.selectedCities,
+    });
+  }
+  if (FILTERED.length && typeof SearchRank !== 'undefined' && SearchRank.applyResultSort) {
+    SearchRank.applyResultSort(FILTERED, { q: c.q, sort: c.sort || 'date', parseDate });
+  }
+  visible = Math.min(visible, FILTERED.length);
+  updateDatabar();
+  render();
+}
+
+function applyFilters(){
+  if (typeof FilterScheduler !== 'undefined') {
+    FilterScheduler.cancel();
+  }
+  runSearchAsync();
+}
+
+function scheduleApplyFilters(){
+  if (typeof FilterScheduler !== 'undefined') {
+    FilterScheduler.schedule(runSearchAsync);
+  } else {
+    runSearchAsync();
+  }
 }
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
 function render(){
   const total = getPool().length;
-  $count.innerHTML = '<strong>'+FILTERED.length.toLocaleString()+'</strong> open role'+(FILTERED.length===1?'':'s')+' · '+total.toLocaleString()+' indexed';
+  const nFiltered = FILTERED.length;
+  let countHtml = '<strong>'+nFiltered.toLocaleString()+'</strong> open role'+(nFiltered===1?'':'s')+' · '+total.toLocaleString()+' indexed';
+  if (nFiltered > 0 && visible < nFiltered) {
+    countHtml += ' · <span style="color:var(--ink-faint);font-weight:400">showing '+visible.toLocaleString()+' of '+nFiltered.toLocaleString()+'</span>';
+  }
+  $count.innerHTML = countHtml;
   $export.disabled = FILTERED.length===0;
   $export.textContent = FILTERED.length>0 ? '↓ Export '+FILTERED.length+' as CSV' : '↓ Export CSV';
 
@@ -2855,9 +2998,9 @@ function render(){
   }
 
   const slice = FILTERED.slice(0,visible);
-  // Build job lookup map for popup
+  // Build job lookup map for popup (visible rows only — keeps render light)
   window._jobMap = {};
-  FILTERED.forEach(r => { window._jobMap[r.url||(r.title+r.company)] = r; });
+  slice.forEach(r => { window._jobMap[r.url||(r.title+r.company)] = r; });
   $list.innerHTML = slice.map(r=>{
     const href   = r.url||'#';
     const hasDesc = !!(r.description && r.description.trim());
@@ -2984,9 +3127,23 @@ function exportCSV(){
 }
 
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
-let qTimer;
-$q.addEventListener('input',()=>{clearTimeout(qTimer);qTimer=setTimeout(applyFilters,120);});
-[$company,$date,$level,$segment,$sector,$source,$worktype].forEach(el=>{ if(el) el.addEventListener('change',applyFilters); });
+if ($q) {
+  $q.addEventListener('input', () => {
+    updateSortUi();
+    $q.classList.toggle('is-active', $q.value.trim() !== '');
+    scheduleApplyFilters();
+  });
+  $q.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (typeof FilterScheduler !== 'undefined') FilterScheduler.cancel();
+      runSearchAsync();
+    }
+  });
+}
+[$company,$date,$level,$segment,$sector,$source,$worktype].forEach(el=>{
+  if (el) el.addEventListener('change', applyFilters);
+});
+if ($sort) $sort.addEventListener('change', applyResort);
 $reset.addEventListener('click',()=>{
   $q.value='';$q.classList.remove('is-active');$company.value='';$date.value='';
   selectedCities.clear(); buildCityTree(''); updateCityBtn();
@@ -2995,9 +3152,11 @@ $reset.addEventListener('click',()=>{
   if($sector)$sector.value='';
   if($source)$source.value='';
   if($worktype)$worktype.value='';
-  [$company,$segment,$level,$date,$sector,$source,$worktype].forEach(el=>{
+  if($sort)$sort.value='date';
+  [$company,$segment,$level,$date,$sector,$source,$worktype,$sort].forEach(el=>{
     if(el) el.classList.remove('is-active');
   });
+  if (typeof UrlState !== 'undefined') history.replaceState(null, '', location.pathname);
   applyFilters();
 });
 $more.addEventListener('click',()=>{visible+=PAGE;render();});
@@ -3195,20 +3354,23 @@ async function loadIchilov() {
 const SAVED_KEY = 'jf_saved_searches_v2';
 const MAX_SAVED = 15;
 
-const FILTER_IDS = ['q','city','company','segment','level','date','sector','source','worktype'];
+const FILTER_IDS = ['q','city','company','segment','level','date','sector','source','worktype','sort'];
 const FILTER_LABELS = {
   segment:{rd:'R&D',product:'Product',data:'Data',design:'Design',sales:'Sales',
            marketing:'Marketing',operations:'Ops',support:'CS',management:'Mgmt',intern:'Intern',administrative:'Admin'},
   sector:{startup:'Startup',private:'Private',public:'Public',academic:'Academic',nonprofit:'NGO',defence:'Defence'},
   date:{1:'Today',3:'3d',7:'7d',14:'14d',30:'30d'},
   worktype:{remote:'Remote',hybrid:'Hybrid',onsite:'On-site'},
+  sort:{date:'Newest',relevance:'Best match'},
 };
 
 function captureFilters() {
   const state = {};
   FILTER_IDS.forEach(id => {
     const el = document.getElementById(id);
-    if (el && el.value) state[id] = el.value;
+    if (!el || !el.value) return;
+    if (id === 'sort' && el.value === 'date') return;
+    state[id] = el.value;
   });
   return state;
 }
@@ -3217,7 +3379,7 @@ function applyFilterState(state) {
   FILTER_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.value = state[id] || '';
+    el.value = state[id] || (id === 'sort' ? 'date' : '');
   });
   applyFilters();
 }
@@ -3233,6 +3395,7 @@ function stateLabel(state) {
   if (state.sector)   parts.push(FILTER_LABELS.sector[state.sector] || state.sector);
   if (state.source)   parts.push(state.source);
   if (state.worktype) parts.push(FILTER_LABELS.worktype[state.worktype] || state.worktype);
+  if (state.sort)      parts.push(FILTER_LABELS.sort[state.sort] || state.sort);
   return parts.join(' · ') || '(all jobs)';
 }
 
@@ -3714,6 +3877,19 @@ async function loadMod() {
 }
 
 // ─── BOOT ────────────────────────────────────────────────────────────────────
+if (typeof UrlState !== 'undefined') {
+  UrlState.init({
+    getElement: id => document.getElementById(id),
+    getSelectedCities: () => selectedCities,
+    setSelectedCities: arr => {
+      selectedCities = new Set(arr);
+      buildCityTree('');
+      updateCityBtn();
+    },
+  });
+  UrlState.readFromUrl();
+}
+
 render();
 (async()=>{
   // Load LinkedIn + Comeet in parallel
