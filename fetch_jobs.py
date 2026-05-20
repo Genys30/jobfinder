@@ -214,6 +214,7 @@ def run_lever(tm):
             if not r.ok: print(f"    - {r.status_code}"); continue
             pos = []
             for job in r.json():
+                if not isinstance(job, dict): continue
                 cats  = job.get('categories', {})
                 loc   = cats.get('location', '')
                 wtype = job.get('workplaceType', '')
@@ -2163,6 +2164,58 @@ def _run_hunterhrms_playwright(base_url, company, location, outfile):
         outfile)
 
 
+# ══ MOD (משרד הביטחון) ═══════════════════════════════════════════════════════
+def run_mod():
+    print("\n-- Ministry of Defense (משרד הביטחון) --------------------------------")
+    from datetime import datetime as _dt
+    API_URL = "https://jobs.mod.gov.il/api/TenderPublish/GetAllPublished"
+    hdrs = {**HEADERS,
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/plain, */*",
+        "Referer": "https://jobs.mod.gov.il/",
+        "Origin": "https://jobs.mod.gov.il",
+    }
+    def fmt(s):
+        if not s: return ""
+        try: return _dt.fromisoformat(s.rstrip("Z")).strftime("%Y-%m-%d")
+        except: return s[:10]
+    def clean(s):
+        if not s: return ""
+        return " ".join(str(s).replace("|", " ").split())
+    try:
+        r = requests.post(API_URL, headers=hdrs, json={}, timeout=30)
+        if not r.ok: print(f"  - {r.status_code}"); return
+        data = r.json()
+        if data.get("HasError"): print(f"  x API error: {data.get('Messages')}"); return
+        tenders = data.get("Data", [])
+        print(f"  Got {len(tenders)} tenders")
+        seen, jobs = set(), []
+        for t in tenders:
+            bj = t.get("BankJob") or {}
+            if not bj: continue
+            hj = bj.get("HrJob") or {}
+            pub = t.get("TenderPublish") or {}
+            tid = t.get("Id")
+            oid = t.get("TenderObjectID") or str(tid)
+            if oid in seen: continue
+            seen.add(oid)
+            jobs.append({
+                "title":        clean(hj.get("JobName") or bj.get("JobName") or ""),
+                "company":      clean(bj.get("DepartmentName") or "משרד הביטחון"),
+                "location":     clean(hj.get("JobAreaDescription") or ""),
+                "date":         fmt(pub.get("StartDate") or t.get("CreatedAt")),
+                "url":          f"https://jobs.mod.gov.il/#/Tenders?TenderId={tid}",
+                "department":   "",
+                "workplace_type": "onsite",
+                "description":  clean(hj.get("GeneralSummary") or ""),
+            })
+        print(f"  + {len(jobs)}")
+        write_csv(jobs, ["title","company","location","date","url","department","workplace_type","description"],
+            f"mod_jobs_{TODAY}.csv")
+    except Exception as e:
+        print(f"  x {e}")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print(f"=== fetch_jobs.py  {TODAY} ===\n")
@@ -2193,6 +2246,7 @@ def main():
     run_clalit()
     run_szmc()
     run_hadassah()
+    run_mod()
     run_osem()
     print("\nUpdating history...")
     update_history()

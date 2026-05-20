@@ -1,1 +1,4 @@
-[{"slug": "framesecurity", "uid": "FA.002", "name": "Frame Security"}] 
+[
+  {"slug": "framesecurity", "uid": "FA.002", "name": "Frame Security"},
+  {"slug": "ocean_security", "uid": "F9.001", "name": "Ocean Security"}
+]
