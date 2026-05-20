@@ -1165,7 +1165,18 @@ function normTelegram(row) {
     title:    title,
     company:  g('company'),
     city:     g('city'),
-    url:      g('url'),
+    url:      (function(u){
+      u = (u||'').trim();
+      // Fix broken URLs: https://tps://, ttps://, tps://, ://
+      u = u.replace(/^(https?:\/\/)+/, 'https://');  // remove duplicate https://
+      u = u.replace(/^ttps:\/\//, 'https://');
+      u = u.replace(/^tps:\/\//, 'https://');
+      u = u.replace(/^:\/\//, 'https://');
+      if (!u.startsWith('http') && u.includes('://')) {
+        u = 'https://' + u.split('://').slice(1).join('://');
+      }
+      return u;
+    })(g('url')),
     updated:  g('date_posted'),
     level:    g('level'),
     workType: g('work_type'),
