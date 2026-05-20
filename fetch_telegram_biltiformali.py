@@ -90,7 +90,7 @@ def parse_message(text: str) -> dict | None:
     """Call Claude to parse a single Telegram message. Returns dict or None."""
     try:
         response = claude.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-haiku-4-5-20251001",
             max_tokens=512,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": text}],
@@ -115,7 +115,8 @@ def extract_url(message) -> str | None:
         if isinstance(ent, MessageEntityUrl):
             txt = message.message or ""
             raw = txt[ent.offset: ent.offset + ent.length]
-            return raw if raw.startswith('http') else 'https://' + raw.lstrip('s:/')
+            raw = re.sub(r'^https?://', '', raw)
+            return 'https://' + raw
     # Fallback: regex in plain text
     urls = re.findall(r'https?://\S+', message.message or "")
     return urls[0] if urls else None
