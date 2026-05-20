@@ -36,3 +36,5 @@ tg_session.session
 tg_session.session 
 patch_bat.py 
 patch_telegram.py 
+patch_*.py 
+check_*.py 
