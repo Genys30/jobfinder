@@ -1,4 +1,10 @@
 [
-  {"slug": "framesecurity", "uid": "FA.002", "name": "Frame Security"},
-  {"slug": "ocean_security", "uid": "F9.001", "name": "Ocean Security"}
+  {"slug": "framesecurity",   "uid": "FA.002", "name": "Frame Security"},
+  {"slug": "ocean_security",  "uid": "F9.001", "name": "Ocean Security"},
+  {"slug": "pentera",         "uid": "CB.360", "name": "Pentera"},
+  {"slug": "cyera",           "uid": "17.008", "name": "Cyera"},
+  {"slug": "claroty",         "uid": "FA.E52", "name": "Claroty"},
+  {"slug": "drivenets",       "uid": "C1.D57", "name": "DriveNets"},
+  {"slug": "buildots",        "uid": "E9.769", "name": "Buildots"},
+  {"slug": "quantummachines", "uid": "D6.000", "name": "Quantum Machines"}
 ]
