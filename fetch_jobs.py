@@ -2166,8 +2166,7 @@ def _run_hunterhrms_playwright(base_url, company, location, outfile):
 
 # ══ MOD (משרד הביטחון) ═══════════════════════════════════════════════════════
 def run_mod():
-    print("
--- Ministry of Defense (משרד הביטחון) --------------------------------")
+    print("\n-- Ministry of Defense (משרד הביטחון) --------------------------------")
     from datetime import datetime as _dt
     API_URL = "https://jobs.mod.gov.il/api/TenderPublish/GetAllPublished"
     hdrs = {**HEADERS,
