@@ -228,6 +228,7 @@
   .loewenstein-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--loewenstein);}
   .loewenstein-row:hover .title{color:var(--loewenstein);}
   .mod-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--mod);}
+  .tg-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:#0088cc;}
   .mod-row:hover .title{color:var(--mod);}
   .carmel-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--carmel);--tg:#0088cc;}
   .carmel-row:hover .title{color:var(--carmel);--tg:#0088cc;}
@@ -3059,14 +3060,15 @@ function render(){
     const loewensteinBadge = r.source==='loewenstein'?'<span class="loewenstein-badge">Loewenstein</span>':'';
     const carmelBadge = r.source==='carmel'?'<span class="carmel-badge">Carmel</span>':'';
     const modBadge = r.source==='mod'?'<span class="mod-badge">MOD</span>':'';
-    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row'})[r.source]||'';
+    const tgBadge = r.source==='Biltiformali-Telegram'?'<span class="tg-badge">TG</span>':'';
+    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
     const popupClick = hasDesc ? 'onclick="event.preventDefault();var r=window._jobMap[\''+jobKey+'\'];if(r)openPopup(r);"' : '';
     const arrowLabel = hasDesc ? '📄' : '➝';
     return '<a class="job'+rowCls+(hasDesc?' has-desc':'')+'" href="'+esc(href)+'" '+(hasDesc?popupClick:'target="_blank" rel="noopener"')+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="city-cell">'+esc(r.city||'—')
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
