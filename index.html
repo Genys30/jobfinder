@@ -574,6 +574,7 @@
   <button class="vbtn active" id="vbtnJobs">&#128269; Jobs</button>
   <button class="vbtn" id="vbtnApps">&#128236; My Applications</button>
   <button class="vbtn" id="vbtnAnalytics">&#128202; Analytics</button>
+  <button class="vbtn" id="vbtnAbout">&#8505;&#65039; About</button>
 </div>
 <section class="filters">
   <div class="q-wrap">
@@ -833,6 +834,34 @@
     </div>
   </div>
   <div id="appsList"></div>
+</div>
+
+<div id="aboutPanel" style="display:none; padding:32px 48px 64px; max-width:750px;">
+  <div class="about-container" style="line-height:1.6; font-family:'Carlito','Calibri',sans-serif; color:var(--ink);">
+    <h2 style="font-size:1.5rem; margin-bottom:0.5rem; border-bottom:2px solid var(--rule); padding-bottom:0.5rem; color:var(--ink);">About JobFinder</h2>
+    <p style="font-size:0.95rem; margin-bottom:1.2rem; color:var(--ink-dim);">
+      <strong>JobFinder</strong> is a data intelligence platform that centralizes, standardizes, and enriches the fragmented Israeli job market. It continuously cleanses raw operational data across tech, civic tech, public sectors, and healthcare to deliver a high-signal search experience.
+    </p>
+    <h3 style="font-size:1.1rem; margin-top:1rem; margin-bottom:0.5rem; color:var(--ink);">⚙️ Capabilities</h3>
+    <ul style="padding-left:1.2rem; margin-bottom:1.2rem; font-size:0.9rem; color:var(--ink-dim);">
+      <li><strong>Multi-Source Pipeline:</strong> Automated ingestion and cross-platform schema normalization.</li>
+      <li><strong>Advanced Taxonomy:</strong> Granular classification by role, tier, location, and structural employer type.</li>
+      <li><strong>Embedded BI Analytics:</strong> Interactive live-charts mapping hiring velocities, leading companies, and remote-work trends.</li>
+      <li><strong>Productivity Tools:</strong> Saved local searches, an integrated application tracker, and CSV data exports.</li>
+    </ul>
+    <h3 style="font-size:1.1rem; margin-top:1rem; margin-bottom:0.5rem; color:var(--ink);">🌐 Aggregated Sources</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.85rem; margin-bottom:1.5rem; color:var(--ink-dim);">
+      <div><strong>🚀 Tech ATS:</strong> LinkedIn, Greenhouse, Comeet, Lever, Ashby, Workable.</div>
+      <div><strong>🏛️ Public &amp; Defence:</strong> Ministry of Defense (MOD), Mitam.</div>
+      <div><strong>🤝 Nonprofits &amp; NGOs:</strong> Joint (JDC), Biltiformali, Impact networks.</div>
+      <div><strong>🎓 Academia:</strong> Weizmann, Technion, HUJI, TAU, BGU, Haifa, BAR.</div>
+      <div><strong>🏥 Healthcare:</strong> Clalit, Ichilov, Rambam, Hadassah, Soroka, and 10+ medical centers.</div>
+      <div><strong>🏢 Advisory:</strong> KPMG, Deloitte, EY, BIS, Osem-Nestlé.</div>
+    </div>
+    <footer style="font-size:0.8rem; border-top:1px solid var(--rule); padding-top:0.8rem; color:var(--ink-faint);">
+      Built by <a href="https://www.linkedin.com/in/jennysotnik/" target="_blank" style="color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent); padding-bottom:1px; font-weight:bold;">Jenny Sotnik Talisman</a> — turning messy public data into real-time operational signal.
+    </footer>
+  </div>
 </div>
 
 <footer>
@@ -4302,11 +4331,25 @@ document.getElementById('vbtnApps').addEventListener('click',function(){
 });
 document.getElementById('vbtnJobs').addEventListener('click',function(){
   document.getElementById('appsPanel').style.display='none';
+  document.getElementById('aboutPanel').style.display='none';
   document.getElementById('vbtnApps').classList.remove('active');
+  document.getElementById('vbtnAbout').classList.remove('active');
 });
 document.getElementById('vbtnAnalytics').addEventListener('click',function(){
   document.getElementById('appsPanel').style.display='none';
+  document.getElementById('aboutPanel').style.display='none';
   document.getElementById('vbtnApps').classList.remove('active');
+  document.getElementById('vbtnAbout').classList.remove('active');
+});
+document.getElementById('vbtnAbout').addEventListener('click',function(){
+  ['vbtnAbout','vbtnJobs','vbtnAnalytics','vbtnApps'].forEach(function(id){
+    document.getElementById(id).classList.toggle('active',id==='vbtnAbout');
+  });
+  document.querySelector('main').style.display='none';
+  document.querySelector('.status').style.display='none';
+  document.getElementById('analyticsPanel').style.display='none';
+  document.getElementById('appsPanel').style.display='none';
+  document.getElementById('aboutPanel').style.display='block';
 });
 // END CV TRACKER
 </script>
