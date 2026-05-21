@@ -8,26 +8,24 @@
 
   /** @type {string[][]} token/role groups */
   const GROUPS = [
-    // ── Engineering ─────────────────────────────────────────────────────────
+    // ── Engineering & Architecture ──────────────────────────────────────────
     ['frontend', 'front-end', 'front end', 'front end developer', 'front-end developer',
-      'frontend developer', 'frontend engineer', 'front end engineer', 'ui developer',
-      'פרונט', 'פרונט אנד', 'פיתוח פרונט', 'מפתח פרונט', 'מפתח/ת פרונט', 'מפתחת פרונט',
-      'מפתח פרונט אנד', 'מפתח/ת פרונט אנד', 'מפתחת פרונט אנד'],
+      'frontend developer', 'frontend engineer', 'ui developer',
+      'פרונט', 'פרונט אנד', 'פיתוח פרונט', 'מפתח פרונט', 'מפתח/ת פרונט', 'מפתחת פרונט'],
     ['backend', 'back-end', 'back end', 'back end developer', 'backend developer',
       'backend engineer', 'server side', 'server-side', 'צד שרת', 'מפתח backend',
       'מפתח/ת backend', 'מהנדס/ת backend', 'מהנדס backend'],
     ['full stack', 'fullstack', 'full-stack', 'full stack developer', 'fullstack developer',
       'פול סטאק', 'פולסטאק', 'מפתח/ת פול סטאק'],
-    ['software engineer', 'software developer', 'developer', 'engineer', 'sw engineer',
-      'מפתח', 'מפתח/ת', 'מפתחת', 'מהנדס', 'מהנדס/ת', 'מהנדסת', 'מהנדס תוכנה',
-      'מפתח תוכנה', 'מפתח/ת תוכנה', 'מהנדס/ת תוכנה'],
+    ['software engineer', 'software developer', 'sw engineer',
+      'מפתח תוכנה', 'מפתח/ת תוכנה', 'מהנדס/ת תוכנה', 'מהנדס תוכנה'],
     ['devops', 'dev ops', 'dev-ops', 'devsecops', 'platform engineer', 'infrastructure engineer',
       'דבאופס', 'דב ops', 'מהנדס/ת תשתיות', 'מהנדס תשתיות', 'פלטפורמה'],
     ['sre', 'site reliability', 'site reliability engineer', 'reliability engineer',
       'production engineer', 'מהנדס/ת ייצוב'],
     ['qa', 'quality assurance', 'software tester', 'software test engineer', 'test engineer',
-      'sdet', 'automation engineer', 'qa engineer', 'מבטח/ת איכות', 'מבטח איכות',
-      'בדיקות תוכנה', 'בודק/ת תוכנה', 'בודק תוכנה', 'מהנדס/ת בדיקות'],
+      'sdet', 'qa engineer', 'מבטח/ת איכות', 'מבטח איכות',
+      'בדיקות תוכנה', 'בודק/ת תוכנה', 'מהנדס/ת בדיקות'],
     ['security', 'cyber', 'cybersecurity', 'cyber security', 'information security',
       'appsec', 'application security', 'infosec', 'אבטחת מידע', 'אבטחת סייבר', 'סייבר',
       'מומחה/ית אבטחה', 'מהנדס/ת אבטחה'],
@@ -47,99 +45,111 @@
       'it support', 'helpdesk', 'תמיכה טכנית', 'איש/אשת סיסטם', 'מנהל/ת מערכות מידע'],
 
     // ── Data & AI ───────────────────────────────────────────────────────────
-    ['data scientist', 'data science', 'מדען/ית נתונים', 'מדען נתונים', 'מדענית נתונים',
-      'machine learning', 'ml'],
+    ['data scientist', 'data science', 'מדען/ית נתונים', 'מדען נתונים', 'מדענית נתונים'],
     ['data engineer', 'data engineering', 'מהנדס/ת דאטה', 'מהנדס דאטה', 'מהנדס/ת נתונים'],
-    ['data analyst', 'data analysis', 'business analyst', 'analytics', 'אנליסט/ית',
-      'אנליסט', 'אנליסטית', 'אנליסט/ית נתונים', 'אנליטיקה'],
-    ['machine learning', 'ml engineer', 'ml', 'deep learning', 'ai engineer',
-      'artificial intelligence', 'ai', 'llm', 'nlp', 'computer vision',
-      'data scientist', 'data science', 'מדען/ית נתונים', 'מדען נתונים',
-      'למידת מחשב', 'בינה מלאכותית', 'מידענות', 'מפתח/ת ai'],
-    ['bi', 'business intelligence', 'bi developer', 'bi analyst', 'דוחות'],
+    ['data analyst', 'data analysis', 'analytics', 'אנליסט/ית נתונים', 'אנליטיקה'],
+    ['machine learning', 'ml engineer', 'ml', 'deep learning', 'computer vision', 'cv',
+      'למידת מחשב'],
+    ['artificial intelligence', 'ai engineer', 'llm', 'nlp', 'prompt engineer',
+      'בינה מלאכותית', 'מפתח/ת ai'],
+    ['data ops', 'data operations', 'rpa', 'automation engineer', 'workflow automation',
+      'n8n', 'make', 'zapier', 'אוטומציה', 'מפתח/ת אוטומציה'],
+    ['bi', 'business intelligence', 'bi developer', 'bi analyst', 'דוחות', 'מפתח/ת bi'],
 
-    // ── Product & Project ─────────────────────────────────────────────────────
+    // ── OSINT, Research & Knowledge Management ───────────────────────────────
+    ['osint', 'open source intelligence', 'data researcher', 'information specialist',
+      'knowledge manager', 'intelligence analyst', 'ecosystem intelligence', 'web researcher',
+      'מידען', 'מידענית', 'מידענות', 'חוקר/ת מידע', 'מנהל/ת ידע',
+      'אנליסט/ית מודיעין', 'חוקר/ת נתונים'],
+    ['research', 'researcher', 'r&d', 'מחקר', 'חוקר/ת', 'מחקר ופיתוח', 'מכון מחקר'],
+
+    // ── Product, Project & Design ────────────────────────────────────────────
     ['product manager', 'product owner', 'product lead', 'product management', 'pm', 'po',
       'מנהל/ת מוצר', 'מנהל מוצר', 'מנהלת מוצר', 'בעל/ת מוצר', 'בעל מוצר'],
     ['project manager', 'program manager', 'project management', 'scrum master',
       'agile coach', 'מנהל/ת פרויקט', 'מנהל פרויקט', 'רכז/ת פרויקטים'],
     ['business analyst', 'ba', 'systems analyst', 'אנליסט/ית עסקי', 'אנליסט עסקי',
       'אנליסט/ית', 'אנליסט'],
-
-    // ── Design ────────────────────────────────────────────────────────────────
     ['ux', 'ui', 'ux designer', 'ui designer', 'ui/ux', 'ux/ui', 'product designer',
       'user experience', 'user interface', 'interaction designer', 'מעצב/ת', 'מעצב',
       'מעצבת', 'מעצב/ת ux', 'מעצב/ת ui', 'מעצב/ת מוצר'],
 
-    // ── Business & GTM ──────────────────────────────────────────────────────
+    // ── Business & GTM ───────────────────────────────────────────────────────
     ['sales', 'account executive', 'account manager', 'sales manager', 'sales engineer',
       'business development', 'bdr', 'sdr', 'מכירות', 'מנהל/ת מכירות', 'נציג/ת מכירות',
       'פיתוח עסקי', 'רכז/ת מכירות'],
-    ['marketing', 'growth', 'demand generation', 'digital marketing', 'content marketing',
-      'product marketing', 'שיווק', 'מנהל/ת שיווק', 'גיוס לידים'],
+    ['marketing', 'growth marketing', 'demand generation', 'digital marketing',
+      'content marketing', 'product marketing', 'pr', 'שיווק', 'מנהל/ת שיווק', 'גיוס לידים'],
     ['customer success', 'client success', 'customer support', 'technical support',
-      'support engineer', 'שירות לקוחות', 'הצלחת לקוחות', 'תמיכה'],
+      'support engineer', 'שירות לקוחות', 'הצלחת לקוחות'],
     ['operations', 'biz ops', 'revenue ops', 'sales ops', 'ops manager', 'תפעול',
       'מנהל/ת תפעול'],
 
-    // ── HR & People ─────────────────────────────────────────────────────────
+    // ── HR & People ──────────────────────────────────────────────────────────
     ['hr', 'human resources', 'people operations', 'people ops', 'hrbp',
       'hr business partner', 'talent acquisition', 'talent partner', 'recruiter',
-      'recruiting', 'recruitment', 'משאבי אנוש', 'גיוס', 'מגייס/ת', 'מגייס',
+      'recruiting', 'recruitment', 'משאבי אנוש', 'גיוס עובדים', 'מגייס/ת', 'מגייס',
       'מגייסת', 'רכז/ת גיוס', 'שותף/ת משאבי אנוש'],
 
-    // ── Finance & Legal ───────────────────────────────────────────────────────
+    // ── Finance & Legal ──────────────────────────────────────────────────────
     ['finance', 'financial analyst', 'controller', 'fp&a', 'accountant', 'cpa',
       'כספים', 'כלכלן/ית', 'חשב/ת', 'רואה חשבון', 'חשבונאות'],
     ['legal', 'counsel', 'lawyer', 'attorney', 'compliance', 'משפטן/ית', 'משפטית',
       'עורך/ת דין', 'רגולציה'],
 
-    // ── Level (common query terms) ────────────────────────────────────────────
-    ['junior', 'jr', 'entry level', 'entry-level', 'graduate', 'new grad', 'fresher',
-      'trainee', 'מתחיל/ה', 'זוטר/ה', 'ג\'וניור'],
-    ['senior', 'sr', 'experienced', 'בכיר/ה', 'בכיר', 'בכירה'],
-    ['intern', 'internship', 'student', 'co-op', 'coop', 'סטודנט/ית', 'סטודנט',
-      'מתמחה/ה', 'מתמחה', 'התמחות'],
-    ['director', 'head of', 'vp', 'vice president', 'chief', 'cto', 'ceo', 'cfo',
-      'cmo', 'cpo', 'מנהל/ת', 'מנהל', 'מנהלת', 'ראש', 'סמנכ"ל', 'מנכ"ל'],
-
-    // ── Work model ────────────────────────────────────────────────────────────
-    ['remote', 'work from home', 'wfh', 'מהבית', 'עבודה מהבית', 'מרחוק'],
-    ['hybrid', 'היברידי', 'היברידית'],
-
-    // ── Stacks (common search terms) ──────────────────────────────────────────
-    ['javascript', 'js', 'typescript', 'ts', 'ecmascript'],
-    ['react', 'reactjs', 'react.js'],
-    ['node', 'nodejs', 'node.js'],
-    ['python', 'django', 'flask'],
-    ['java', 'spring', 'spring boot'],
-    ['csharp', 'c#', '.net', 'dotnet', 'asp.net'],
-    ['golang', 'go lang', 'go developer'],
-    ['aws', 'amazon web services', 'cloud engineer'],
-    ['kubernetes', 'k8s', 'kube'],
-    ['sql', 'postgres', 'postgresql', 'mysql'],
-
-    // ── Israeli public sector & institutions ──────────────────────────────────
+    // ── Public Sector, Civic Tech & NGO ──────────────────────────────────────
     ['government', 'public sector', 'civil service', 'ממשלה', 'ממשלתי', 'מגזר ציבורי',
-      'שירות המדינה', 'אזרחי', 'משרה ממשלתית', 'משרד ממשלתי'],
-    ['defense', 'defence', 'military', 'idf', 'ביטחון', 'הגנה', 'ביטחוני', 'צבא',
+      'שירות המדינה', 'משרה ממשלתית', 'משרד ממשלתי'],
+    ['defense', 'defence', 'military', 'idf', 'ביטחון', 'ביטחוני', 'צבא',
       'צה"ל', 'משרד הביטחון', 'מערכת הביטחון'],
     ['nonprofit', 'non-profit', 'ngo', 'third sector', 'מגזר שלישי', 'עמותה',
       'ארגון חברתי', 'לא ממשלתי'],
+    ['civic tech', 'social impact', 'govtech', 'public policy', 'philanthropy', 'esg',
+      'חברה אזרחית', 'מגזר רביעי', 'אימפקט'],
+    ['grant writer', 'fundraising', 'fundraiser', 'donor relations', 'resource development',
+      'גיוס משאבים', 'פיתוח משאבים', 'כתיבת בקשות למענקים', 'גיוס כספים', 'קשרי תורמים'],
     ['hospital', 'medical center', 'health fund', 'clalit', 'מוסד רפואי', 'בית חולים',
-      'מרכז רפואי', 'קופת חולים', 'רפואה', 'בריאות'],
-    ['university', 'academic', 'research', 'אוניברסיטה', 'אקדמי', 'אקדמיה', 'מחקר',
-      'מכון מחקר', 'הוראה', 'מרצה'],
+      'מרכז רפואי', 'קופת חולים', 'רפואה'],
+    ['university', 'academic', 'אוניברסיטה', 'אקדמי', 'אקדמיה', 'מרצה'],
     ['teacher', 'teaching', 'education', 'מורה', 'הוראה', 'חינוך', 'גננת', 'מחנך'],
     ['social worker', 'עובד/ת סוציאלי', 'סוציאלי', 'רווחה'],
     ['administrative', 'administration', 'office manager', 'executive assistant',
       'מנהל/ת משרד', 'אדמיניסטרציה', 'מזכיר/ה', 'מזכירה', 'סייע/ת אדמיניסטרטיבי'],
     ['nurse', 'nursing', 'אח/ות', 'אחות', 'אח', 'סיעוד'],
     ['procurement', 'purchasing', 'רכש', 'קניין'],
+
+    // ── Level ────────────────────────────────────────────────────────────────
+    ['junior', 'jr', 'entry level', 'entry-level', 'graduate', 'new grad', 'fresher',
+      'trainee', 'מתחיל/ה', 'זוטר/ה', 'ג\'וניור'],
+    ['senior', 'sr', 'experienced', 'בכיר/ה', 'בכיר', 'בכירה'],
+    ['intern', 'internship', 'student', 'co-op', 'coop', 'סטודנט/ית', 'סטודנט',
+      'מתמחה/ה', 'מתמחה', 'התמחות'],
+    ['director', 'head of', 'vp', 'vice president', 'chief', 'cto', 'ceo', 'cfo',
+      'cmo', 'cpo', 'סמנכ"ל', 'מנכ"ל'],
+
+    // ── Work model ────────────────────────────────────────────────────────────
+    ['remote', 'work from home', 'wfh', 'מהבית', 'עבודה מהבית', 'מרחוק'],
+    ['hybrid', 'היברידי', 'היברידית'],
+
+    // ── Stacks ────────────────────────────────────────────────────────────────
+    ['javascript', 'js', 'typescript', 'ts', 'ecmascript'],
+    ['react', 'reactjs', 'react.js'],
+    ['node', 'nodejs', 'node.js'],
+    ['python', 'django', 'flask', 'pandas'],
+    ['java', 'spring', 'spring boot'],
+    ['csharp', 'c#', '.net', 'dotnet', 'asp.net'],
+    ['golang', 'go lang', 'go developer'],
+    ['aws', 'amazon web services', 'gcp', 'azure', 'cloud engineer'],
+    ['kubernetes', 'k8s', 'kube', 'docker'],
+    ['sql', 'postgres', 'postgresql', 'mysql', 'bigquery'],
+    ['api', 'rest api', 'graphql'],
   ];
 
   /** Short tokens: expand only on exact query; match uses word boundaries (see hayMatchesAny). */
-  const EXACT_ONLY = new Set(['ba', 'qa', 'ui', 'ux', 'hr', 'bd', 'ae', 'vp', 'js', 'ts', 'go', 'pm', 'po']);
+  const EXACT_ONLY = new Set([
+    'ba', 'qa', 'ui', 'ux', 'hr', 'bd', 'ae', 'vp', 'js', 'ts', 'go', 'pm', 'po',
+    'it', 'ml', 'ai', 'db', 'bi', 'cv', 'pr', 'k8s', 'api', 'aws', 'gcp',
+  ]);
 
   let groupByCompact = null;
 
