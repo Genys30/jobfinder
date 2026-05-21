@@ -17,5 +17,7 @@
   {"token": "navan",            "name": "Navan"},
   {"token": "gongio",           "name": "Gong"},
   {"token": "transmitsecurity", "name": "Transmit Security"},
-  {"token": "lightricks",       "name": "Lightricks"}
+  {"token": "lightricks",       "name": "Lightricks"},
+  {"token": "surfai",           "name": "Surf AI"},
+  {"token": "pandologic",       "name": "PandoLogic"}
 ]
