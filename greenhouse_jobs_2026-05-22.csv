@@ -826,6 +826,16 @@ Senior Software Engineer (Agent Engineer) - AI Code Gen,Datadog,Paris,2026-05-15
 &lt;li&gt;Prototype and see what works well in the real world, iterate closely with our users, and then ship.&lt;/li&gt;
 &lt;li&gt;Follow the latest research on LLM prompting, agents, and code editing.&lt;/li&gt;
 &lt;li&gt;Work with other Datadog teams to expand capabilities, for example integrating with the Datadog IDE extensions to deliver a CoPilot-like assistant, or Dynamic Instrumentation to collect more runtime data from production and pre-production environments.&lt;/l"
+Senior Software Engineer (AI),Datadog,Madrid,2026-05-15,https://careers.datadoghq.com/detail/7566827/?gh_jid=7566827,Dev Eng,,"&lt;p&gt;At Datadog, we leverage AI across our observability platform to improve monitoring, speed up incident resolution, and ensure data reliability for cloud applications.&lt;/p&gt;
+&lt;p&gt;Datadog’s &lt;a href=&quot;https://docs.datadoghq.com/deployment_gates/&quot;&gt;Deployment Gates&lt;/a&gt; team builds customer-facing systems that decide whether software should ship to production. Deployment Gates sit directly in customers’ CI/CD pipelines and use observability data to answer one of the hardest questions in software delivery:&lt;br&gt;Given everything we know right now, is this deployment safe to proceed?&lt;em&gt;&lt;br&gt;&lt;/em&gt;&lt;em&gt;&lt;br&gt;&lt;/em&gt;In this role, you will:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p class=&quot;p1&quot;&gt;Work on an analysis service that prevents incidents by detecting faulty software changes in production before they reach clients&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Lead the design of progressive deployment automation, starting with zero-setup, conservative AI rules and evolving toward adaptive gates that learn from incidents and organizational patterns&lt;/li&gt;
+&lt;li&gt;Design the foundation for autonomous remediation, connecting what changed in code to what broke in production, from blocking and rolling back unsafe deployments to proposing fixes and enforcing policies&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is a highly product‑minded engineering role: you’ll work from problem discovery and UX all the way to reliable, scala"
 Senior Software Engineer (AI),Datadog,Tel Aviv,2026-05-15,https://careers.datadoghq.com/detail/7097751/?gh_jid=7097751,Dev Eng,,"&lt;p&gt;We’re building a new team building to bring the power of Datadog to developers within AI-focused Developer workflows such as AI agents like Cursor, Claude code, GitHub Copilot and Datadog’s native AI agents.&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p&gt;We’re looking for product-minded engineers who are excited about developer tools, SDLC improvements and AI in general to help us quickly define and ship features and tools that make all Datadog customers 10x developers.&lt;/p&gt;
@@ -837,16 +847,6 @@ Senior Software Engineer (AI),Datadog,Tel Aviv,2026-05-15,https://careers.datado
 &lt;li&gt;Help conceptualize and build innovative User flows and experiences within Datadog’s user space and different extensions&amp;nbsp;&lt;/li&gt;
 &lt;li&gt;Prototype and see what works well in the real world, iterate closely with our users, and then ship&lt;/li&gt;
 &lt;li&gt;Follow the latest research on LLM prompt optimization, agents, and c"
-Senior Software Engineer (AI),Datadog,Madrid,2026-05-15,https://careers.datadoghq.com/detail/7566827/?gh_jid=7566827,Dev Eng,,"&lt;p&gt;At Datadog, we leverage AI across our observability platform to improve monitoring, speed up incident resolution, and ensure data reliability for cloud applications.&lt;/p&gt;
-&lt;p&gt;Datadog’s &lt;a href=&quot;https://docs.datadoghq.com/deployment_gates/&quot;&gt;Deployment Gates&lt;/a&gt; team builds customer-facing systems that decide whether software should ship to production. Deployment Gates sit directly in customers’ CI/CD pipelines and use observability data to answer one of the hardest questions in software delivery:&lt;br&gt;Given everything we know right now, is this deployment safe to proceed?&lt;em&gt;&lt;br&gt;&lt;/em&gt;&lt;em&gt;&lt;br&gt;&lt;/em&gt;In this role, you will:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p class=&quot;p1&quot;&gt;Work on an analysis service that prevents incidents by detecting faulty software changes in production before they reach clients&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;Lead the design of progressive deployment automation, starting with zero-setup, conservative AI rules and evolving toward adaptive gates that learn from incidents and organizational patterns&lt;/li&gt;
-&lt;li&gt;Design the foundation for autonomous remediation, connecting what changed in code to what broke in production, from blocking and rolling back unsafe deployments to proposing fixes and enforcing policies&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;This is a highly product‑minded engineering role: you’ll work from problem discovery and UX all the way to reliable, scala"
 Senior Software Engineer - Backend ,Datadog,Paris,2026-05-15,https://careers.datadoghq.com/detail/4599148/?gh_jid=4599148,Dev Eng,,"&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;We are building the best platform in the world for engineers to understand, scale, and protect their systems, applications, and teams. We operate at high scale—trillions of data points per day—providing always-on alerting, metrics visualization, logs, application tracing, and security insights for tens of thousands of companies. Our engineering culture values pragmatism, honesty, and simplicity to solve hard problems the right way&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;At Datadog, we place value in our office culture - the relationships that it builds, the creativity it brings to the table, and the collaboration of being together. We operate as a hybrid workplace to ensure our employees can create a work-life harmony that best fits them.&lt;/span&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
