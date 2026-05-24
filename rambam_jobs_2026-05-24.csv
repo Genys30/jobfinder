@@ -1,0 +1,4 @@
+﻿title,company,department,location,url,date,description
+{{ item.Title }},"רמב""ם",{{ item.Phone1 }},{{ item.Phone2 }},https://www.rambam.org.il/about-rambam/careers/jobs/,2026-05-24,
+רופא,"רמב""ם",טל' 1,טל' 2,https://www.rambam.org.il/about-rambam/careers/jobs/,2026-05-24,
+{{ item.title }},"רמב""ם",{{ item.phone1 }},{{ item.phone2 }},https://www.rambam.org.il/about-rambam/careers/jobs/,2026-05-24,
