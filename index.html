@@ -458,8 +458,41 @@
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
+<!-- ─── GOOGLE SIGN-IN MODAL ─────────────────────────────────────────────── -->
+<div id="auth-modal" style="display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(26,26,23,0.55);backdrop-filter:blur(3px);
+  align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:36px 40px;width:340px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.18);text-align:center;position:relative;">
+    <button onclick="closeAuthModal()" style="position:absolute;top:12px;right:14px;
+      background:none;border:none;font-size:18px;color:#9c9687;cursor:pointer;line-height:1;">×</button>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+      text-transform:uppercase;color:#9c9687;margin-bottom:12px;">JobFinder</div>
+    <h3 id="auth-modal-title" style="margin:0 0 8px;font-size:1.15rem;font-weight:700;color:#1a1a17;"></h3>
+    <p style="margin:0 0 24px;font-size:0.85rem;color:#5c5849;line-height:1.5;">
+      Free forever · takes 2 seconds
+    </p>
+    <button onclick="signInWithGoogle()" style="
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      width:100%;padding:11px 16px;background:#fff;color:#1a1a17;
+      border:1.5px solid #d9d2c2;border-radius:8px;font-size:0.95rem;
+      font-family:'Carlito',sans-serif;cursor:pointer;font-weight:600;
+      transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,0.07);"
+      onmouseover="this.style.borderColor='#c97f0c';this.style.boxShadow='0 2px 8px rgba(201,127,12,0.15)'"
+      onmouseout="this.style.borderColor='#d9d2c2';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.07)'">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <p style="margin-top:16px;font-size:0.75rem;color:#9c9687;">
+      We only store your email address. No spam, ever.
+    </p>
+  </div>
+</div>
+<!-- ─── END MODAL ─────────────────────────────────────────────────────────── -->
 
 <header>
   <div class="eyebrow">
@@ -879,6 +912,119 @@
 <script src="js/search-runner.js"></script>
 <script src="js/url-state.js"></script>
 <script>
+// ─── SUPABASE AUTH (soft gate) ────────────────────────────────────────────────
+const SUPA_URL = 'https://pqatrxbwevetcqntpbzk.supabase.co';
+const SUPA_KEY = 'sb_publishable_sQ5bgIPHepLVW0Bw49W1WQ_G9rLjjSb';
+const _supa    = supabase.createClient(SUPA_URL, SUPA_KEY);
+let   _authed  = false;
+
+// Sign in with Google
+window.signInWithGoogle = function(){
+  _supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://genys30.github.io/jobfinder/' }
+  });
+};
+
+// Modal helpers
+window.openAuthModal = function(reason){
+  var titles = {
+    filters:  '🔍 Sign in to use filters',
+    track:    '📌 Sign in to track applications',
+    saved:    '🔖 Sign in to save searches',
+    tracker:  '📋 Sign in to use the CV tracker',
+    default:  '👋 Sign in to unlock all features'
+  };
+  document.getElementById('auth-modal-title').textContent = titles[reason] || titles.default;
+  document.getElementById('auth-modal').style.display = 'flex';
+};
+window.closeAuthModal = function(){
+  document.getElementById('auth-modal').style.display = 'none';
+};
+// Close on backdrop click
+document.getElementById('auth-modal').addEventListener('click', function(e){
+  if(e.target === this) closeAuthModal();
+});
+
+// Inject sign-in / sign-out button into header eyebrow
+function _injectAuthButton(user){
+  var eyebrow = document.querySelector('.eyebrow');
+  if(!eyebrow) return;
+  var existing = document.getElementById('_authBtn');
+  if(existing) existing.remove();
+  var btn = document.createElement('button');
+  btn.id = '_authBtn';
+  if(user){
+    btn.textContent = 'Sign out';
+    btn.onclick = function(){ _supa.auth.signOut().then(function(){ location.reload(); }); };
+  } else {
+    btn.textContent = '⚡ Sign in with Google';
+    btn.onclick = function(){ openAuthModal('default'); };
+  }
+  btn.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid #d9d2c2;color:#5c5849;padding:3px 10px;border-radius:3px;cursor:pointer;transition:all .15s;white-space:nowrap;';
+  btn.onmouseover = function(){ this.style.borderColor='#c97f0c'; this.style.color='#c97f0c'; };
+  btn.onmouseout  = function(){ this.style.borderColor='#d9d2c2'; this.style.color='#5c5849'; };
+  eyebrow.appendChild(btn);
+}
+
+// Gate a DOM element — intercept clicks if not authed
+function _gate(el, reason){
+  if(!el) return;
+  el.addEventListener('mousedown', function(e){
+    if(!_authed){
+      e.preventDefault(); e.stopImmediatePropagation();
+      openAuthModal(reason);
+    }
+  }, true);
+}
+
+// Apply soft gates after DOM is ready
+function _applySoftGates(){
+  // Filters (all selects + inputs except search text box)
+  document.querySelectorAll('.filters select, .filters input:not(#q)').forEach(function(el){
+    _gate(el, 'filters');
+  });
+  // Saved search save button
+  var saveBtn = document.querySelector('.q-save-btn');
+  if(saveBtn) _gate(saveBtn, 'saved');
+  // CV tracker tab
+  var appsBtn = document.getElementById('vbtnApps');
+  if(appsBtn) _gate(appsBtn, 'tracker');
+}
+
+// Track buttons — gated at render time via event delegation
+var _origTrackToggle = null; // will be patched after trackToggle is defined
+
+// Check session on load
+_supa.auth.getSession().then(function(res){
+  var user = res.data && res.data.session && res.data.session.user;
+  _authed = !!user;
+  _injectAuthButton(user || null);
+  _applySoftGates();
+  // Patch track buttons
+  if(!_authed){
+    document.addEventListener('click', function(e){
+      var tb = e.target.closest('.track-btn');
+      if(tb && !_authed){
+        e.preventDefault(); e.stopImmediatePropagation();
+        openAuthModal('track');
+      }
+    }, true);
+  }
+});
+
+// Handle redirect back from Google OAuth
+_supa.auth.onAuthStateChange(function(event, session){
+  if(session && !_authed){
+    _authed = true;
+    _injectAuthButton(session.user);
+    closeAuthModal();
+    // Remove gates — reload is simplest
+    location.reload();
+  }
+});
+// ─── END AUTH ─────────────────────────────────────────────────────────────────
+
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 
 const TECHMAP_FNS = [
