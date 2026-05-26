@@ -918,7 +918,6 @@ const SUPA_KEY = 'sb_publishable_sQ5bgIPHepLVW0Bw49W1WQ_G9rLjjSb';
 const _supa    = supabase.createClient(SUPA_URL, SUPA_KEY);
 let   _authed  = false;
 
-// Sign in with Google
 window.signInWithGoogle = function(){
   _supa.auth.signInWithOAuth({
     provider: 'google',
@@ -926,14 +925,13 @@ window.signInWithGoogle = function(){
   });
 };
 
-// Modal helpers
 window.openAuthModal = function(reason){
   var titles = {
-    filters:  '🔍 Sign in to use filters',
-    track:    '📌 Sign in to track applications',
-    saved:    '🔖 Sign in to save searches',
-    tracker:  '📋 Sign in to use the CV tracker',
-    default:  '👋 Sign in to unlock all features'
+    filters: '🔍 Sign in to use filters',
+    track:   '📌 Sign in to track applications',
+    saved:   '🔖 Sign in to save searches',
+    tracker: '📋 Sign in to use the CV tracker',
+    default: '👋 Sign in to unlock all features'
   };
   document.getElementById('auth-modal-title').textContent = titles[reason] || titles.default;
   document.getElementById('auth-modal').style.display = 'flex';
@@ -941,12 +939,11 @@ window.openAuthModal = function(reason){
 window.closeAuthModal = function(){
   document.getElementById('auth-modal').style.display = 'none';
 };
-// Close on backdrop click
 document.getElementById('auth-modal').addEventListener('click', function(e){
   if(e.target === this) closeAuthModal();
 });
 
-// Inject sign-in / sign-out button into header eyebrow
+// Inject sign-in / sign-out button into header
 function _injectAuthButton(user){
   var eyebrow = document.querySelector('.eyebrow');
   if(!eyebrow) return;
@@ -961,66 +958,61 @@ function _injectAuthButton(user){
     btn.textContent = '⚡ Sign in with Google';
     btn.onclick = function(){ openAuthModal('default'); };
   }
-  btn.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid #d9d2c2;color:#5c5849;padding:3px 10px;border-radius:3px;cursor:pointer;transition:all .15s;white-space:nowrap;';
+  btn.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid #d9d2c2;color:#5c5849;padding:3px 10px;border-radius:3px;cursor:pointer;white-space:nowrap;';
   btn.onmouseover = function(){ this.style.borderColor='#c97f0c'; this.style.color='#c97f0c'; };
   btn.onmouseout  = function(){ this.style.borderColor='#d9d2c2'; this.style.color='#5c5849'; };
   eyebrow.appendChild(btn);
 }
 
-// Gate a DOM element — intercept clicks if not authed
-function _gate(el, reason){
-  if(!el) return;
-  el.addEventListener('mousedown', function(e){
-    if(!_authed){
-      e.preventDefault(); e.stopImmediatePropagation();
-      openAuthModal(reason);
+// Add transparent overlay on top of filters section to intercept all clicks
+function _applyFiltersGate(){
+  var filtersEl = document.querySelector('.filters');
+  if(!filtersEl) return;
+  // Make filters container relative so overlay can be positioned over it
+  filtersEl.style.position = 'relative';
+  var gate = document.createElement('div');
+  gate.id = '_filtersGate';
+  gate.style.cssText = 'position:absolute;inset:0;z-index:100;cursor:pointer;';
+  gate.title = 'Sign in to use filters';
+  gate.addEventListener('click', function(){ openAuthModal('filters'); });
+  filtersEl.appendChild(gate);
+  // Also gate save button
+  var saveBtn = document.getElementById('qSaveBtn');
+  if(saveBtn) saveBtn.addEventListener('click', function(e){
+    if(!_authed){ e.preventDefault(); e.stopImmediatePropagation(); openAuthModal('saved'); }
+  }, true);
+  // Gate CV tracker tab
+  var appsBtn = document.getElementById('vbtnApps');
+  if(appsBtn) appsBtn.addEventListener('click', function(e){
+    if(!_authed){ e.preventDefault(); e.stopImmediatePropagation(); openAuthModal('tracker'); }
+  }, true);
+  // Gate track buttons via delegation
+  document.addEventListener('click', function(e){
+    if(!_authed && e.target.closest('.track-btn')){
+      e.preventDefault(); e.stopImmediatePropagation(); openAuthModal('track');
     }
   }, true);
 }
 
-// Apply soft gates after DOM is ready
-function _applySoftGates(){
-  // Filters (all selects + inputs except search text box)
-  document.querySelectorAll('.filters select, .filters input:not(#q)').forEach(function(el){
-    _gate(el, 'filters');
-  });
-  // Saved search save button
-  var saveBtn = document.querySelector('.q-save-btn');
-  if(saveBtn) _gate(saveBtn, 'saved');
-  // CV tracker tab
-  var appsBtn = document.getElementById('vbtnApps');
-  if(appsBtn) _gate(appsBtn, 'tracker');
+function _removeFiltersGate(){
+  var gate = document.getElementById('_filtersGate');
+  if(gate) gate.remove();
 }
-
-// Track buttons — gated at render time via event delegation
-var _origTrackToggle = null; // will be patched after trackToggle is defined
 
 // Check session on load
 _supa.auth.getSession().then(function(res){
   var user = res.data && res.data.session && res.data.session.user;
   _authed = !!user;
   _injectAuthButton(user || null);
-  _applySoftGates();
-  // Patch track buttons
-  if(!_authed){
-    document.addEventListener('click', function(e){
-      var tb = e.target.closest('.track-btn');
-      if(tb && !_authed){
-        e.preventDefault(); e.stopImmediatePropagation();
-        openAuthModal('track');
-      }
-    }, true);
-  }
+  if(!_authed) _applyFiltersGate();
 });
 
-// Handle redirect back from Google OAuth
 _supa.auth.onAuthStateChange(function(event, session){
   if(session && !_authed){
     _authed = true;
     _injectAuthButton(session.user);
     closeAuthModal();
-    // Remove gates — reload is simplest
-    location.reload();
+    _removeFiltersGate();
   }
 });
 // ─── END AUTH ─────────────────────────────────────────────────────────────────
