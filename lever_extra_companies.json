@@ -1,1 +1,6 @@
-[]
+[
+  {"token": "Sauce",         "name": "Sauce"},
+  {"token": "leadspace",     "name": "Leadspace"},
+  {"token": "twingate",      "name": "Twingate"},
+  {"token": "vaultplatform", "name": "Vault Platform"}
+]
