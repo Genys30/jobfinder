@@ -961,7 +961,10 @@ function _injectAuthButton(user){
   btn.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid #d9d2c2;color:#5c5849;padding:3px 10px;border-radius:3px;cursor:pointer;white-space:nowrap;';
   btn.onmouseover = function(){ this.style.borderColor='#c97f0c'; this.style.color='#c97f0c'; };
   btn.onmouseout  = function(){ this.style.borderColor='#d9d2c2'; this.style.color='#5c5849'; };
-  eyebrow.appendChild(btn);
+  // Insert into the right-side div of eyebrow (the one with lastBuild + activeUsers)
+  var rightDiv = eyebrow.querySelector('div');
+  if(rightDiv) rightDiv.appendChild(btn);
+  else eyebrow.appendChild(btn);
 }
 
 // Add transparent overlay on top of filters section to intercept all clicks
@@ -4493,4 +4496,3 @@ document.getElementById('vbtnAbout').addEventListener('click',function(){
 </script>
 </body>
 </html>
- 
