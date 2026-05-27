@@ -317,29 +317,6 @@ What We Offer
 מדהים! זו המשרה עליה חלמתי
 טופס הגשת מועמדות בטעינה
 Liked it?"
-AI Tech lead,KPMG Israel,Tel Aviv,2026-05-27,https://kpmg.co.il/technologyconsulting/he/vacancies/technology-consulting/ai-tech-lead,Technology Consulting,onsite,"KPMG Israel is more than a professional services firm, we are a community of people driven by impact.
-As part of a leading global network, we partner with the most influential organizations to drive large-scale business and technology transformation, combining strategic thinking, innovation, and advanced technologies.
-Guided by integrity, excellence, and forward thinking, we help organizations navigate complexity and create real change.
-Our people are at the center, with space to lead, experiment, and grow in a dynamic and collaborative environment that connects personal development with meaningful impact on the future of business and society.
-About the Role
-We're looking for a
-hands-on Generative AI Tech lead
-to both build and guide. You'll architect and ship production GenAI systems while mentoring a team of engineers - keeping one hand on the keyboard and one eye on the roadmap. This isn't a seat at a whiteboard; it's a role for someone who can write a RAG pipeline in the morning and run a technical design review in the afternoon.
-What you'll do
-Lead the design and delivery of end-to-end GenAI solutions, from prototyping to production - LLM-powered applications, agents, RAG systems, and fine-tuned models.
-Stay hands-on: write production-quality code, review PRs, and set the technical bar for the team.
-Define architecture patterns for prompt engineering, context management, retrieval pipelines, and model evaluation.
-Mentor and grow a team of AI/ML engineers -run design reviews, pair-program, and provide technical feedback.
-Partner with product, data, and platform teams to scope feasibility and drive AI initiatives from ideation to deployment.
-Evaluate and introduce new models, tools, and frameworks (LangChain, LlamaIndex, vector DBs, etc.) as the space evolves","3+ years of software engineering, with 2+ years in ML/AI roles
-Hands-on experience building and shipping LLM-based applications (RAG, agents, fine-tuning)
-Proficiency in Python; strong command of ML/AI libraries
-Experience with at least one major LLM provider (OpenAI, Anthropic, Cohere, open-source)
-Proven ability to lead or mentor engineers in a technical context
-Comfort working in cloud environments (AWS, GCP, or Azure) with MLOps practices
-מדהים! זו המשרה עליה חלמתי
-טופס הגשת מועמדות בטעינה
-Liked it?"
 Cloud Security Engineer (Azure & AI Focus),KPMG Israel,Tel Aviv,2026-05-27,https://kpmg.co.il/technologyconsulting/he/vacancies/technology-consulting/cloud-security-engineer-azure-ai-focus,Technology Consulting,onsite,"We help organizations reinvent themselves.
 Through data, technology, and strategic thinking, we lead transformation processes that reshape how organizations operate, make decisions, and grow.
 If you’re looking to work in an environment that encourages initiative, challenges ideas, and creates real impact - this is the place for you.
@@ -386,3 +363,29 @@ Define security","• At least 5 years of experience in information security, in
 • Ability to combine strategic thinking with hands-on execution
 • Excellent communication skills in Hebrew and English
 • Strong interpersonal skills and ability to work effectively with multiple stakeholders"
+Senior AI Engineer (GenAI),KPMG Israel,Tel Aviv,2026-05-27,https://kpmg.co.il/technologyconsulting/he/vacancies/technology-consulting/senior-ai-engineer-genai,Technology Consulting,onsite,"KPMG Israel is more than a professional services firm, we are a community of people driven by impact.                                                                                                                             As part of a leading global network, we partner with the most influential organizations to drive large-scale business and technology transformation, combining strategic thinking, innovation, and advanced technologies.Guided by integrity, excellence, and forward thinking, we help organizations navigate complexity and create real change.                                                                                           Our people are at the center, with space to lead, experiment, and grow in a dynamic and collaborative environment that connects personal development with meaningful impact on the future of business and society.
+About the Role
+We’re looking for a hands-on
+Senior AI Engineer
+to both build and guide. You’ll architect and ship production GenAI systems while mentoring engineers - keeping one hand on the keyboard and one eye on the roadmap. This isn’t a seat at a whiteboard - it’s a role for someone who can write a RAG pipeline in the morning and run a technical design review in the afternoon.You’ll work on client-facing projects, building AI systems that go live across organizations and industries.
+What You’ll Do
+Lead the design and delivery of end-to-end GenAI systems - from prototype to production
+Write production-quality code, review PRs, and set a high engineering bar
+Build and deploy LLM-powered applications (RAG pipelines, agents, fine-tuned models)
+Define architecture patterns for prompt engineering, retrieval pipelines, and model evaluation
+Partner with product, data, and platform teams to deliver real-world AI solutions
+Mentor engineers, contribute to design reviews, and provide technical guidance
+Evaluate and introduce new tools, models, and frameworks","What We’re Looking For
+3+ years of experience
+in software, ML, or data-related roles
+Hands-on experience building and shipping GenAI / LLM systems in production
+Strong Python skills
+Experience with RAG, agents, fine-tuning, or similar implementations
+Experience with LLM providers (OpenAI, Anthropic, Cohere, or open-source)
+Experience working in cloud environments (AWS / GCP / Azure), with familiarity in MLOps
+Experience leading technical decisions, owning systems, or mentoring engineers
+Important Note
+We’re looking for engineers who have built GenAI systems that went live. Experience limited to research, academic work, or POCs is less relevant.                                               No formal Tech Lead title is required - what matters is what you’ve actually built, shipped, and owned.
+מדהים! זו המשרה עליה חלמתי
+טופס הגשת מועמדות בטעינה
+Liked it?"
