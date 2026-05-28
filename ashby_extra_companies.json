@@ -1,3 +1,10 @@
 [
-  {"token": "datawizz", "name": "Datawizz.AI"}
+  {
+    "token": "datawizz",
+    "name": "Datawizz.AI"
+  },
+  {
+    "token": "nexxen",
+    "name": "Nexxen"
+  }
 ]
