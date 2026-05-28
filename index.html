@@ -2232,6 +2232,18 @@ async function loadBIS() {
   TOTALS['bis'] = BIS_JOBS.length;
 }
 
+// ─── COMPANY ALIASES (merge duplicate names across sources) ──────────────────
+const COMPANY_ALIASES = {
+  'solaredge technologies': 'SolarEdge',
+  'nvidia':                 'NVIDIA',
+  'nvidia ai':              'NVIDIA',
+};
+function normalizeCompanyName(name) {
+  if (!name) return name;
+  const key = name.toLowerCase().trim();
+  return COMPANY_ALIASES[key] || name;
+}
+
 // ─── POOL ────────────────────────────────────────────────────────────────────
 function getPoolInner(){
   if(activeSrc==='techmap')  return TM_JOBS;
@@ -2278,7 +2290,7 @@ function getPoolInner(){
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].map(r=>({...r, company: normalizeCompanyName(r.company)})).filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
