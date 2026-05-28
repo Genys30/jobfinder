@@ -22,5 +22,6 @@
   {"slug": "jazz",             "uid": "6A.009", "name": "Jazz Security"},
   {"slug": "edgegaming",       "uid": "D7.008", "name": "Ludeo"},
   {"slug": "askai",            "uid": "1A.00C", "name": "Ask-AI"},
-  {"slug": "orchid_security",  "uid": "4A.001", "name": "Orchid Security"}
+  {"slug": "orchid_security",  "uid": "4A.001", "name": "Orchid Security"},
+  {"slug": "ivix",             "uid": "09.002", "name": "IVIX"}
 ]
