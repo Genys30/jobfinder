@@ -35,6 +35,12 @@ jobs:
             mitam_jobs_*.csv \
             weizmann_jobs_*.csv \
             bgu_jobs_*.csv \
-            huji_jobs_*.csv \
             huji_alumni_jobs_*.csv \
-            huji_
+            huji_positions_*.csv \
+            technion_jobs_*.csv \
+            tau_jobs_*.csv \
+            haifa_jobs_*.csv \
+            kpmg_jobs_*.csv \
+            deloitte_jobs_*.csv \
+            ey_jobs_*.csv \
+            joint_
