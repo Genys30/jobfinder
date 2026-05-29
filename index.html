@@ -4116,14 +4116,24 @@ render();
         comeet:     ()=>CM_JOBS,
         greenhouse: ()=>GH_JOBS,
         lever:      ()=>LV_JOBS,
+        lv:         ()=>LV_JOBS,
         ashby:      ()=>AB_JOBS,
+        ab:         ()=>AB_JOBS,
         workable:   ()=>WK_JOBS,
+        wk:         ()=>WK_JOBS,
         gotfriends: ()=>GF_JOBS,
+        gf:         ()=>GF_JOBS,
         topmatch:   ()=>IC_JOBS,
         ichilov:    ()=>IC_JOBS,
         mitam:      ()=>MT_JOBS,
+        mt:         ()=>MT_JOBS,
         academic:   ()=>AC_JOBS,
+        ac:         ()=>AC_JOBS,
+        weizmann:   ()=>AC_JOBS,
+        bgu:        ()=>AC_JOBS,
+        technion:   ()=>AC_JOBS,
         huji:       ()=>HJ_JOBS,
+        'huji-alumni': ()=>HJ_JOBS,
         bar:        ()=>BAR_JOBS,
         bis:        ()=>BIS_JOBS,
         kpmg:       ()=>KPMG_JOBS,
@@ -4137,9 +4147,22 @@ render();
         osem:       ()=>OSEM_JOBS,
         telegram:   ()=>TG_JOBS,
         linkedin:   ()=>LI_JOBS,
+        direct:     ()=>SP_JOBS,
         sponsored:  ()=>SP_JOBS,
       };
+      // Normalize job fields: JSON uses 'date'+'location', frontend expects 'updated'+'city'
+      const SOURCE_REMAP = {
+        'gotfriends': 'gf', 'workable': 'wk', 'ashby': 'ab',
+        'lever': 'lv', 'mitam': 'mt', 'academic': 'ac',
+        'sponsored': 'direct', 'telegram': 'Biltiformali-Telegram',
+      };
       jobs.forEach(j => {
+        // Remap source labels to match frontend expectations
+        if(SOURCE_REMAP[j.source]) j.source = SOURCE_REMAP[j.source];
+        // Map field names
+        if(!j.updated && j.date) j.updated = j.date;
+        if(!j.city && j.location) j.city = j.location;
+        if(!j.fnArea) j.fnArea = j.source;
         const getter = SRC[j.source];
         (getter ? getter() : LI_JOBS).push(j);
       });
