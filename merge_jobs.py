@@ -106,3 +106,6 @@ with open('jobs.json', 'w', encoding='utf-8') as f:
 
 size_kb = os.path.getsize('jobs.json') // 1024
 print(f'Merged {len(all_jobs)} jobs → jobs.json ({size_kb} KB)')
+for src_key, _ in SOURCES:
+    files = sorted(glob.glob(f'{src_key}_jobs_*.csv'))
+    print(f'  {src_key}: {files[-1] if files else "NOT FOUND"}')
