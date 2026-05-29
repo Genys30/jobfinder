@@ -4147,6 +4147,8 @@ render();
       jobs.forEach(j => { TOTALS[j.source] = (TOTALS[j.source]||0)+1; });
       usedJson = true;
       console.log(`jobs.json: ${jobs.length} jobs loaded`);
+      populateDropdowns();
+      applyFilters();
     }
   } catch(e){ console.warn('jobs.json not available, falling back to CSV mode', e); }
 
