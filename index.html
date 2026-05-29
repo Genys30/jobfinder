@@ -4104,16 +4104,6 @@ render();
     const r = await fetch(LI_RAW + 'jobs.json');
     if(r.ok){
       const jobs = await r.json();
-      const SOURCE_VAR = {
-        comeet:'CM_JOBS', greenhouse:'GH_JOBS', lever:'LV_JOBS',
-        ashby:'AB_JOBS', workable:'WK_JOBS', gotfriends:'GF_JOBS',
-        topmatch:'IC_JOBS', mitam:'MT_JOBS',
-        academic:'AC_JOBS', huji:'HJ_JOBS', bar:'BAR_JOBS', bis:'BIS_JOBS',
-        kpmg:'KPMG_JOBS', deloitte:'DL_JOBS', ey:'EY_JOBS', joint:'JNT_JOBS',
-        ichilov:'IC_JOBS', clalit:'CL_JOBS', szmc:'SZ_JOBS', hadassah:'HD_JOBS',
-        mod:'MOD_JOBS', osem:'OSEM_JOBS', telegram:'TG_JOBS',
-        linkedin:'LI_JOBS', sponsored:'SP_JOBS',
-      };
       // Reset all arrays
       TM_JOBS=[];LI_JOBS=[];CM_JOBS=[];GH_JOBS=[];LV_JOBS=[];AB_JOBS=[];
       WK_JOBS=[];SP_JOBS=[];MT_JOBS=[];AC_JOBS=[];HJ_JOBS=[];HUJI_JOBS=[];
@@ -4121,13 +4111,39 @@ render();
       BAR_JOBS=[];BIS_JOBS=[];GF_JOBS=[];IC_JOBS=[];RB_JOBS=[];BL_JOBS=[];
       SK_JOBS=[];SZ_JOBS=[];HD_JOBS=[];CL_JOBS=[];OSEM_JOBS=[];TG_JOBS=[];
       MOD_JOBS=[];
-      // Distribute jobs into source arrays (for databar counts)
+      // Direct reference map (let variables are not on window)
+      const SRC = {
+        comeet:     ()=>CM_JOBS,
+        greenhouse: ()=>GH_JOBS,
+        lever:      ()=>LV_JOBS,
+        ashby:      ()=>AB_JOBS,
+        workable:   ()=>WK_JOBS,
+        gotfriends: ()=>GF_JOBS,
+        topmatch:   ()=>IC_JOBS,
+        ichilov:    ()=>IC_JOBS,
+        mitam:      ()=>MT_JOBS,
+        academic:   ()=>AC_JOBS,
+        huji:       ()=>HJ_JOBS,
+        bar:        ()=>BAR_JOBS,
+        bis:        ()=>BIS_JOBS,
+        kpmg:       ()=>KPMG_JOBS,
+        deloitte:   ()=>DL_JOBS,
+        ey:         ()=>EY_JOBS,
+        joint:      ()=>JNT_JOBS,
+        clalit:     ()=>CL_JOBS,
+        szmc:       ()=>SZ_JOBS,
+        hadassah:   ()=>HD_JOBS,
+        mod:        ()=>MOD_JOBS,
+        osem:       ()=>OSEM_JOBS,
+        telegram:   ()=>TG_JOBS,
+        linkedin:   ()=>LI_JOBS,
+        sponsored:  ()=>SP_JOBS,
+      };
       jobs.forEach(j => {
-        const arr = SOURCE_VAR[j.source];
-        if(arr && window[arr] !== undefined) window[arr].push(j);
-        else LI_JOBS.push(j); // fallback bucket
+        const getter = SRC[j.source];
+        (getter ? getter() : LI_JOBS).push(j);
       });
-      // Also fill TOTALS
+      // Fill TOTALS for databar
       jobs.forEach(j => { TOTALS[j.source] = (TOTALS[j.source]||0)+1; });
       usedJson = true;
       console.log(`jobs.json: ${jobs.length} jobs loaded`);
