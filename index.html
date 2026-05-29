@@ -4090,43 +4090,86 @@ if (typeof UrlState !== 'undefined') {
   UrlState.readFromUrl();
 }
 
+// ─── Show loading state ───────────────────────────────────────────────────────
+(function(){
+  var s = document.querySelector('.status');
+  if(s) s.innerHTML = '<div class="loading">Loading jobs\u2026</div>';
+})();
 render();
+
 (async()=>{
-  // Load LinkedIn + Comeet in parallel
-  await Promise.all([
-    loadLinkedIn(),
-    loadComeet(),
-    loadGreenhouse(),
-    loadLever(),
-    loadAshby(),
-    loadWorkable(),
-    loadSponsored(),
-    loadMitam(),
-    loadAcademic(),
-    loadHuji(),
-    loadHujiPositions(),
-    loadTAU(),
-    loadHaifa(),
-    loadKPMG(),
-    loadDeloitte(),
-    loadEY(),
-    loadJoint(),
-    loadBAR(),
-    loadBIS(),
-    loadGotFriends(),
-    loadIchilov(),
-    loadRambam(),
-    loadBeilinson(),
-    loadSoroka(),
-    loadSzmc(),
-    loadHadassah(),
-    loadClalit(),
-    loadOsem(),
-    loadTelegram(),
-    loadMod()
-  ]).catch(e=>{
-    console.error('load error', e);
-  });
+  // ── Try fast path: single pre-merged jobs.json ──────────────────────────────
+  let usedJson = false;
+  try {
+    const r = await fetch(LI_RAW + 'jobs.json');
+    if(r.ok){
+      const jobs = await r.json();
+      const SOURCE_VAR = {
+        comeet:'CM_JOBS', greenhouse:'GH_JOBS', lever:'LV_JOBS',
+        ashby:'AB_JOBS', workable:'WK_JOBS', gotfriends:'GF_JOBS',
+        topmatch:'IC_JOBS', mitam:'MT_JOBS',
+        academic:'AC_JOBS', huji:'HJ_JOBS', bar:'BAR_JOBS', bis:'BIS_JOBS',
+        kpmg:'KPMG_JOBS', deloitte:'DL_JOBS', ey:'EY_JOBS', joint:'JNT_JOBS',
+        ichilov:'IC_JOBS', clalit:'CL_JOBS', szmc:'SZ_JOBS', hadassah:'HD_JOBS',
+        mod:'MOD_JOBS', osem:'OSEM_JOBS', telegram:'TG_JOBS',
+        linkedin:'LI_JOBS', sponsored:'SP_JOBS',
+      };
+      // Reset all arrays
+      TM_JOBS=[];LI_JOBS=[];CM_JOBS=[];GH_JOBS=[];LV_JOBS=[];AB_JOBS=[];
+      WK_JOBS=[];SP_JOBS=[];MT_JOBS=[];AC_JOBS=[];HJ_JOBS=[];HUJI_JOBS=[];
+      TAU_JOBS=[];UF_JOBS=[];KPMG_JOBS=[];DL_JOBS=[];EY_JOBS=[];JNT_JOBS=[];
+      BAR_JOBS=[];BIS_JOBS=[];GF_JOBS=[];IC_JOBS=[];RB_JOBS=[];BL_JOBS=[];
+      SK_JOBS=[];SZ_JOBS=[];HD_JOBS=[];CL_JOBS=[];OSEM_JOBS=[];TG_JOBS=[];
+      MOD_JOBS=[];
+      // Distribute jobs into source arrays (for databar counts)
+      jobs.forEach(j => {
+        const arr = SOURCE_VAR[j.source];
+        if(arr && window[arr] !== undefined) window[arr].push(j);
+        else LI_JOBS.push(j); // fallback bucket
+      });
+      // Also fill TOTALS
+      jobs.forEach(j => { TOTALS[j.source] = (TOTALS[j.source]||0)+1; });
+      usedJson = true;
+      console.log(`jobs.json: ${jobs.length} jobs loaded`);
+    }
+  } catch(e){ console.warn('jobs.json not available, falling back to CSV mode', e); }
+
+  if(!usedJson){
+    // ── Fallback: load all CSVs in parallel (old behaviour) ──────────────────
+    await Promise.all([
+      loadLinkedIn(),
+      loadComeet(),
+      loadGreenhouse(),
+      loadLever(),
+      loadAshby(),
+      loadWorkable(),
+      loadSponsored(),
+      loadMitam(),
+      loadAcademic(),
+      loadHuji(),
+      loadHujiPositions(),
+      loadTAU(),
+      loadHaifa(),
+      loadKPMG(),
+      loadDeloitte(),
+      loadEY(),
+      loadJoint(),
+      loadBAR(),
+      loadBIS(),
+      loadGotFriends(),
+      loadIchilov(),
+      loadRambam(),
+      loadBeilinson(),
+      loadSoroka(),
+      loadSzmc(),
+      loadHadassah(),
+      loadClalit(),
+      loadOsem(),
+      loadTelegram(),
+      loadMod()
+    ]).catch(e=>{ console.error('load error', e); });
+  }
+
   $lastBuild.textContent='live · '+new Date().toISOString().slice(0,10);
   populateDropdowns();
   initSavedSearches();
@@ -4135,7 +4178,7 @@ render();
   fetchActiveUsers();
   setInterval(fetchActiveUsers, 30000);
 
-  // Load techmap in background
+  // Load techmap in background (always, for search enrichment)
   loadTechmap().then(()=>{
     populateDropdowns();
     applyFilters();
