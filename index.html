@@ -1040,7 +1040,7 @@ const SEARCH_RENDER_CAP = 200;
 const SIZE_LABEL = {s:'small',m:'mid',l:'large',xl:'enterprise'};
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
-let TM_JOBS  = [];   // techmap
+const TM_JOBS = [];  // techmap removed from frontend
 let LI_JOBS  = [];   // linkedin
 let CM_JOBS  = [];   // comeet
 let OSEM_JOBS = [];  // osem-nestle
@@ -2234,7 +2234,6 @@ async function loadBIS() {
 
 // ─── POOL ────────────────────────────────────────────────────────────────────
 function getPoolInner(){
-  if(activeSrc==='techmap')  return TM_JOBS;
   if(activeSrc==='linkedin') return LI_JOBS;
   if(activeSrc==='comeet')      return CM_JOBS;
   if(activeSrc==='greenhouse') return GH_JOBS;
@@ -2278,7 +2277,7 @@ function getPoolInner(){
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -4080,16 +4079,28 @@ if (typeof UrlState !== 'undefined') {
 
 render();
 (async()=>{
-  // Load LinkedIn + Comeet in parallel
+  // ── Phase 1: primary sources — show results fast ──────────────────────────
   await Promise.all([
     loadLinkedIn(),
     loadComeet(),
     loadGreenhouse(),
     loadLever(),
-    loadAshby(),
-    loadWorkable(),
     loadSponsored(),
     loadMitam(),
+  ]).catch(e => console.error('load phase1', e));
+
+  $lastBuild.textContent='live · '+new Date().toISOString().slice(0,10);
+  populateDropdowns();
+  initSavedSearches();
+  makeSearchable($company);
+  applyFilters();
+  fetchActiveUsers();
+  setInterval(fetchActiveUsers, 30000);
+
+  // ── Phase 2: secondary sources — load in background ───────────────────────
+  Promise.all([
+    loadAshby(),
+    loadWorkable(),
     loadAcademic(),
     loadHuji(),
     loadHujiPositions(),
@@ -4111,23 +4122,10 @@ render();
     loadClalit(),
     loadOsem(),
     loadTelegram(),
-    loadMod()
-  ]).catch(e=>{
-    console.error('load error', e);
-  });
-  $lastBuild.textContent='live · '+new Date().toISOString().slice(0,10);
-  populateDropdowns();
-  initSavedSearches();
-  makeSearchable($company);
-  applyFilters();
-  fetchActiveUsers();
-  setInterval(fetchActiveUsers, 30000);
+    loadMod(),
+  ]).catch(e => console.error('load phase2', e));
 
-  // Load techmap in background
-  loadTechmap().then(()=>{
-    populateDropdowns();
-    applyFilters();
-  }).catch(e=>console.error('techmap',e));
+  // techmap removed from frontend (B) — companies discovered via pipeline
 })();
 
 
@@ -4195,7 +4193,7 @@ async function renderAnalytics(){
   const panel = document.getElementById('analyticsPanel');
   if(!panel || panel.style.display==='none') return;
 
-  const pool = [...TM_JOBS,...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...TG_JOBS];
+  const pool = [...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...TG_JOBS];
   const seen=new Set();
   const jobs=pool.filter(r=>{ const k=r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
   if(!jobs.length) return;
@@ -4333,7 +4331,7 @@ function shareJob(btn) {
 }
 
 function toggleTrack(id){
-  var pool=[].concat(TM_JOBS,LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
+  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
   var r=pool.find(function(j){ return (j.url||j.title+j.company)===id; });
   var apps=getApps();
   if(isTracked(id)){
