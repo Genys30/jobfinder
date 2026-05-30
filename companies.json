@@ -7,7 +7,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "8fig",
@@ -17,7 +19,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "ACS Motion Control",
@@ -27,7 +31,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "ActiveFence",
@@ -37,7 +43,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Agora",
@@ -47,7 +55,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "AI21 Labs",
@@ -57,7 +67,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Aidoc",
@@ -67,7 +79,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Airwayz Drones",
@@ -77,7 +91,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Aitech",
@@ -87,7 +103,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Aiven",
@@ -97,7 +115,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "AKA FOODS",
@@ -107,7 +127,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Altair",
@@ -117,27 +139,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
-  },
-  {
-    "name": "Amobee",
-    "greenhouse": "nexxen",
-    "lever": null,
-    "comeet": null,
-    "ashby": null,
-    "workable": null,
-    "breezy": null,
-    "added_by": "techmap"
-  },
-  {
-    "name": "Anchor",
-    "greenhouse": null,
-    "lever": null,
-    "comeet": "anchorfintech/87.00D",
-    "ashby": null,
-    "workable": null,
-    "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Appnext",
@@ -147,7 +151,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Aqua Security",
@@ -157,7 +163,33 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Arito",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "arito/F9.00A",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
+  },
+  {
+    "name": "Armis",
+    "greenhouse": "armis",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Arpeely",
@@ -167,7 +199,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Ask-AI",
@@ -177,7 +211,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Atera Networks",
@@ -185,9 +221,11 @@
     "lever": null,
     "comeet": "atera/63.00B",
     "ashby": null,
-    "workable": null,
+    "workable": "atera",
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "AugMedics",
@@ -197,7 +235,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Autobrains",
@@ -207,7 +247,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
+  },
+  {
+    "name": "AutoDS",
+    "greenhouse": "autods",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Axonius",
@@ -217,7 +271,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Ayyeka",
@@ -227,7 +283,9 @@
     "ashby": null,
     "workable": null,
     "breezy": "ayyeka",
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Beamr",
@@ -237,7 +295,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "BeeHero",
@@ -247,7 +307,33 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Better Personal Finance Management",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "allbetter/F8.00E",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
+  },
+  {
+    "name": "BigPanda",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "bigpanda",
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "BioCatch",
@@ -257,7 +343,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "BIRD Aerosystems",
@@ -267,7 +355,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Bookaway",
@@ -277,7 +367,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "BrandShield",
@@ -287,7 +379,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Browzwear",
@@ -297,7 +391,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Buildots",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "buildots/36.004",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Capitolis",
@@ -307,7 +415,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "CardinalOps",
@@ -317,7 +427,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cardo Systems",
@@ -327,7 +439,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cellebrite",
@@ -337,7 +451,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Ceragon Networks",
@@ -347,7 +463,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "CEVA",
@@ -357,7 +475,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Chargeflow",
@@ -367,7 +487,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Checkmarx",
@@ -377,7 +499,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Claroty",
@@ -387,7 +511,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Clinch",
@@ -397,7 +523,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cloudinary",
@@ -405,9 +533,11 @@
     "lever": "cloudinary",
     "comeet": null,
     "ashby": null,
-    "workable": null,
+    "workable": "cloudinary",
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cognyte",
@@ -417,7 +547,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Coinbase Israel",
@@ -427,7 +559,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Comeet",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "comeet/30.005",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Comunix",
@@ -437,7 +583,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Contrast Security Israel",
@@ -447,7 +595,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Coralogix",
@@ -457,7 +607,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Coro",
@@ -467,7 +619,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cross River Technologies",
@@ -477,7 +631,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cyberbit",
@@ -487,7 +643,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "CyberProof",
@@ -497,7 +655,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cycode",
@@ -507,7 +667,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "CYE",
@@ -517,7 +679,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Cyera",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "cyera/17.008",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "CYMOTIVE Technologies",
@@ -527,7 +703,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Cynet",
@@ -537,7 +715,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "D-Fend Solutions",
@@ -547,7 +727,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Daisy",
@@ -557,7 +739,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Dalet",
@@ -567,7 +751,9 @@
     "ashby": null,
     "workable": null,
     "breezy": "dalet",
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Datadog",
@@ -577,7 +763,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Datawizz.AI",
@@ -587,7 +775,9 @@
     "ashby": "datawizz",
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Dazz",
@@ -597,7 +787,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "DealHub",
@@ -607,7 +799,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Deep Instinct",
@@ -617,7 +811,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Descope Technologies",
@@ -627,7 +823,9 @@
     "ashby": null,
     "workable": null,
     "breezy": "descope",
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Dig Security",
@@ -637,7 +835,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Digital Turbine",
@@ -647,7 +847,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "DoControl",
@@ -657,7 +859,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "DreaMed Diabetes",
@@ -667,7 +871,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Driivz",
@@ -677,7 +883,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "DriveNets",
@@ -687,7 +895,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Duda",
@@ -697,7 +907,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Eitan Medical",
@@ -707,7 +919,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Elastic Technologies Israel",
@@ -717,7 +931,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Enercon",
@@ -727,7 +943,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Esh",
@@ -737,7 +955,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "eToro",
@@ -747,7 +967,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "EX.CO",
@@ -757,7 +979,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Exodigo",
@@ -767,7 +991,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Fabric",
@@ -777,17 +1003,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
-  },
-  {
-    "name": "Factify",
-    "greenhouse": null,
-    "lever": null,
-    "comeet": "A9.00F",
-    "ashby": null,
-    "workable": null,
-    "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Fetcherr",
@@ -797,7 +1015,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Figma",
+    "greenhouse": "figma",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Final",
@@ -807,7 +1039,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Fireblocks",
@@ -817,7 +1051,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Firefly",
@@ -827,7 +1063,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "ForSight Robotics",
@@ -837,7 +1075,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Forter",
@@ -847,7 +1087,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Frame Security",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "framesecurity/FA.002",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "FullPath",
@@ -857,7 +1111,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Gauzy",
@@ -867,7 +1123,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Gett",
@@ -877,7 +1135,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "GigaSpaces Technologies",
@@ -887,7 +1147,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Gilat Satellite Networks",
@@ -897,7 +1159,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "GK8",
@@ -907,7 +1171,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Gloat",
@@ -917,7 +1183,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Global-e",
@@ -927,7 +1195,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Gong",
+    "greenhouse": "gongio",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Guardio",
@@ -937,7 +1219,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Guesty",
@@ -947,7 +1231,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "H2Pro",
@@ -957,7 +1243,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Healthy.io",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "healthy-io",
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Hexagon",
@@ -967,7 +1267,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "HiBob",
@@ -977,7 +1279,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Holisto",
@@ -987,7 +1291,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Imagen",
@@ -997,7 +1303,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Imubit",
@@ -1007,7 +1315,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Innovid",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "innovid",
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Innoviz Technologies",
@@ -1017,7 +1339,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Insightec",
@@ -1027,7 +1351,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Insights.US",
@@ -1037,7 +1363,9 @@
     "ashby": null,
     "workable": null,
     "breezy": "insights-us",
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "IONIX",
@@ -1047,7 +1375,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Island",
@@ -1057,7 +1387,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "IVIX",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "ivix/09.002",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Jazz Security",
@@ -1067,7 +1411,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "JFrog",
@@ -1077,7 +1423,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Jifiti",
@@ -1087,7 +1435,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Justt",
@@ -1097,7 +1447,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Kaltura",
@@ -1107,7 +1459,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "KMS Lighthouse",
@@ -1117,7 +1471,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Konnecto",
@@ -1127,7 +1483,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Landa Digital Printing",
@@ -1137,7 +1495,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Leadspace",
@@ -1147,7 +1507,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Legit Security",
@@ -1157,7 +1519,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Lema AI",
@@ -1167,7 +1531,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Lightricks",
@@ -1177,7 +1543,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Lili",
@@ -1187,7 +1555,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "LiveU",
@@ -1197,7 +1567,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Locusview",
@@ -1207,7 +1579,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "LSports",
@@ -1217,7 +1591,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Ludeo",
@@ -1227,7 +1603,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Lumenis",
@@ -1237,7 +1615,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Lusha",
@@ -1247,7 +1627,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Lynx.MD",
@@ -1257,7 +1639,9 @@
     "ashby": null,
     "workable": null,
     "breezy": "lynx-md",
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "MASSIVit 3D Printing Technologies",
@@ -1267,7 +1651,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Matific",
@@ -1277,7 +1663,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "MDClone",
@@ -1287,7 +1675,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Mixtiles",
@@ -1297,7 +1687,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Moon Active",
@@ -1307,7 +1699,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "mPrest",
@@ -1317,7 +1711,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Navan",
@@ -1327,7 +1723,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "NeoGames",
@@ -1337,7 +1735,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Netafim",
@@ -1347,7 +1747,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "NextSilicon",
@@ -1357,7 +1759,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Nexxen",
+    "greenhouse": "nexxen",
+    "lever": null,
+    "comeet": null,
+    "ashby": "nexxen",
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Nominal",
@@ -1367,7 +1783,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Novidea Software",
@@ -1377,7 +1795,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Ocean Security",
@@ -1387,7 +1807,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Octopus Systems",
@@ -1397,7 +1819,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Okoora",
@@ -1407,7 +1831,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "ONE ZERO Digital Bank",
@@ -1417,7 +1843,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Optibus",
@@ -1427,7 +1855,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Orca Security",
@@ -1437,7 +1867,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Orchid Security",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "orchid_security/4A.001",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Orpak Systems",
@@ -1447,7 +1891,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Pagaya",
+    "greenhouse": "pagayais",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Panaya",
@@ -1457,7 +1915,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "PandoLogic",
@@ -1467,7 +1927,33 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
+  },
+  {
+    "name": "Papaya Global",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "papaya-global",
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
+  },
+  {
+    "name": "Papaya Global",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": "papaya-global",
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Parallel Wireless",
@@ -1477,7 +1963,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Payoneer",
+    "greenhouse": "payoneer",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Pentera",
@@ -1487,7 +1987,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Percepto",
@@ -1497,7 +1999,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Personetics Technologies",
@@ -1507,7 +2011,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Placer.ai",
@@ -1517,7 +2023,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "PlainID",
@@ -1527,7 +2035,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Playstudios",
@@ -1537,7 +2047,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Pliops",
@@ -1547,7 +2059,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Plus500",
@@ -1557,7 +2071,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Poptin",
@@ -1567,7 +2083,9 @@
     "ashby": null,
     "workable": "poptin",
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Prisma Photonics",
@@ -1577,7 +2095,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Quantum Machines",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "quantummachines/D6.000",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Rapyd Financial Network",
@@ -1587,7 +2119,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "REE Automotive",
@@ -1597,7 +2131,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Retym",
@@ -1607,7 +2143,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Rise",
@@ -1617,7 +2155,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Riskified",
+    "greenhouse": "riskified",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Riverside.fm",
@@ -1627,7 +2179,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Sauce",
@@ -1637,7 +2191,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "ScyllaDB",
@@ -1647,7 +2203,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Sealights Technologies",
@@ -1657,7 +2215,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "SeatGeek",
@@ -1667,7 +2227,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Shopic",
@@ -1677,7 +2239,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Silverfort",
@@ -1687,7 +2251,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "SimilarWeb",
@@ -1697,7 +2263,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Skai",
@@ -1707,7 +2275,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Snyk",
+    "greenhouse": "snyk",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "SodaStream",
@@ -1717,7 +2299,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "SolarEdge Technologies",
@@ -1725,9 +2309,11 @@
     "lever": null,
     "comeet": "SolarEdge/71.00A",
     "ashby": null,
-    "workable": null,
+    "workable": "solaredge",
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Start.io",
@@ -1737,7 +2323,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Storemaven",
@@ -1747,7 +2335,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "SuperCom",
@@ -1757,7 +2347,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "SuperPlay",
@@ -1767,7 +2359,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Surecomp",
@@ -1777,7 +2371,33 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Surf AI",
+    "greenhouse": "surfai",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
+  },
+  {
+    "name": "Sweet Security",
+    "greenhouse": "sweetsecurity",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Syqe Medical",
@@ -1787,7 +2407,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Taboola",
@@ -1797,7 +2419,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Tastewise",
@@ -1807,7 +2431,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Tenable",
+    "greenhouse": "tenableinc",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "ThetaRay",
@@ -1817,7 +2455,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Thrive DX",
@@ -1827,7 +2467,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "TicTuk",
@@ -1837,7 +2479,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Tikal",
@@ -1847,7 +2491,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Tipalti",
@@ -1857,7 +2503,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Toka",
@@ -1867,7 +2515,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Transmit Security",
@@ -1877,7 +2527,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Trigo",
@@ -1887,7 +2539,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Trustmi",
@@ -1897,7 +2551,9 @@
     "ashby": null,
     "workable": "trustmi",
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Twingate",
@@ -1907,7 +2563,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Upstream Security",
@@ -1917,7 +2575,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "VAST Data",
@@ -1927,7 +2587,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Vault Platform",
@@ -1937,7 +2599,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Vayyar Imaging",
@@ -1947,7 +2611,9 @@
     "ashby": null,
     "workable": "vayyar",
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Vectorious Medical Technologies",
@@ -1957,7 +2623,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Verifone",
@@ -1967,7 +2635,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Vetric",
@@ -1977,7 +2647,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Viber",
@@ -1987,7 +2659,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Viz.ai",
@@ -1997,7 +2671,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Waterfall Security Solutions",
@@ -2007,7 +2683,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "WeTrip",
@@ -2017,7 +2695,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Wiliot",
@@ -2027,7 +2707,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Windward",
@@ -2037,7 +2719,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Wiz",
+    "greenhouse": "wizinc",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "WSC Sports Technologies",
@@ -2047,7 +2743,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "XTEND",
@@ -2057,7 +2755,21 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
+  },
+  {
+    "name": "Yotpo",
+    "greenhouse": "yotpo",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "Zero Networks",
@@ -2067,7 +2779,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   },
   {
     "name": "Zeroport",
@@ -2077,7 +2791,9 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "manual"
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": null
   },
   {
     "name": "ZoomInfo",
@@ -2087,6 +2803,8 @@
     "ashby": null,
     "workable": null,
     "breezy": null,
-    "added_by": "techmap"
+    "careers_url": null,
+    "added_by": "techmap",
+    "added_date": null
   }
 ]
