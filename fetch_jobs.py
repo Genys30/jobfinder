@@ -142,6 +142,7 @@ def run_comeet(companies, tm_new):
 
     # Из companies.json
     for c in companies:
+        if not c.get('active', True): continue
         if not c.get('comeet'): continue
         parts = c['comeet'].split('/')
         if len(parts) < 2: continue
@@ -208,6 +209,7 @@ def run_greenhouse(companies, tm_new):
     all_t = []
 
     for c in companies:
+        if not c.get('active', True): continue
         if not c.get('greenhouse'): continue
         t = c['greenhouse'].lower()
         if t not in seen:
@@ -268,6 +270,7 @@ def run_lever(companies, tm_new):
     all_t = []
 
     for c in companies:
+        if not c.get('active', True): continue
         if not c.get('lever'): continue
         t = c['lever'].lower()
         if t not in seen:
@@ -325,6 +328,7 @@ def run_ashby(companies):
     all_t = []
 
     for c in companies:
+        if not c.get('active', True): continue
         if not c.get('ashby'): continue
         t = c['ashby'].lower()
         if t not in seen:
@@ -376,6 +380,7 @@ def run_workable(companies):
     all_t = []
 
     for c in companies:
+        if not c.get('active', True): continue
         if not c.get('workable'): continue
         t = c['workable'].lower()
         if t not in seen:
@@ -430,6 +435,7 @@ def run_breezy(companies):
     all_t = []
 
     for c in companies:
+        if not c.get('active', True): continue
         if not c.get('breezy'): continue
         t = c['breezy'].lower()
         if t not in seen:

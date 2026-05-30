@@ -9,7 +9,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "8fig",
@@ -21,7 +22,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ACS Motion Control",
@@ -33,7 +35,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ActiveFence",
@@ -45,7 +48,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Agora",
@@ -57,7 +61,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "AI21 Labs",
@@ -69,7 +74,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Aidoc",
@@ -81,7 +87,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Airwayz Drones",
@@ -93,7 +100,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Aitech",
@@ -105,7 +113,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Aiven",
@@ -117,7 +126,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "AKA FOODS",
@@ -129,7 +139,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Altair",
@@ -141,7 +152,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Appnext",
@@ -153,7 +165,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Aqua Security",
@@ -165,7 +178,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Arito",
@@ -177,7 +191,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Armis",
@@ -189,7 +204,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Arpeely",
@@ -201,7 +217,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Ask-AI",
@@ -213,7 +230,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Atera Networks",
@@ -225,7 +243,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "AugMedics",
@@ -237,7 +256,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Autobrains",
@@ -249,7 +269,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "AutoDS",
@@ -261,7 +282,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Axonius",
@@ -273,7 +295,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Ayyeka",
@@ -285,7 +308,8 @@
     "breezy": "ayyeka",
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Beamr",
@@ -297,7 +321,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "BeeHero",
@@ -309,7 +334,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Better Personal Finance Management",
@@ -321,7 +347,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "BigPanda",
@@ -333,7 +360,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "BioCatch",
@@ -345,7 +373,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "BIRD Aerosystems",
@@ -357,7 +386,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Bookaway",
@@ -369,7 +399,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "BrandShield",
@@ -381,7 +412,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Browzwear",
@@ -393,7 +425,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Buildots",
@@ -405,7 +438,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Capitolis",
@@ -417,7 +451,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "CardinalOps",
@@ -429,7 +464,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cardo Systems",
@@ -441,7 +477,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cellebrite",
@@ -453,7 +490,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Ceragon Networks",
@@ -465,7 +503,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "CEVA",
@@ -477,7 +516,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Chargeflow",
@@ -489,7 +529,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Checkmarx",
@@ -501,7 +542,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Claroty",
@@ -513,7 +555,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Clinch",
@@ -525,7 +568,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cloudinary",
@@ -537,7 +581,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Cognyte",
@@ -549,7 +594,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Coinbase Israel",
@@ -561,7 +607,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Comeet",
@@ -573,7 +620,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Comunix",
@@ -585,7 +633,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Contrast Security Israel",
@@ -597,7 +646,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Coralogix",
@@ -609,7 +659,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Coro",
@@ -621,7 +672,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cross River Technologies",
@@ -633,7 +685,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cyberbit",
@@ -645,7 +698,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "CyberProof",
@@ -657,7 +711,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cycode",
@@ -669,7 +724,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "CYE",
@@ -681,7 +737,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cyera",
@@ -693,7 +750,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "CYMOTIVE Technologies",
@@ -705,7 +763,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Cynet",
@@ -717,7 +776,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "D-Fend Solutions",
@@ -729,7 +789,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Daisy",
@@ -741,7 +802,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Dalet",
@@ -753,7 +815,8 @@
     "breezy": "dalet",
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Datadog",
@@ -765,7 +828,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Datawizz.AI",
@@ -777,7 +841,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Dazz",
@@ -789,7 +854,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "DealHub",
@@ -801,7 +867,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Deep Instinct",
@@ -813,7 +880,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Descope Technologies",
@@ -825,7 +893,8 @@
     "breezy": "descope",
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Dig Security",
@@ -837,7 +906,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Digital Turbine",
@@ -849,7 +919,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "DoControl",
@@ -861,7 +932,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "DreaMed Diabetes",
@@ -873,7 +945,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Driivz",
@@ -885,7 +958,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "DriveNets",
@@ -897,7 +971,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Duda",
@@ -909,7 +984,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Eitan Medical",
@@ -921,7 +997,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Elastic Technologies Israel",
@@ -933,7 +1010,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Enercon",
@@ -945,7 +1023,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Esh",
@@ -957,7 +1036,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "eToro",
@@ -969,7 +1049,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "EX.CO",
@@ -981,7 +1062,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Exodigo",
@@ -993,7 +1075,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Fabric",
@@ -1005,7 +1088,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Fetcherr",
@@ -1017,7 +1101,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Figma",
@@ -1029,7 +1114,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Final",
@@ -1041,7 +1127,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Fireblocks",
@@ -1053,7 +1140,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Firefly",
@@ -1065,7 +1153,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ForSight Robotics",
@@ -1077,7 +1166,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Forter",
@@ -1089,7 +1179,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Frame Security",
@@ -1101,7 +1192,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "FullPath",
@@ -1113,7 +1205,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Gauzy",
@@ -1125,7 +1218,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Gett",
@@ -1137,7 +1231,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "GigaSpaces Technologies",
@@ -1149,7 +1244,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Gilat Satellite Networks",
@@ -1161,7 +1257,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "GK8",
@@ -1173,7 +1270,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Gloat",
@@ -1185,7 +1283,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Global-e",
@@ -1197,7 +1296,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Gong",
@@ -1209,7 +1309,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Guardio",
@@ -1221,7 +1322,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Guesty",
@@ -1233,7 +1335,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "H2Pro",
@@ -1245,7 +1348,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Healthy.io",
@@ -1257,7 +1361,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Hexagon",
@@ -1269,7 +1374,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "HiBob",
@@ -1281,7 +1387,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Holisto",
@@ -1293,7 +1400,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Imagen",
@@ -1305,7 +1413,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Imubit",
@@ -1317,7 +1426,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Innovid",
@@ -1329,7 +1439,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Innoviz Technologies",
@@ -1341,7 +1452,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Insightec",
@@ -1353,7 +1465,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Insights.US",
@@ -1365,7 +1478,8 @@
     "breezy": "insights-us",
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "IONIX",
@@ -1377,7 +1491,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Island",
@@ -1389,7 +1504,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "IVIX",
@@ -1401,7 +1517,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Jazz Security",
@@ -1413,7 +1530,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "JFrog",
@@ -1425,7 +1543,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Jifiti",
@@ -1437,7 +1556,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Justt",
@@ -1449,7 +1569,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Kaltura",
@@ -1461,7 +1582,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "KMS Lighthouse",
@@ -1473,7 +1595,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Konnecto",
@@ -1485,7 +1608,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Landa Digital Printing",
@@ -1497,7 +1621,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Leadspace",
@@ -1509,7 +1634,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Legit Security",
@@ -1521,7 +1647,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Lema AI",
@@ -1533,7 +1660,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Lightricks",
@@ -1545,7 +1673,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Lili",
@@ -1557,7 +1686,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "LiveU",
@@ -1569,7 +1699,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Locusview",
@@ -1581,7 +1712,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "LSports",
@@ -1593,7 +1725,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Ludeo",
@@ -1605,7 +1738,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Lumenis",
@@ -1617,7 +1751,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Lusha",
@@ -1629,7 +1764,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Lynx.MD",
@@ -1641,7 +1777,8 @@
     "breezy": "lynx-md",
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "MASSIVit 3D Printing Technologies",
@@ -1653,7 +1790,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Matific",
@@ -1665,7 +1803,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "MDClone",
@@ -1677,7 +1816,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Mixtiles",
@@ -1689,7 +1829,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Moon Active",
@@ -1701,7 +1842,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "mPrest",
@@ -1713,7 +1855,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Navan",
@@ -1725,7 +1868,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "NeoGames",
@@ -1737,7 +1881,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Netafim",
@@ -1749,7 +1894,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "NextSilicon",
@@ -1761,7 +1907,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Nexxen",
@@ -1773,7 +1920,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Nominal",
@@ -1785,7 +1933,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Novidea Software",
@@ -1797,7 +1946,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Ocean Security",
@@ -1809,7 +1959,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Octopus Systems",
@@ -1821,7 +1972,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Okoora",
@@ -1833,7 +1985,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ONE ZERO Digital Bank",
@@ -1845,7 +1998,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Optibus",
@@ -1857,7 +2011,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Orca Security",
@@ -1869,7 +2024,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Orchid Security",
@@ -1881,7 +2037,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Orpak Systems",
@@ -1893,7 +2050,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Pagaya",
@@ -1905,7 +2063,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Panaya",
@@ -1917,7 +2076,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "PandoLogic",
@@ -1929,7 +2089,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Papaya Global",
@@ -1941,19 +2102,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
-  },
-  {
-    "name": "Papaya Global",
-    "greenhouse": null,
-    "lever": null,
-    "comeet": null,
-    "ashby": null,
-    "workable": "papaya-global",
-    "breezy": null,
-    "careers_url": null,
-    "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Parallel Wireless",
@@ -1965,7 +2115,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Payoneer",
@@ -1977,7 +2128,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Pentera",
@@ -1989,7 +2141,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Percepto",
@@ -2001,7 +2154,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Personetics Technologies",
@@ -2013,7 +2167,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Placer.ai",
@@ -2025,7 +2180,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "PlainID",
@@ -2037,7 +2193,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Playstudios",
@@ -2049,7 +2206,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Pliops",
@@ -2061,7 +2219,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Plus500",
@@ -2073,7 +2232,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Poptin",
@@ -2085,7 +2245,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Prisma Photonics",
@@ -2097,7 +2258,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Quantum Machines",
@@ -2109,7 +2271,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Rapyd Financial Network",
@@ -2121,7 +2284,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "REE Automotive",
@@ -2133,7 +2297,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Retym",
@@ -2145,7 +2310,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Rise",
@@ -2157,7 +2323,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Riskified",
@@ -2169,7 +2336,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Riverside.fm",
@@ -2181,7 +2349,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Sauce",
@@ -2193,7 +2362,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ScyllaDB",
@@ -2205,7 +2375,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Sealights Technologies",
@@ -2217,7 +2388,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "SeatGeek",
@@ -2229,7 +2401,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Shopic",
@@ -2241,7 +2414,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Silverfort",
@@ -2253,7 +2427,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "SimilarWeb",
@@ -2265,7 +2440,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Skai",
@@ -2277,7 +2453,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Snyk",
@@ -2289,7 +2466,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "SodaStream",
@@ -2301,7 +2479,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "SolarEdge Technologies",
@@ -2313,7 +2492,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Start.io",
@@ -2325,7 +2505,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Storemaven",
@@ -2337,7 +2518,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "SuperCom",
@@ -2349,7 +2531,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "SuperPlay",
@@ -2361,7 +2544,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Surecomp",
@@ -2373,7 +2557,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Surf AI",
@@ -2385,7 +2570,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Sweet Security",
@@ -2397,7 +2583,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Syqe Medical",
@@ -2409,7 +2596,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Taboola",
@@ -2421,7 +2609,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Tastewise",
@@ -2433,7 +2622,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Tenable",
@@ -2445,7 +2635,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ThetaRay",
@@ -2457,7 +2648,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Thrive DX",
@@ -2469,7 +2661,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "TicTuk",
@@ -2481,7 +2674,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Tikal",
@@ -2493,7 +2687,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Tipalti",
@@ -2505,7 +2700,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Toka",
@@ -2517,7 +2713,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Transmit Security",
@@ -2529,7 +2726,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Trigo",
@@ -2541,7 +2739,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Trustmi",
@@ -2553,7 +2752,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Twingate",
@@ -2565,7 +2765,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Upstream Security",
@@ -2577,7 +2778,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "VAST Data",
@@ -2589,7 +2791,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Vault Platform",
@@ -2601,7 +2804,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Vayyar Imaging",
@@ -2613,7 +2817,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": false
   },
   {
     "name": "Vectorious Medical Technologies",
@@ -2625,7 +2830,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Verifone",
@@ -2637,7 +2843,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Vetric",
@@ -2649,7 +2856,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Viber",
@@ -2661,7 +2869,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Viz.ai",
@@ -2673,7 +2882,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Waterfall Security Solutions",
@@ -2685,7 +2895,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "WeTrip",
@@ -2697,7 +2908,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Wiliot",
@@ -2709,7 +2921,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Windward",
@@ -2721,7 +2934,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Wiz",
@@ -2733,7 +2947,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "WSC Sports Technologies",
@@ -2745,7 +2960,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "XTEND",
@@ -2757,7 +2973,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Yotpo",
@@ -2769,7 +2986,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Zero Networks",
@@ -2781,7 +2999,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "Zeroport",
@@ -2793,7 +3012,8 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "manual",
-    "added_date": null
+    "added_date": null,
+    "active": true
   },
   {
     "name": "ZoomInfo",
@@ -2805,6 +3025,7 @@
     "breezy": null,
     "careers_url": null,
     "added_by": "techmap",
-    "added_date": null
+    "added_date": null,
+    "active": true
   }
 ]
