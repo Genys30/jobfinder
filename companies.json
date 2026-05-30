@@ -647,7 +647,8 @@
     "careers_url": null,
     "added_by": "techmap",
     "added_date": null,
-    "active": true
+    "active": false,
+    "note": "No open positions"
   },
   {
     "name": "Coralogix",
@@ -738,7 +739,8 @@
     "careers_url": null,
     "added_by": "techmap",
     "added_date": null,
-    "active": true
+    "active": false,
+    "note": "No open positions"
   },
   {
     "name": "Cyera",
@@ -912,7 +914,7 @@
   {
     "name": "Digital Turbine",
     "greenhouse": null,
-    "lever": "digitalturbine",
+    "lever": null,
     "comeet": null,
     "ashby": null,
     "workable": null,
@@ -920,7 +922,8 @@
     "careers_url": null,
     "added_by": "techmap",
     "added_date": null,
-    "active": true
+    "active": false,
+    "note": "Moved to Workday"
   },
   {
     "name": "DoControl",
@@ -2363,7 +2366,8 @@
     "careers_url": null,
     "added_by": "manual",
     "added_date": null,
-    "active": true
+    "active": false,
+    "note": "Lever 403 blocked"
   },
   {
     "name": "ScyllaDB",
@@ -2805,7 +2809,8 @@
     "careers_url": null,
     "added_by": "manual",
     "added_date": null,
-    "active": true
+    "active": false,
+    "note": "No open positions"
   },
   {
     "name": "Vayyar Imaging",

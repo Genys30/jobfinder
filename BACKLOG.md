@@ -6,15 +6,12 @@ Items discovered during the May 2026 refactor session that were intentionally de
 
 ## 🔴 High Priority
 
-### Lever — 5 companies returning 404
-Several companies in `companies.json` have Lever tokens that no longer work:
-- Contrast Security Israel (`contrastsecurity`)
-- CYE (`CYE`)
-- Digital Turbine (`digitalturbine`)
-- Sauce (`Sauce`)
-- Vault Platform (`vaultplatform`)
-
-**Action:** Check each company's careers page manually and update the token in `companies.json`, or set `active: false` if they moved to a different ATS.
+### ~~Lever — 5 companies returning 404~~ ✅ Resolved 2026-05-30
+- Contrast Security Israel → no open positions → `active: false`
+- CYE → no open positions → `active: false`
+- Digital Turbine → moved to Workday (not supported) → `active: false`
+- Sauce → Lever 403 blocked → `active: false`
+- Vault Platform → no open positions → `active: false`
 
 ---
 
