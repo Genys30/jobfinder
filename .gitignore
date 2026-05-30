@@ -38,3 +38,4 @@ patch_bat.py
 patch_telegram.py 
 patch_*.py 
 check_*.py 
+seen_telegram_biltiformali.txt 
