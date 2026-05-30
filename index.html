@@ -2232,18 +2232,6 @@ async function loadBIS() {
   TOTALS['bis'] = BIS_JOBS.length;
 }
 
-// ─── COMPANY ALIASES (merge duplicate names across sources) ──────────────────
-const COMPANY_ALIASES = {
-  'solaredge technologies': 'SolarEdge',
-  'nvidia':                 'NVIDIA',
-  'nvidia ai':              'NVIDIA',
-};
-function normalizeCompanyName(name) {
-  if (!name) return name;
-  const key = name.toLowerCase().trim();
-  return COMPANY_ALIASES[key] || name;
-}
-
 // ─── POOL ────────────────────────────────────────────────────────────────────
 function getPoolInner(){
   if(activeSrc==='techmap')  return TM_JOBS;
@@ -2290,7 +2278,7 @@ function getPoolInner(){
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].map(r=>({...r, company: normalizeCompanyName(r.company)})).filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...TM_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -4091,115 +4079,42 @@ if (typeof UrlState !== 'undefined') {
 }
 
 render();
-
 (async()=>{
-  // ── Try fast path: single pre-merged jobs.json ──────────────────────────────
-  let usedJson = false;
-  try {
-    const r = await fetch(LI_RAW + 'jobs.json');
-    if(r.ok){
-      const jobs = await r.json();
-      // Reset all arrays
-      TM_JOBS=[];LI_JOBS=[];CM_JOBS=[];GH_JOBS=[];LV_JOBS=[];AB_JOBS=[];
-      WK_JOBS=[];SP_JOBS=[];MT_JOBS=[];AC_JOBS=[];HJ_JOBS=[];HUJI_JOBS=[];
-      TAU_JOBS=[];UF_JOBS=[];KPMG_JOBS=[];DL_JOBS=[];EY_JOBS=[];JNT_JOBS=[];
-      BAR_JOBS=[];BIS_JOBS=[];GF_JOBS=[];IC_JOBS=[];RB_JOBS=[];BL_JOBS=[];
-      SK_JOBS=[];SZ_JOBS=[];HD_JOBS=[];CL_JOBS=[];OSEM_JOBS=[];TG_JOBS=[];
-      MOD_JOBS=[];
-      // Direct reference map (let variables are not on window)
-      const SRC = {
-        comeet:        ()=>CM_JOBS,
-        greenhouse:    ()=>GH_JOBS,
-        lever:         ()=>LV_JOBS,
-        lv:            ()=>LV_JOBS,
-        ashby:         ()=>AB_JOBS,
-        ab:            ()=>AB_JOBS,
-        workable:      ()=>WK_JOBS,
-        wk:            ()=>WK_JOBS,
-        gotfriends:    ()=>GF_JOBS,
-        gf:            ()=>GF_JOBS,
-        topmatch:      ()=>IC_JOBS,
-        ichilov:       ()=>IC_JOBS,
-        mitam:         ()=>MT_JOBS,
-        mt:            ()=>MT_JOBS,
-        academic:      ()=>AC_JOBS,
-        ac:            ()=>AC_JOBS,
-        weizmann:      ()=>AC_JOBS,
-        bgu:           ()=>AC_JOBS,
-        technion:      ()=>AC_JOBS,
-        huji:          ()=>HJ_JOBS,
-        'huji-alumni': ()=>HJ_JOBS,
-        bar:           ()=>BAR_JOBS,
-        bis:           ()=>BIS_JOBS,
-        kpmg:          ()=>KPMG_JOBS,
-        deloitte:      ()=>DL_JOBS,
-        ey:            ()=>EY_JOBS,
-        joint:         ()=>JNT_JOBS,
-        clalit:        ()=>CL_JOBS,
-        szmc:          ()=>SZ_JOBS,
-        hadassah:      ()=>HD_JOBS,
-        mod:           ()=>MOD_JOBS,
-        osem:          ()=>OSEM_JOBS,
-        telegram:      ()=>TG_JOBS,
-        linkedin:      ()=>LI_JOBS,
-        direct:        ()=>SP_JOBS,
-        sponsored:     ()=>SP_JOBS,
-      };
-      // JSON uses 'date'+'location', frontend expects 'updated'+'city'
-      const SOURCE_REMAP = {
-        'gotfriends': 'gf', 'workable': 'wk', 'ashby': 'ab',
-        'lever': 'lv', 'mitam': 'mt', 'academic': 'ac',
-        'sponsored': 'direct', 'telegram': 'Biltiformali-Telegram',
-      };
-      jobs.forEach(j => {
-        if(SOURCE_REMAP[j.source]) j.source = SOURCE_REMAP[j.source];
-        if(!j.updated && j.date)    j.updated = j.date;
-        if(!j.city && j.location)   j.city = j.location;
-        if(!j.fnArea)               j.fnArea = j.source;
-        (SRC[j.source] ? SRC[j.source]() : LI_JOBS).push(j);
-      });
-      jobs.forEach(j => { TOTALS[j.source] = (TOTALS[j.source]||0)+1; });
-      usedJson = true;
-      console.log(`jobs.json: ${jobs.length} jobs loaded`);
-    }
-  } catch(e){ console.warn('jobs.json not available, falling back to CSV mode', e); }
-
-  if(!usedJson){
-    // ── Fallback: load all CSVs in parallel (old behaviour) ──────────────────
-    await Promise.all([
-      loadLinkedIn(),
-      loadComeet(),
-      loadGreenhouse(),
-      loadLever(),
-      loadAshby(),
-      loadWorkable(),
-      loadSponsored(),
-      loadMitam(),
-      loadAcademic(),
-      loadHuji(),
-      loadHujiPositions(),
-      loadTAU(),
-      loadHaifa(),
-      loadKPMG(),
-      loadDeloitte(),
-      loadEY(),
-      loadJoint(),
-      loadBAR(),
-      loadBIS(),
-      loadGotFriends(),
-      loadIchilov(),
-      loadRambam(),
-      loadBeilinson(),
-      loadSoroka(),
-      loadSzmc(),
-      loadHadassah(),
-      loadClalit(),
-      loadOsem(),
-      loadTelegram(),
-      loadMod()
-    ]).catch(e=>{ console.error('load error', e); });
-  }
-
+  // Load LinkedIn + Comeet in parallel
+  await Promise.all([
+    loadLinkedIn(),
+    loadComeet(),
+    loadGreenhouse(),
+    loadLever(),
+    loadAshby(),
+    loadWorkable(),
+    loadSponsored(),
+    loadMitam(),
+    loadAcademic(),
+    loadHuji(),
+    loadHujiPositions(),
+    loadTAU(),
+    loadHaifa(),
+    loadKPMG(),
+    loadDeloitte(),
+    loadEY(),
+    loadJoint(),
+    loadBAR(),
+    loadBIS(),
+    loadGotFriends(),
+    loadIchilov(),
+    loadRambam(),
+    loadBeilinson(),
+    loadSoroka(),
+    loadSzmc(),
+    loadHadassah(),
+    loadClalit(),
+    loadOsem(),
+    loadTelegram(),
+    loadMod()
+  ]).catch(e=>{
+    console.error('load error', e);
+  });
   $lastBuild.textContent='live · '+new Date().toISOString().slice(0,10);
   populateDropdowns();
   initSavedSearches();
@@ -4208,7 +4123,7 @@ render();
   fetchActiveUsers();
   setInterval(fetchActiveUsers, 30000);
 
-  // Load techmap in background (always, for search enrichment)
+  // Load techmap in background
   loadTechmap().then(()=>{
     populateDropdowns();
     applyFilters();
