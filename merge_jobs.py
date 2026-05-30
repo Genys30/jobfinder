@@ -2,9 +2,9 @@
 merge_jobs.py  —  run after fetch_jobs.py
 Merges all dated CSV files into a single jobs.json for the frontend.
 """
-import csv, json, glob, os, re
-
-FIELDS = ['title', 'company', 'location', 'date', 'url', 'department', 'workplace_type', 'description', 'source']
+import csv, json, glob, os
+from collections import Counter
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 COMPANY_ALIASES = {
     'solaredge technologies': 'SolarEdge',
@@ -16,45 +16,45 @@ def normalize_company(name):
     if not name: return name
     return COMPANY_ALIASES.get(name.lower().strip(), name)
 
-# source_key → source label used in frontend
+# (src_key, src_label, optional_glob_pattern)
 SOURCES = [
-    ('comeet',          'comeet'),
-    ('greenhouse',      'greenhouse'),
-    ('lever',           'lever'),
-    ('ashby',           'ashby'),
-    ('workable',        'workable'),
-    ('gotfriends',      'gotfriends'),
-    ('topmatch',        'topmatch'),
-    ('mitam',           'mitam'),
-    ('weizmann',        'academic'),
-    ('bgu',             'academic'),
-    ('huji_alumni',     'huji'),
-    ('huji_positions',  'huji'),
-    ('technion',        'academic'),
-    ('tau',             'academic'),
-    ('haifa',           'academic'),
-    ('bar',             'bar'),
-    ('bar_alumni',      'bar'),
-    ('bis',             'bis'),
-    ('kpmg',            'kpmg'),
-    ('deloitte',        'deloitte'),
-    ('ey',              'ey'),
-    ('joint',           'joint'),
-    ('ichilov',         'ichilov'),
-    ('clalit',          'clalit'),
-    ('szmc',            'szmc'),
-    ('hadassah',        'hadassah'),
-    ('mod',             'mod'),
-    ('osem',            'osem'),
-    ('telegram',        'telegram'),
+    ('comeet',                       'comeet'),
+    ('greenhouse',                   'greenhouse'),
+    ('lever',                        'lv'),
+    ('ashby',                        'ab'),
+    ('workable',                     'wk'),
+    ('gotfriends',                   'gf'),
+    ('topmatch',                     'ichilov'),
+    ('mitam',                        'mt'),
+    ('weizmann',                     'weizmann'),
+    ('bgu',                          'bgu'),
+    ('huji_alumni',                  'huji-alumni'),
+    ('huji_positions',               'huji'),
+    ('technion',                     'technion'),
+    ('tau',                          'tau'),
+    ('haifa',                        'haifa'),
+    ('bar',                          'bar'),
+    ('bar_alumni',                   'bar-alumni'),
+    ('bis',                          'bis'),
+    ('kpmg',                         'kpmg'),
+    ('deloitte',                     'deloitte'),
+    ('ey',                           'ey'),
+    ('joint',                        'joint'),
+    ('clalit',                       'clalit'),
+    ('szmc',                         'szmc'),
+    ('hadassah',                     'hadassah'),
+    ('mod',                          'mod'),
+    ('osem',                         'osem'),
+    ('jobs_telegram_biltiformali',   'telegram',  'jobs_telegram_biltiformali_*.csv'),
 ]
 
 all_jobs = []
 seen_urls = set()
-seen_title_co = set()
 
-for src_key, src_label in SOURCES:
-    files = sorted(glob.glob(f'{src_key}_jobs_*.csv'))
+for entry in SOURCES:
+    src_key, src_label = entry[0], entry[1]
+    pattern = entry[2] if len(entry) > 2 else f'{src_key}_jobs_*.csv'
+    files = sorted(glob.glob(pattern))
     if not files:
         continue
     latest = files[-1]
@@ -63,7 +63,6 @@ for src_key, src_label in SOURCES:
             for row in csv.DictReader(f):
                 url = (row.get('url') or '').strip()
                 title = (row.get('title') or '').strip()
-                # use city field as fallback for location
                 location = (row.get('location') or row.get('city') or '').strip()
                 company = normalize_company((row.get('company') or '').strip())
                 date = (row.get('date') or row.get('date_posted') or '').strip()
@@ -74,29 +73,21 @@ for src_key, src_label in SOURCES:
                 if not title:
                     continue
 
-                # dedup by url, then by title+company
-                dedup_key = url if url else None
-                title_co_key = title.lower() + '|' + company.lower()
-
-                if dedup_key and dedup_key in seen_urls:
+                if url and url in seen_urls:
                     continue
-                if title_co_key in seen_title_co:
-                    continue
-
-                if dedup_key:
-                    seen_urls.add(dedup_key)
-                seen_title_co.add(title_co_key)
+                if url:
+                    seen_urls.add(url)
 
                 all_jobs.append({
-                    'title':         title,
-                    'company':       company,
-                    'location':      location,
-                    'date':          date,
-                    'url':           url,
-                    'department':    department,
+                    'title':          title,
+                    'company':        company,
+                    'location':       location,
+                    'date':           date,
+                    'url':            url,
+                    'department':     department,
                     'workplace_type': workplace_type,
-                    'description':   description[:1500] if description else '',
-                    'source':        src_label,
+                    'description':    description[:1500] if description else '',
+                    'source':         src_label,
                 })
     except Exception as e:
         print(f'  warn: {src_key} — {e}')
@@ -105,7 +96,12 @@ with open('jobs.json', 'w', encoding='utf-8') as f:
     json.dump(all_jobs, f, ensure_ascii=False, separators=(',', ':'))
 
 size_kb = os.path.getsize('jobs.json') // 1024
+src_counts = Counter(j['source'] for j in all_jobs)
 print(f'Merged {len(all_jobs)} jobs → jobs.json ({size_kb} KB)')
-for src_key, _ in SOURCES:
-    files = sorted(glob.glob(f'{src_key}_jobs_*.csv'))
-    print(f'  {src_key}: {files[-1] if files else "NOT FOUND"}')
+for entry in SOURCES:
+    src_key, src_label = entry[0], entry[1]
+    pattern = entry[2] if len(entry) > 2 else f'{src_key}_jobs_*.csv'
+    files = sorted(glob.glob(pattern))
+    fname = files[-1] if files else 'NOT FOUND'
+    cnt = src_counts.get(src_label, 0)
+    print(f'  {src_key} ({src_label}): {fname} → {cnt} jobs')
