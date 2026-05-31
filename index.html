@@ -50,6 +50,9 @@
   --sz:#8b1a1a;--sz-pale:rgba(139,26,26,0.07);
   --hd:#2e6b3e;--hd-pale:rgba(46,107,62,0.07);
   --cl:#1a5f8a;--cl-pale:rgba(26,95,138,0.07);
+  --mac:#005b82;--mac-pale:rgba(0,91,130,0.07);
+  --leu:#c0392b;--leu-pale:rgba(192,57,43,0.07);
+  --meu:#e67e22;--meu-pale:rgba(230,126,34,0.07);
   --rabin:#7b3f8f;--rabin-pale:rgba(0,0,0,0.07);
   --meir:#2e7d52;--meir-pale:rgba(0,0,0,0.07);
   --kaplan:#8b5e1a;--kaplan-pale:rgba(0,0,0,0.07);
@@ -213,6 +216,12 @@
   .hd-row:hover .title{color:var(--hd);}
   .cl-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--cl);}
   .cl-row:hover .title{color:var(--cl);}
+  .mac-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--mac);}
+  .mac-row:hover .title{color:var(--mac);}
+  .leu-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--leu);}
+  .leu-row:hover .title{color:var(--leu);}
+  .meu-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--meu);}
+  .meu-row:hover .title{color:var(--meu);}
   .rabin-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--rabin);}
   .rabin-row:hover .title{color:var(--rabin);}
   .meir-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--meir);}
@@ -580,6 +589,12 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--cl)"></span><span id="clStatusText">Clalit: loading…</span></div>
   <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--mac)"></span><span id="macStatusText">Maccabi: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--leu)"></span><span id="leuStatusText">Leumit: loading…</span></div>
+  <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--meu)"></span><span id="meuStatusText">Meuhedet: loading…</span></div>
+  <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--rabin)"></span><span id="rabinStatusText">Rabin: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--meir)"></span><span id="meirStatusText">Meir: loading…</span></div>
@@ -700,6 +715,9 @@
       <option value="szmc">Shaare Zedek 🏥</option>
       <option value="hadassah">Hadassah 🏥</option>
       <option value="clalit">Clalit 🏥</option>
+      <option value="maccabi">Maccabi 🏥</option>
+      <option value="leumit">Leumit 🏥</option>
+      <option value="meuhedet">Meuhedet 🏥</option>
       <option value="rabin">Rabin 🏥</option>
       <option value="meir">Meir 🏥</option>
       <option value="kaplan">Kaplan 🏥</option>
@@ -1068,6 +1086,9 @@ let SK_JOBS  = [];   // Soroka
 let SZ_JOBS  = [];   // Shaare Zedek
 let HD_JOBS  = [];   // Hadassah
 let CL_JOBS  = [];   // Clalit
+let MAC_JOBS = [];   // Maccabi
+let LEU_JOBS = [];   // Leumit
+let MEU_JOBS = [];   // Meuhedet
 let RABIN_JOBS = [];
 let MEIR_JOBS = [];
 let KAPLAN_JOBS = [];
@@ -1127,6 +1148,9 @@ const $skStatus  = document.getElementById('skStatusText');
 const $szStatus  = document.getElementById('szStatusText');
 const $hdStatus  = document.getElementById('hdStatusText');
 const $clStatus  = document.getElementById('clStatusText');
+const $macStatus = document.getElementById('macStatusText');
+const $leuStatus = document.getElementById('leuStatusText');
+const $meuStatus = document.getElementById('meuStatusText');
 const $rabinStatus = document.getElementById('rabinStatusText');
 const $meirStatus = document.getElementById('meirStatusText');
 const $kaplanStatus = document.getElementById('kaplanStatusText');
@@ -2264,6 +2288,9 @@ function getPoolInner(){
   if(activeSrc==='szmc')      return SZ_JOBS;
   if(activeSrc==='hadassah')  return HD_JOBS;
   if(activeSrc==='clalit')    return CL_JOBS;
+  if(activeSrc==='maccabi')   return MAC_JOBS;
+  if(activeSrc==='leumit')    return LEU_JOBS;
+  if(activeSrc==='meuhedet')  return MEU_JOBS;
   if(activeSrc==='rabin')    return RABIN_JOBS;
   if(activeSrc==='meir')    return MEIR_JOBS;
   if(activeSrc==='kaplan')    return KAPLAN_JOBS;
@@ -2276,7 +2303,7 @@ function getPoolInner(){
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -2889,6 +2916,9 @@ const SOURCE_EMPLOYER_TYPE = {
   'szmc':'public','sz':'public',
   'hadassah':'public','hd':'public',
   'clalit':'public','cl':'public',
+  'maccabi':'public','mac':'public',
+  'leumit':'public','leu':'public',
+  'meuhedet':'public','meu':'public',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -3787,6 +3817,147 @@ async function loadHadassah() {
   TOTALS['hadassah']=HD_JOBS.length;populateDropdowns();applyFilters();
 }
 // ─── CLALIT (splits per hospital) ─────────────────────────────────────────────
+// ─── MACCABI ──────────────────────────────────────────────────────────────────
+function normMaccabi(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const date = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  const title = g('title'); if (!title) return null;
+  return {
+    source: 'maccabi', fnArea: 'maccabi', title,
+    company: g('company') || 'מכבי שירותי בריאות',
+    category: classifySegment(title) || 'administrative',
+    size: '', level: classifyLevel(title),
+    city: translateCity(g('location')) || 'ישראל',
+    url: g('url'), updated: g('date') || date,
+    workType: 'onsite', description: g('description') || '',
+  };
+}
+
+async function loadMaccabi() {
+  if ($macStatus) $macStatus.innerHTML = 'Maccabi: <span style="color:var(--ink-faint)">loading\u2026</span>';
+  const filenames = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    filenames.push(`maccabi_jobs_${y}-${m}-${day}.csv`);
+  }
+  const allRows = (await Promise.all(filenames.map(async fname => {
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) return [];
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true,
+        transformHeader: h => h.replace(/^\uFEFF/, '').trim().toLowerCase() });
+      return parsed.data.map(row => normMaccabi(row, fname)).filter(Boolean);
+    } catch(e) { return []; }
+  }))).flat();
+  if (!allRows.length) {
+    if ($macStatus) $macStatus.innerHTML = 'Maccabi: <span style="color:var(--ink-faint)">no file yet</span>';
+    return;
+  }
+  const seen = new Set();
+  MAC_JOBS = allRows.filter(r => {
+    const k = r.url || (r.company + '|' + r.title + '|' + r.city);
+    if (seen.has(k)) return false; seen.add(k); return true;
+  });
+  if ($macStatus) $macStatus.innerHTML = `Maccabi: <strong>${MAC_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['maccabi'] = MAC_JOBS.length;
+  populateDropdowns(); applyFilters();
+}
+
+// ─── LEUMIT ───────────────────────────────────────────────────────────────────
+function normLeumit(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const date = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  const title = g('title'); if (!title) return null;
+  return {
+    source: 'leumit', fnArea: 'leumit', title,
+    company: g('company') || 'לאומית שירותי בריאות',
+    category: classifySegment(title) || 'administrative',
+    size: '', level: classifyLevel(title),
+    city: translateCity(g('location')) || 'ישראל',
+    url: g('url'), updated: g('date') || date,
+    workType: 'onsite', description: g('description') || '',
+  };
+}
+
+async function loadLeumit() {
+  if ($leuStatus) $leuStatus.innerHTML = 'Leumit: <span style="color:var(--ink-faint)">loading\u2026</span>';
+  const filenames = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    filenames.push(`leumit_jobs_${y}-${m}-${day}.csv`);
+  }
+  const allRows = (await Promise.all(filenames.map(async fname => {
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) return [];
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true,
+        transformHeader: h => h.replace(/^\uFEFF/, '').trim().toLowerCase() });
+      return parsed.data.map(row => normLeumit(row, fname)).filter(Boolean);
+    } catch(e) { return []; }
+  }))).flat();
+  if (!allRows.length) {
+    if ($leuStatus) $leuStatus.innerHTML = 'Leumit: <span style="color:var(--ink-faint)">no file yet</span>';
+    return;
+  }
+  const seen = new Set();
+  LEU_JOBS = allRows.filter(r => {
+    const k = r.url || (r.company + '|' + r.title + '|' + r.city);
+    if (seen.has(k)) return false; seen.add(k); return true;
+  });
+  if ($leuStatus) $leuStatus.innerHTML = `Leumit: <strong>${LEU_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['leumit'] = LEU_JOBS.length;
+  populateDropdowns(); applyFilters();
+}
+
+// ─── MEUHEDET ─────────────────────────────────────────────────────────────────
+function normMeuhedet(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const date = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  const title = g('title'); if (!title) return null;
+  return {
+    source: 'meuhedet', fnArea: 'meuhedet', title,
+    company: g('company') || 'קופת חולים מאוחדת',
+    category: classifySegment(title) || 'administrative',
+    size: '', level: classifyLevel(title),
+    city: translateCity(g('location')) || 'ישראל',
+    url: g('url'), updated: g('date') || date,
+    workType: 'onsite', description: g('description') || '',
+  };
+}
+
+async function loadMeuhedet() {
+  if ($meuStatus) $meuStatus.innerHTML = 'Meuhedet: <span style="color:var(--ink-faint)">loading\u2026</span>';
+  const filenames = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    filenames.push(`meuhedet_jobs_${y}-${m}-${day}.csv`);
+  }
+  const allRows = (await Promise.all(filenames.map(async fname => {
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) return [];
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true,
+        transformHeader: h => h.replace(/^\uFEFF/, '').trim().toLowerCase() });
+      return parsed.data.map(row => normMeuhedet(row, fname)).filter(Boolean);
+    } catch(e) { return []; }
+  }))).flat();
+  if (!allRows.length) {
+    if ($meuStatus) $meuStatus.innerHTML = 'Meuhedet: <span style="color:var(--ink-faint)">no file yet</span>';
+    return;
+  }
+  const seen = new Set();
+  MEU_JOBS = allRows.filter(r => {
+    const k = r.url || (r.company + '|' + r.title + '|' + r.city);
+    if (seen.has(k)) return false; seen.add(k); return true;
+  });
+  if ($meuStatus) $meuStatus.innerHTML = `Meuhedet: <strong>${MEU_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['meuhedet'] = MEU_JOBS.length;
+  populateDropdowns(); applyFilters();
+}
+
 function normClalit(row, fname) {
   const g = k => (row[k] == null ? '' : String(row[k]).trim());
   const date = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
@@ -4119,6 +4290,9 @@ render();
     loadSzmc(),
     loadHadassah(),
     loadClalit(),
+    loadMaccabi(),
+    loadLeumit(),
+    loadMeuhedet(),
     loadOsem(),
     loadTelegram(),
     loadMod(),

@@ -758,6 +758,326 @@ def run_technion():
         print(f"   x {e}")
         return 0
 
+# ── MACCABI ───────────────────────────────────────────────────────────────────
+
+def run_maccabi():
+    """Fetches Maccabi jobs via JSON API (POST).
+    Endpoint: POST https://www.maccabi4u.co.il/Umbraco/api/SearchJobsApi/FilterJobs
+    Payload fields: FreeText, ResultsPerPage, PageNumber, AdvertisingDestination
+    """
+    print("\n-- Maccabi Health Services (API) ------------------------------------")
+    API_URL = "https://www.maccabi4u.co.il/Umbraco/api/SearchJobsApi/FilterJobs"
+    HEADERS_MAC = {
+        **HEADERS,
+        "Content-Type":   "application/json",
+        "Accept":         "application/json",
+        "Origin":         "https://www.maccabi4u.co.il",
+        "Referer":        "https://www.maccabi4u.co.il/careers/search-job-positions/",
+        "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
+    }
+    RESULTS_PER_PAGE = 100
+    jobs = []
+    seen = set()
+    page = 0
+
+    try:
+        # First call — discover total
+        payload = {
+            "FreeText":            "",
+            "ResultsPerPage":      RESULTS_PER_PAGE,
+            "PageNumber":          0,
+            "AdvertisingDestination": 1,
+        }
+        r = requests.post(API_URL, json=payload, headers=HEADERS_MAC, timeout=30)
+        if not r.ok:
+            print(f"   - HTTP {r.status_code}")
+            return 0
+        data         = r.json()
+        total        = data.get("TotalResults", 0)
+        total_pages  = (total + RESULTS_PER_PAGE - 1) // RESULTS_PER_PAGE
+        print(f"   Total jobs: {total}  pages: {total_pages}")
+
+        def _parse_page(data):
+            for item in data.get("Results", []):
+                title = (item.get("Description") or "").strip()
+                if not title:
+                    continue
+                url = (item.get("JobUrl") or "").strip()
+                if not url:
+                    job_id = item.get("JobId") or ""
+                    if job_id:
+                        url = f"https://www.maccabi4u.co.il/careers/all-positions/{job_id}/"
+                if not url:
+                    continue
+                if url in seen:
+                    continue
+                seen.add(url)
+
+                # Location: first area description
+                areas = item.get("Areas") or []
+                location = areas[0].get("Description", "ישראל") if areas else "ישראל"
+
+                # Department
+                dept = (item.get("Profession") or "").strip()
+
+                # Description: strip HTML tags from Notes
+                notes_raw = (item.get("Notes") or "").strip()
+                import re as _re
+                description = _re.sub(r'<[^>]+>', ' ', notes_raw)
+                description = _re.sub(r'&nbsp;', ' ', description)
+                description = _re.sub(r'\s{2,}', ' ', description).strip()
+
+                jobs.append({
+                    "title":          title,
+                    "company":        "מכבי שירותי בריאות",
+                    "location":       location,
+                    "date":           TODAY,
+                    "url":            url,
+                    "department":     dept,
+                    "workplace_type": "onsite",
+                    "source":         "maccabi",
+                    "description":    description,
+                })
+
+        _parse_page(data)
+        print(f"   Page 0: {len(jobs)} jobs")
+
+        for pg in range(1, total_pages):
+            payload["PageNumber"] = pg
+            try:
+                r = requests.post(API_URL, json=payload, headers=HEADERS_MAC, timeout=30)
+                if not r.ok:
+                    print(f"   - page {pg}: HTTP {r.status_code}")
+                    break
+                _parse_page(r.json())
+                print(f"   Page {pg}: total so far {len(jobs)}")
+            except Exception as e:
+                print(f"   x page {pg}: {e}")
+                break
+
+        print(f"   + {len(jobs)}")
+        write_csv(jobs,
+                  ["title","company","location","date","url","department","workplace_type","source","description"],
+                  f"maccabi_jobs_{TODAY}.csv")
+        return len(jobs)
+    except Exception as e:
+        print(f"   x {e}")
+        return 0
+
+# ── LEUMIT ────────────────────────────────────────────────────────────────────
+
+def run_leumit():
+    print("\n-- Leumit Health Services -------------------------------------------")
+    try:
+        from bs4 import BeautifulSoup
+        BASE     = "https://www.leumit.co.il"
+        LIST_URL = BASE + "/jobs/work-in-leumit/"
+        HEADERS_LEU = {**HEADERS,
+            "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
+            "Referer": BASE + "/jobs/"}
+
+        r = requests.get(LIST_URL, headers=HEADERS_LEU, timeout=30)
+        if not r.ok:
+            print(f"   - {r.status_code}")
+            return 0
+
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        # All job links: /jobs/work-in-leumit/{id-or-slug}/
+        # They appear in swiper slides and in the main menu
+        job_links = set()
+        for a in soup.select("a[href*='/jobs/work-in-leumit/']"):
+            href = a.get("href", "")
+            # Exclude the base listing page itself
+            slug = href.rstrip("/").split("/jobs/work-in-leumit/")[-1]
+            if slug and slug not in ("", "work-in-leumit"):
+                full = (BASE + href) if href.startswith("/") else href
+                job_links.add(full)
+
+        print(f"   Found {len(job_links)} job links")
+        jobs = []
+        seen = set()
+
+        for url in sorted(job_links):
+            if url in seen:
+                continue
+            seen.add(url)
+            try:
+                jr = requests.get(url, headers=HEADERS_LEU, timeout=20)
+                if not jr.ok:
+                    continue
+                jsoup = BeautifulSoup(jr.text, "html.parser")
+
+                title_el = jsoup.select_one("h1")
+                title    = title_el.get_text(strip=True) if title_el else ""
+                if not title:
+                    continue
+
+                # location is in div.sub-title > p (first p)
+                loc_el   = jsoup.select_one("div.sub-title p")
+                location = loc_el.get_text(strip=True) if loc_el else "ישראל"
+
+                # description: main job body
+                import re as _re
+                desc_el = (
+                    jsoup.select_one("div.job-description") or
+                    jsoup.select_one("div.job-content") or
+                    jsoup.select_one("div.content-area") or
+                    jsoup.select_one("article") or
+                    jsoup.select_one("main")
+                )
+                if desc_el:
+                    for noise in desc_el.select("nav,header,footer,script,style"):
+                        noise.decompose()
+                    description = _re.sub(r"\s{2,}", " ", desc_el.get_text(separator=" ", strip=True)).strip()
+                else:
+                    description = ""
+
+                jobs.append({
+                    "title":          title,
+                    "company":        "לאומית שירותי בריאות",
+                    "location":       location,
+                    "date":           TODAY,
+                    "url":            url,
+                    "department":     "",
+                    "workplace_type": "onsite",
+                    "source":         "leumit",
+                    "description":    description,
+                })
+            except Exception as e:
+                print(f"   warn {url}: {e}")
+                continue
+
+        print(f"   + {len(jobs)}")
+        write_csv(jobs,
+                  ["title","company","location","date","url","department","workplace_type","source","description"],
+                  f"leumit_jobs_{TODAY}.csv")
+        return len(jobs)
+    except Exception as e:
+        print(f"   x {e}")
+        return 0
+
+# ── MEUHEDET ──────────────────────────────────────────────────────────────────
+
+def run_meuhedet():
+    """Fetches Meuhedet jobs via Algolia API.
+    App:   HCPGNF9T5W
+    Key:   0cd884fd17bbf3fb3cf348fcd50dbe8b
+    Index: prod_jobs
+    Tag:   602_37
+    """
+    print("\n-- Meuhedet Health Services (Algolia) -------------------------------")
+    ALGOLIA_URL = (
+        "https://hcpgnf9t5w-dsn.algolia.net/1/indexes/*/queries"
+        "?x-algolia-agent=Algolia%20for%20JavaScript%20(4.14.2)%3B%20Browser%20(lite)"
+        "&x-algolia-api-key=0cd884fd17bbf3fb3cf348fcd50dbe8b"
+        "&x-algolia-application-id=HCPGNF9T5W"
+    )
+    HITS_PER_PAGE = 1000
+    jobs = []
+    seen = set()
+
+    import re as _re
+
+    def _query_payload(page=0):
+        params = (
+            f"maxValuesPerFacet=1000"
+            f"&page={page}"
+            f"&tagFilters=%5B%5B%22602_37%22%5D%5D"
+            f"&filters=ContentRating%3APublic"
+            f"&hitsPerPage={HITS_PER_PAGE}"
+            f"&facets=%5B%22GeoArea%22%2C%22Specialization%22%5D"
+        )
+        return {"requests": [{"indexName": "prod_jobs", "params": params}]}
+
+    try:
+        headers_alg = {
+            **HEADERS,
+            "Content-Type": "application/json",
+            "Accept":       "application/json",
+        }
+
+        # First page — discover total
+        r = requests.post(ALGOLIA_URL, json=_query_payload(0), headers=headers_alg, timeout=30)
+        if not r.ok:
+            print(f"   - HTTP {r.status_code}: {r.text[:200]}")
+            return 0
+
+        result     = r.json()["results"][0]
+        nb_pages   = result.get("nbPages", 1)
+        nb_hits    = result.get("nbHits", 0)
+        print(f"   Total jobs: {nb_hits}  pages: {nb_pages}")
+
+        def _parse_hits(hits):
+            for h in hits:
+                title = (h.get("JobDescription") or h.get("Description") or "").strip()
+                if not title:
+                    continue
+                job_num = str(h.get("JobNumber") or h.get("Id") or "").strip()
+                url = f"https://www.meuhedet.co.il/?id={job_num}&j=1" if job_num else ""
+                if not url:
+                    continue
+                if url in seen:
+                    continue
+                seen.add(url)
+
+                location = (h.get("City") or h.get("GeoArea") or "ישראל").strip()
+                dept     = (h.get("Specialization") or "").strip()
+
+                # Date from JobTimeSortAttr (Unix ms)
+                ts = h.get("JobTimeSortAttr")
+                if ts:
+                    from datetime import datetime as _dt
+                    try:
+                        pub_date = _dt.utcfromtimestamp(ts / 1000).date().isoformat()
+                    except Exception:
+                        pub_date = TODAY
+                else:
+                    raw_date = (h.get("UpdateDate") or h.get("CreatedDate") or "")[:10]
+                    pub_date = raw_date if raw_date else TODAY
+
+                # Description: strip HTML from Notes
+                notes_raw = (h.get("Notes") or "").strip()
+                description = _re.sub(r'<[^>]+>', ' ', notes_raw)
+                description = _re.sub(r'&nbsp;', ' ', description)
+                description = _re.sub(r'\s{2,}', ' ', description).strip()
+
+                jobs.append({
+                    "title":          title,
+                    "company":        "קופת חולים מאוחדת",
+                    "location":       location,
+                    "date":           pub_date,
+                    "url":            url,
+                    "department":     dept,
+                    "workplace_type": "onsite",
+                    "source":         "meuhedet",
+                    "description":    description,
+                })
+
+        _parse_hits(result.get("hits", []))
+        print(f"   Page 0: {len(jobs)} jobs")
+
+        for pg in range(1, nb_pages):
+            try:
+                r = requests.post(ALGOLIA_URL, json=_query_payload(pg), headers=headers_alg, timeout=30)
+                if not r.ok:
+                    print(f"   - page {pg}: HTTP {r.status_code}")
+                    break
+                _parse_hits(r.json()["results"][0].get("hits", []))
+                print(f"   Page {pg}: total so far {len(jobs)}")
+            except Exception as e:
+                print(f"   x page {pg}: {e}")
+                break
+
+        print(f"   + {len(jobs)}")
+        write_csv(jobs,
+                  ["title","company","location","date","url","department","workplace_type","source","description"],
+                  f"meuhedet_jobs_{TODAY}.csv")
+        return len(jobs)
+    except Exception as e:
+        print(f"   x {e}")
+        return 0
+
 # ── History snapshot ──────────────────────────────────────────────────────────
 
 def update_history(results):
@@ -901,6 +1221,9 @@ def main():
     results['ashby']      = run_ashby(companies)
     results['workable']   = run_workable(companies)
     results['breezy']     = run_breezy(companies)
+    results['maccabi']    = run_maccabi()
+    results['leumit']     = run_leumit()
+    results['meuhedet']   = run_meuhedet()
     results['mitam']      = run_mitam()
     results['weizmann']   = run_weizmann()
     results['bgu']        = run_bgu()
