@@ -37,7 +37,7 @@ COLUMNS = [
     "date", "total",
     # Role types
     "rd", "product", "data", "sales", "marketing", "support",
-    "operations", "management", "design", "intern", "administrative",
+    "operations", "management", "design", "intern", "hr", "medical", "administrative",
     # Levels
     "entry", "mid", "senior", "advanced", "director",
     # Work types
@@ -60,7 +60,9 @@ SEGMENTS = {
     "sales":       re.compile(r"\b(account executive|account manager|sales engineer|sales manager|business development|bd\b|sdr\b|bdr\b|pre.?sales|presales|revenue|partnership|channel|alliances|enterprise sales|deal)\b|רכז.ת קשרי תעשיה|פיתוח עסקי", re.I),
     "marketing":   re.compile(r"\b(marketing|growth|content|seo|sem|brand|demand generation|campaign|copywriter|social media|pr\b|public relations|communications|field marketing|product marketing)\b|שיווק|קמפיין", re.I),
     "support":     re.compile(r"\b(customer success|customer support|technical support|implementation|solutions engineer|solution consultant|integration engineer|onboarding|professional services|client success|support engineer)\b|יועץ.ת חינוכי", re.I),
-    "operations":  re.compile(r"\b(hr\b|human resources|recruiter|talent acquisition|people ops|finance|accounting|legal|counsel|procurement|office manager|operations|ops\b|admin|executive assistant|ea\b|it manager|information technology|supply chain|logistics|biz ops|revenue ops|sales ops)\b|ראש לשכה|מנהל.ת לשכה|משאבי אנוש|רכז.ת|ביקורת פנים|בטיחות|ספרי|ספרנ|אחזקה|כלכלנ|חשבות|מנהח\"ש", re.I),
+    "hr":          re.compile(r"\b(hr\b|human resources|recruiter|talent acquisition|people ops|people partner|hrbp|hr manager|hr director|hr generalist|hr business partner)\b|משאבי אנוש|גיוס עובדים|רקרוטר", re.I),
+    "medical":     re.compile(r"\b(physician|doctor|nurse|pharmacist|paramedic|therapist|physiotherapist|occupational therapist|speech therapist|dietitian|psychologist|psychiatrist|radiologist|dentist|dental|surgeon|anesthesiolog|cardiolog|neurolog|oncolog|pediatric|gynecolog|orthoped|ophthalmolog|urolog|dermatolog|gastroenterol|hematolog|rheumatolog|endocrinolog|pulmonolog|nephrolog|infectiolog|geriatric|neonatolog|patholog|immunolog)\b|רופא|רופאה|אחות|אח\.ות|רוקח|רוקחת|פיזיותרפיסט|מרפא.ה בעיסוק|קלינאי.ת תקשורת|דיאטנ|פסיכולוג|פסיכיאטר|רדיולוג|דוגמ.ת דם|לוקח.ת דם|אמבולנס|פרמדיק|ניתוח|כירורג|טכנולוג.ית רפואי|טכנאי.ת מכשור רפואי|טכנאי מכשור|אופטומטריסט|אחות מוסמכת", re.I),
+    "operations":  re.compile(r"\b(finance|accounting|legal|counsel|procurement|office manager|operations|ops\b|admin|executive assistant|ea\b|it manager|information technology|supply chain|logistics|biz ops|revenue ops|sales ops)\b|ראש לשכה|מנהל.ת לשכה|רכז.ת|ביקורת פנים|בטיחות|ספרי|ספרנ|אחזקה|כלכלנ|חשבות|מנהח\"ש", re.I),
     "administrative": re.compile(r"רכז.ת מינהל|מנהל.ת מינהל|מנהל.ת משרד|מינהל.ת|סגל מנהלי|אדמיניסטרציה|administrative|coordinator|administrator", re.I),
 }
 
