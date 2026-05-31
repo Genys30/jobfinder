@@ -473,6 +473,28 @@
       top:auto;z-index:1500;}
     .city-multi-list{max-height:50vh;}
   }
+
+  /* ─── Entropy ─── */
+  .entr-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;
+    letter-spacing:.05em;padding:1px 5px;border-radius:3px;vertical-align:middle;
+    margin-left:4px;transform:translateY(-1px);border:1px solid transparent;}
+  .entr-high{background:rgba(46,125,50,.1);color:#2e7d32;border-color:rgba(46,125,50,.25);}
+  .entr-med {background:rgba(201,127,12,.08);color:#c97f0c;border-color:rgba(201,127,12,.2);}
+  .entr-low {background:rgba(214,57,22,.07);color:#d63916;border-color:rgba(214,57,22,.18);}
+  .an-entropy-section{margin:28px 0 0;}
+  .an-entropy-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:16px;padding-top:20px;
+    border-top:1px solid var(--rule);}
+  .an-template-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .an-template-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint);padding:4px 8px;text-align:left;
+    border-bottom:1px solid var(--rule);}
+  .an-template-table td{padding:7px 8px;border-bottom:1px solid var(--rule);color:var(--ink-dim);}
+  .an-template-table td:first-child{font-weight:600;color:var(--ink);}
+  .an-template-table td:last-child{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);}
+  .an-template-table tr:last-child td{border-bottom:none;}
+  .an-template-table a{color:inherit;text-decoration:none;}
+  .an-template-table a:hover{color:var(--accent);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -755,6 +777,15 @@
   <select id="sort" aria-label="Sort results">
     <option value="date">Newest</option>
     <option value="relevance" disabled>Best match</option>
+    <option value="entropy-desc">High Signal ↑</option>
+    <option value="entropy-asc">Low Signal ↑</option>
+  </select>
+  <select id="entropy" aria-label="Description quality">
+    <option value="">Signal</option>
+    <option value="high">High Signal (&gt;6.0 bits)</option>
+    <option value="med">Medium (4–6 bits)</option>
+    <option value="low">Low / Template (&lt;4 bits)</option>
+    <option value="nodesc">No Description</option>
   </select>
   <button class="reset" id="reset">Reset</button>
 </section>
@@ -888,6 +919,52 @@
       <div class="an-box-title">Top 20 hiring companies</div>
       <canvas id="chartCompanies" height="320"></canvas>
       <div class="an-note">Click → filter by company</div>
+    </div>
+  </div>
+
+  <!-- ─── Entropy section ─── -->
+  <div class="an-entropy-section">
+    <div class="an-entropy-title">&#128202; Description Quality (Shannon Entropy)</div>
+
+    <!-- 4 entropy cards -->
+    <div class="an-cards" style="margin-bottom:20px;">
+      <div class="an-card" style="cursor:default">
+        <div class="an-num" id="anAvgEntropy">—</div>
+        <div class="an-label">Avg description entropy</div>
+        <div class="an-sublabel">bits · higher = richer</div>
+      </div>
+      <div class="an-card" style="cursor:default">
+        <div class="an-num" id="anHighSignal">—</div>
+        <div class="an-label">High-signal jobs</div>
+        <div class="an-sublabel">entropy &gt; 6.0 bits</div>
+      </div>
+      <div class="an-card" style="cursor:default">
+        <div class="an-num" id="anNoDesc">—</div>
+        <div class="an-label">No description</div>
+        <div class="an-sublabel">empty / very short</div>
+      </div>
+      <div class="an-card" style="cursor:default">
+        <div class="an-num" id="anLowSignal">—</div>
+        <div class="an-label">Template / low quality</div>
+        <div class="an-sublabel">entropy &lt; 4.0 bits</div>
+      </div>
+    </div>
+
+    <!-- Row: Histogram + Top-5 template jobs -->
+    <div class="an-row an-row" style="grid-template-columns:1fr 1fr;margin-bottom:20px;">
+      <div class="an-box">
+        <div class="an-box-title">Entropy distribution</div>
+        <canvas id="chartEntropy" height="200"></canvas>
+        <div class="an-note">Distribution across all jobs with descriptions</div>
+      </div>
+      <div class="an-box">
+        <div class="an-box-title">Top-5 most template-like jobs</div>
+        <table class="an-template-table" id="templateJobsTable">
+          <thead><tr><th>Title</th><th>Company</th><th>Bits</th></tr></thead>
+          <tbody id="templateJobsTbody"><tr><td colspan="3" style="color:var(--ink-faint);font-style:italic">Loading…</td></tr></tbody>
+        </table>
+        <div class="an-note">Lowest entropy descriptions · may be generic/auto-generated</div>
+      </div>
     </div>
   </div>
 
@@ -1182,6 +1259,7 @@ const $source    = document.getElementById('source');
 const $worktype      = document.getElementById('worktype');
 const $positiontype  = document.getElementById('positiontype');
 const $sort      = document.getElementById('sort');
+const $entropy   = document.getElementById('entropy');
 const $cmStatus = document.getElementById('cmStatusText');
 const $ghStatus = document.getElementById('ghStatusText');
 const $lvStatus = document.getElementById('lvStatusText');
@@ -1189,6 +1267,20 @@ const $lvStatus = document.getElementById('lvStatusText');
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 function esc(s){
   return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Shannon entropy of a text string (character-level), bits
+function descEntropy(text) {
+  if (!text) return 0;
+  const s = text.replace(/\s+/g, ' ').trim();
+  if (s.length < 20) return 0;
+  const freq = {};
+  for (const ch of s) freq[ch] = (freq[ch] || 0) + 1;
+  const n = s.length;
+  return -Object.values(freq).reduce((acc, c) => {
+    const p = c / n;
+    return acc + p * Math.log2(p);
+  }, 0);
 }
 
 // Parses M/D/YYYY (LinkedIn) and ISO dates
@@ -3075,9 +3167,9 @@ function updateSortUi() {
 
 function updateFilterChrome(){
   updateSortUi();
-  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort].forEach(el=>{
+  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort,$entropy].forEach(el=>{
     if(!el) return;
-    if (el.id === 'sort') el.classList.toggle('is-active', el.value === 'relevance');
+    if (el.id === 'sort') el.classList.toggle('is-active', el.value === 'relevance' || el.value.startsWith('entropy'));
     else el.classList.toggle('is-active', el.value !== '');
   });
   if($q) $q.classList.toggle('is-active', $q.value.trim() !== '');
@@ -3093,6 +3185,7 @@ function readFilterCriteria(){
   const srcFilter  = $source   ? $source.value   : '';
   const wtFilter   = $worktype ? $worktype.value : '';
   const ptFilter   = $positiontype ? $positiontype.value : '';
+  const entrFilter = $entropy  ? $entropy.value  : '';
   const sort       = $sort ? $sort.value : 'date';
   const days       = $date && $date.value ? parseInt($date.value, 10) : null;
   const cutoff = (()=>{
@@ -3105,7 +3198,7 @@ function readFilterCriteria(){
     return Date.now() - days*86400000;
   })();
   return {
-    q, company, segFilter, lvlFilter, secFilter, srcFilter, wtFilter, ptFilter, sort,
+    q, company, segFilter, lvlFilter, secFilter, srcFilter, wtFilter, ptFilter, entrFilter, sort,
     selectedCities, cutoff,
     dateValue: $date ? $date.value : '',
   };
@@ -3119,9 +3212,24 @@ function getFilterHelpers(){
 
 function syncFilterFallback(criteria, pool, filterHelpers){
   FILTERED = pool.filter(function (r) {
-    return JobFilters.jobPassesFilters(r, criteria, filterHelpers);
+    if (!JobFilters.jobPassesFilters(r, criteria, filterHelpers)) return false;
+    // ── Entropy filter ──
+    if (criteria.entrFilter) {
+      const entr = descEntropy(r.description);
+      const hasDesc = r.description && r.description.trim().length > 20;
+      if (criteria.entrFilter === 'nodesc' && hasDesc) return false;
+      if (criteria.entrFilter === 'high'   && (!hasDesc || entr < 6)) return false;
+      if (criteria.entrFilter === 'med'    && (!hasDesc || entr < 4 || entr >= 6)) return false;
+      if (criteria.entrFilter === 'low'    && (!hasDesc || entr >= 4)) return false;
+    }
+    return true;
   });
-  if (typeof SearchRank !== 'undefined' && SearchRank.applyResultSort) {
+  // ── Entropy sort ──
+  if (criteria.sort === 'entropy-desc') {
+    FILTERED.sort((a, b) => descEntropy(b.description) - descEntropy(a.description));
+  } else if (criteria.sort === 'entropy-asc') {
+    FILTERED.sort((a, b) => descEntropy(a.description) - descEntropy(b.description));
+  } else if (typeof SearchRank !== 'undefined' && SearchRank.applyResultSort) {
     SearchRank.applyResultSort(FILTERED, {
       q: criteria.q,
       sort: criteria.sort || 'date',
@@ -3175,6 +3283,24 @@ function runSearchAsync(){
     onDone: function (payload) {
       setQSearchLoading(false);
       FILTERED = payload.results;
+      // ── Entropy filter (post-pass) ──
+      if (criteria.entrFilter) {
+        FILTERED = FILTERED.filter(function(r) {
+          const entr = descEntropy(r.description);
+          const hasDesc = r.description && r.description.trim().length > 20;
+          if (criteria.entrFilter === 'nodesc') return !hasDesc;
+          if (criteria.entrFilter === 'high')   return hasDesc && entr >= 6;
+          if (criteria.entrFilter === 'med')    return hasDesc && entr >= 4 && entr < 6;
+          if (criteria.entrFilter === 'low')    return hasDesc && entr < 4;
+          return true;
+        });
+      }
+      // ── Entropy sort ──
+      if (criteria.sort === 'entropy-desc') {
+        FILTERED.sort((a, b) => descEntropy(b.description) - descEntropy(a.description));
+      } else if (criteria.sort === 'entropy-asc') {
+        FILTERED.sort((a, b) => descEntropy(a.description) - descEntropy(b.description));
+      }
       visible = payload.initialVisible;
       updateDatabar();
       render();
@@ -3201,8 +3327,14 @@ function applyResort() {
       selectedCities: c.selectedCities,
     });
   }
-  if (FILTERED.length && typeof SearchRank !== 'undefined' && SearchRank.applyResultSort) {
-    SearchRank.applyResultSort(FILTERED, { q: c.q, sort: c.sort || 'date', parseDate });
+  if (FILTERED.length) {
+    if (c.sort === 'entropy-desc') {
+      FILTERED.sort((a, b) => descEntropy(b.description) - descEntropy(a.description));
+    } else if (c.sort === 'entropy-asc') {
+      FILTERED.sort((a, b) => descEntropy(a.description) - descEntropy(b.description));
+    } else if (typeof SearchRank !== 'undefined' && SearchRank.applyResultSort) {
+      SearchRank.applyResultSort(FILTERED, { q: c.q, sort: c.sort || 'date', parseDate });
+    }
   }
   visible = Math.min(visible, FILTERED.length);
   updateDatabar();
@@ -3298,6 +3430,12 @@ function render(){
     const ptClasses = {full_time:'pt-full_time',maternity_cover:'pt-maternity',part_time:'pt-part_time',freelance:'pt-freelance',internship:'pt-internship'};
     const ptVal = (r.positionType||'').toLowerCase().replace('-','_') || (r.positionType==='' || r.positionType==null ? 'full_time' : '');
     const ptBadge = ptVal && ptLabels[ptVal] ? '<span class="pt-badge '+esc(ptClasses[ptVal])+'">'+ptLabels[ptVal]+'</span>' : '';
+    const entr = descEntropy(r.description);
+    const entrBadge = (r.description && r.description.trim().length > 20)
+      ? (entr >= 6 ? '<span class="entr-badge entr-high">'+entr.toFixed(1)+'b</span>'
+       : entr >= 4 ? '<span class="entr-badge entr-med">'+entr.toFixed(1)+'b</span>'
+       : '<span class="entr-badge entr-low">'+entr.toFixed(1)+'b</span>')
+      : '';
     const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',maccabi:' mac-row',leumit:' leu-row',meuhedet:' meu-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
@@ -3311,6 +3449,7 @@ function render(){
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
       +(classifySegment(r.title)?'<span class="role-tag">'+esc(classifySegment(r.title))+'</span>':'')
       +(classifyLevel(r.title)?'<span class="level-tag level-'+classifyLevel(r.title)+'">'+esc(classifyLevel(r.title))+'</span>':'')
+      +entrBadge
       +'</span>'
       +'<span class="arrow">'+arrowLabel+'</span>'
       +'<button class="track-btn'+(tracked?' sent':'')+'" data-id="'+esc(jobId)+'" onclick="event.preventDefault();event.stopPropagation();toggleTrack(this.dataset.id)" title="Mark as sent">&#128236;</button>'
@@ -3393,7 +3532,7 @@ if ($q) {
     }
   });
 }
-[$company,$date,$level,$segment,$sector,$source,$worktype,$positiontype].forEach(el=>{
+[$company,$date,$level,$segment,$sector,$source,$worktype,$positiontype,$entropy].forEach(el=>{
   if (el) el.addEventListener('change', applyFilters);
 });
 if ($sort) $sort.addEventListener('change', applyResort);
@@ -3407,7 +3546,8 @@ $reset.addEventListener('click',()=>{
   if($worktype)$worktype.value='';
   if($positiontype)$positiontype.value='';
   if($sort)$sort.value='date';
-  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort].forEach(el=>{
+  if($entropy)$entropy.value='';
+  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort,$entropy].forEach(el=>{
     if(el) el.classList.remove('is-active');
   });
   if (typeof UrlState !== 'undefined') history.replaceState(null, '', location.pathname);
@@ -4491,6 +4631,78 @@ async function renderAnalytics(){
       renderTrendChart(histData,document.getElementById('trendMetric').value,parseInt(document.getElementById('trendDays').value,10));
     });
   });
+
+  // ── Entropy analytics ──
+  const jobsWithDesc = jobs.filter(r => r.description && r.description.trim().length > 20);
+  const noDescCount  = jobs.length - jobsWithDesc.length;
+  const entropies    = jobsWithDesc.map(r => ({ r, e: descEntropy(r.description) }));
+
+  // Avg entropy
+  const avgEntr = entropies.length
+    ? entropies.reduce((s, x) => s + x.e, 0) / entropies.length : 0;
+  const elAvg = document.getElementById('anAvgEntropy');
+  if (elAvg) elAvg.textContent = avgEntr.toFixed(2) + ' bits';
+
+  // % high-signal
+  const highCount = entropies.filter(x => x.e >= 6).length;
+  const elHigh = document.getElementById('anHighSignal');
+  if (elHigh) elHigh.textContent = jobsWithDesc.length
+    ? Math.round(highCount / jobsWithDesc.length * 100) + '%' : '—';
+
+  // No description
+  const elNo = document.getElementById('anNoDesc');
+  if (elNo) elNo.textContent = noDescCount.toLocaleString();
+
+  // Low signal
+  const lowCount = entropies.filter(x => x.e < 4).length;
+  const elLow = document.getElementById('anLowSignal');
+  if (elLow) elLow.textContent = jobsWithDesc.length
+    ? Math.round(lowCount / jobsWithDesc.length * 100) + '%' : '—';
+
+  // Top-5 most template-like jobs (lowest entropy, with description)
+  const tbody = document.getElementById('templateJobsTbody');
+  if (tbody && entropies.length) {
+    const bottom5 = [...entropies].sort((a, b) => a.e - b.e).slice(0, 5);
+    tbody.innerHTML = bottom5.map(({ r, e }) =>
+      '<tr><td><a href="'+esc(r.url||'#')+'" target="_blank" rel="noopener">'+esc(r.title)+'</a></td>'
+      +'<td>'+esc(r.company)+'</td>'
+      +'<td>'+e.toFixed(2)+'</td></tr>'
+    ).join('');
+  }
+
+  // Histogram
+  destroyChart('entropy');
+  if (entropies.length) {
+    const bins = [0,1,2,3,4,5,6,7,8,9,10];
+    const binLabels = bins.slice(0,-1).map((b,i) => b+'–'+bins[i+1]);
+    const binCounts = new Array(bins.length-1).fill(0);
+    entropies.forEach(({ e }) => {
+      const i = Math.min(Math.floor(e), bins.length-2);
+      if (i >= 0) binCounts[i]++;
+    });
+    const bgColors = binCounts.map((_, i) => {
+      const mid = (bins[i] + bins[i+1]) / 2;
+      return mid >= 6 ? 'rgba(46,125,50,.7)'
+           : mid >= 4 ? 'rgba(201,127,12,.7)'
+           : 'rgba(214,57,22,.7)';
+    });
+    CHART_INSTANCES['entropy'] = new Chart(document.getElementById('chartEntropy'), {
+      type: 'bar',
+      data: {
+        labels: binLabels,
+        datasets: [{ data: binCounts, backgroundColor: bgColors, borderRadius: 3 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: { title: ctx => ctx[0].label + ' bits', label: ctx => ctx.parsed.y + ' jobs' } } },
+        scales: {
+          x: { grid: { display: false }, title: { display: true, text: 'Entropy (bits)', font: { size: 9 } } },
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.05)' }, ticks: { stepSize: 1 } }
+        }
+      }
+    });
+  }
 }
 
 // ─── VIEW TOGGLE ─────────────────────────────────────────────────────────────
