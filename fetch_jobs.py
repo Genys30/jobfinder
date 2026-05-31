@@ -41,7 +41,8 @@ def is_israel(text='', country='', remote=False):
 POSITION_TYPE_PATTERNS = {
     'maternity_cover': re.compile(
         r'חל"ד|חל״ד|ח\.ל\.ד|החלפה לחופשת לידה|החלפה לח"ל|מילוי מקום לחופשת לידה|'
-        r'maternity.?cover|maternity.?leave.?cover|covering.?maternity',
+        r'maternity.?cover|maternity.?leave.?cover|covering.?maternity|'
+        r'maternity.?leave.?replace|maternity.?replace|replace\w*.?maternity',
         re.I | re.UNICODE
     ),
     'part_time': re.compile(
