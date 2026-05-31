@@ -35,6 +35,11 @@
       }
     }
 
+    if (criteria.ptFilter) {
+      const pt = (job.positionType || '').toLowerCase().replace(/-/g, '_');
+      if (pt !== criteria.ptFilter) return false;
+    }
+
     if (criteria.q && global.SearchQuery && !global.SearchQuery.matchesSearch(job, criteria.q)) {
       return false;
     }

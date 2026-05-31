@@ -38,6 +38,34 @@ def is_israel(text='', country='', remote=False):
     if 'israel' in t: return True
     return any(c in t for c in ISRAEL_CITIES)
 
+POSITION_TYPE_PATTERNS = {
+    'maternity_cover': re.compile(
+        r'חל"ד|חל״ד|ח\.ל\.ד|החלפה לחופשת לידה|החלפה לח"ל|מילוי מקום לחופשת לידה|'
+        r'maternity.?cover|maternity.?leave.?cover|covering.?maternity',
+        re.I | re.UNICODE
+    ),
+    'part_time': re.compile(
+        r'משרה חלקית|עבודה חלקית|היקף חלקי|חלקי\b|part.?time|part time',
+        re.I | re.UNICODE
+    ),
+    'freelance': re.compile(
+        r'פרילנס|פרי-לנס|freelance|free.?lance',
+        re.I | re.UNICODE
+    ),
+    'internship': re.compile(
+        r"סטאז'|סטאז|התמחות|מתמחה|intern(ship)?|co.?op\b|trainee",
+        re.I | re.UNICODE
+    ),
+}
+
+def detect_position_type(title='', description=''):
+    """Detect position_type from title and description text."""
+    text = (title + ' ' + description).strip()
+    for pt, rx in POSITION_TYPE_PATTERNS.items():
+        if rx.search(text):
+            return pt
+    return ''
+
 def dedup_jobs(jobs):
     seen = set()
     result = []
@@ -185,11 +213,13 @@ def run_comeet(companies, tm_new):
                 city = loc.get('city') or loc.get('name', '')
                 if not is_israel(city + ' ' + loc.get('name',''), loc.get('country',''), 'remote' in wt.lower()):
                     continue
+                title = p.get('name','')
                 pos.append({
-                    'title': p.get('name',''), 'company': p.get('company_name') or name,
+                    'title': title, 'company': p.get('company_name') or name,
                     'location': city, 'date': (p.get('time_updated') or '')[:10],
                     'url': p.get('url_active_page') or p.get('url_comeet_hosted_page',''),
-                    'department': p.get('department',''), 'workplace_type': wt
+                    'department': p.get('department',''), 'workplace_type': wt,
+                    'position_type': detect_position_type(title)
                 })
             print(f"      + {len(pos)}")
             jobs.extend(pos)
@@ -197,7 +227,7 @@ def run_comeet(companies, tm_new):
             print(f"      x {e}")
 
     write_csv(dedup_jobs(jobs),
-              ['title','company','location','date','url','department','workplace_type'],
+              ['title','company','location','date','url','department','workplace_type','position_type'],
               f'comeet_jobs_{TODAY}.csv')
     return len(dedup_jobs(jobs))
 
@@ -250,7 +280,8 @@ def run_greenhouse(companies, tm_new):
                     'title': job.get('title',''), 'company': name,
                     'location': loc_name.split(',')[0].strip(),
                     'date': (job.get('updated_at') or '')[:10],
-                    'url': job.get('absolute_url',''), 'department': dept, 'workplace_type': wt
+                    'url': job.get('absolute_url',''), 'department': dept, 'workplace_type': wt,
+                    'position_type': detect_position_type(job.get('title',''))
                 })
             print(f"      + {len(pos)}")
             jobs.extend(pos)
@@ -258,7 +289,7 @@ def run_greenhouse(companies, tm_new):
             print(f"      x {e}")
 
     write_csv(dedup_jobs(jobs),
-              ['title','company','location','date','url','department','workplace_type'],
+              ['title','company','location','date','url','department','workplace_type','position_type'],
               f'greenhouse_jobs_{TODAY}.csv')
     return len(dedup_jobs(jobs))
 
@@ -308,7 +339,8 @@ def run_lever(companies, tm_new):
                 pos.append({
                     'title': job.get('text',''), 'company': name,
                     'location': loc, 'date': dt, 'url': job.get('hostedUrl',''),
-                    'department': cats.get('team',''), 'workplace_type': wtype
+                    'department': cats.get('team',''), 'workplace_type': wtype,
+                    'position_type': detect_position_type(job.get('text',''))
                 })
             print(f"      + {len(pos)}")
             jobs.extend(pos)
@@ -316,7 +348,7 @@ def run_lever(companies, tm_new):
             print(f"      x {e}")
 
     write_csv(dedup_jobs(jobs),
-              ['title','company','location','date','url','department','workplace_type'],
+              ['title','company','location','date','url','department','workplace_type','position_type'],
               f'lever_jobs_{TODAY}.csv')
     return len(dedup_jobs(jobs))
 
@@ -360,7 +392,8 @@ def run_ashby(companies):
                     'title': job.get('title',''), 'company': name,
                     'location': loc, 'date': (job.get('publishedDate') or '')[:10],
                     'url': job.get('externalLink') or job.get('jobUrl',''),
-                    'department': job.get('departmentName',''), 'workplace_type': wt
+                    'department': job.get('departmentName',''), 'workplace_type': wt,
+                    'position_type': detect_position_type(job.get('title',''))
                 })
             print(f"      + {len(pos)}")
             jobs.extend(pos)
@@ -368,7 +401,7 @@ def run_ashby(companies):
             print(f"      x {e}")
 
     write_csv(dedup_jobs(jobs),
-              ['title','company','location','date','url','department','workplace_type'],
+              ['title','company','location','date','url','department','workplace_type','position_type'],
               f'ashby_jobs_{TODAY}.csv')
     return len(dedup_jobs(jobs))
 
@@ -415,7 +448,8 @@ def run_workable(companies):
                     'location': city or loc_str.split(',')[0].strip(),
                     'date': (job.get('created_at') or '')[:10],
                     'url': job.get('url',''), 'department': job.get('department',''),
-                    'workplace_type': wt
+                    'workplace_type': wt,
+                    'position_type': detect_position_type(job.get('title',''))
                 })
             print(f"      + {len(pos)}")
             jobs.extend(pos)
@@ -423,7 +457,7 @@ def run_workable(companies):
             print(f"      x {e}")
 
     write_csv(dedup_jobs(jobs),
-              ['title','company','location','date','url','department','workplace_type'],
+              ['title','company','location','date','url','department','workplace_type','position_type'],
               f'workable_jobs_{TODAY}.csv')
     return len(dedup_jobs(jobs))
 
@@ -468,7 +502,8 @@ def run_breezy(companies):
                     'title': job.get('name',''), 'company': name,
                     'location': city, 'date': (job.get('updated_date') or '')[:10],
                     'url': f"https://breezy.hr/p/{job.get('friendly_id','')}",
-                    'department': job.get('department',''), 'workplace_type': wt
+                    'department': job.get('department',''), 'workplace_type': wt,
+                    'position_type': detect_position_type(job.get('name',''))
                 })
             print(f"      + {len(pos)}")
             jobs.extend(pos)
@@ -476,7 +511,7 @@ def run_breezy(companies):
             print(f"      x {e}")
 
     write_csv(dedup_jobs(jobs),
-              ['title','company','location','date','url','department','workplace_type'],
+              ['title','company','location','date','url','department','workplace_type','position_type'],
               f'breezy_jobs_{TODAY}.csv')
     return len(dedup_jobs(jobs))
 
@@ -522,10 +557,11 @@ def run_mitam():
                 "url": url,
                 "department": (j.get("field") or "").strip(),
                 "workplace_type": (j.get("job_type") or "").strip(),
+                "position_type": detect_position_type((j.get("title") or "")),
             })
         print(f"   + {len(jobs)}")
         write_csv(dedup_jobs(jobs),
-                  ['title','company','location','date','url','department','workplace_type'],
+                  ['title','company','location','date','url','department','workplace_type','position_type'],
                   f'mitam_jobs_{TODAY}.csv')
         return len(dedup_jobs(jobs))
     except Exception as e:
@@ -571,10 +607,11 @@ def run_weizmann():
                 "title": title, "company": "מכון ויצמן למדע",
                 "location": "רחובות", "date": TODAY, "url": url,
                 "department": department, "workplace_type": workplace_type,
+                "position_type": detect_position_type(title),
             })
         print(f"   + {len(jobs)}")
         write_csv(jobs,
-                  ["title","company","location","date","url","department","workplace_type"],
+                  ["title","company","location","date","url","department","workplace_type","position_type"],
                   f"weizmann_jobs_{TODAY}.csv")
         return len(jobs)
     except Exception as e:
@@ -617,11 +654,12 @@ def run_bgu():
                 "title": display_title, "company": "אוניברסיטת בן-גוריון בנגב",
                 "location": "באר שבע", "date": TODAY,
                 "deadline": parse_date(date_str) if date_str else "",
-                "url": URL, "department": "", "workplace_type": "onsite"
+                "url": URL, "department": "", "workplace_type": "onsite",
+                "position_type": detect_position_type(display_title),
             })
         print(f"   + {len(jobs)}")
         write_csv(jobs,
-                  ["title","company","location","date","deadline","url","department","workplace_type"],
+                  ["title","company","location","date","deadline","url","department","workplace_type","position_type"],
                   f"bgu_jobs_{TODAY}.csv")
         return len(jobs)
     except Exception as e:
@@ -683,7 +721,8 @@ def run_huji():
                     "title": title, "company": company or "HUJI Career",
                     "location": location, "date": pub_date or TODAY, "url": url,
                     "department": "", "workplace_type": wt,
-                    "level": "junior", "source": "huji"
+                    "level": "junior", "source": "huji",
+                    "position_type": detect_position_type(title),
                 })
             return jobs
 
@@ -704,7 +743,7 @@ def run_huji():
 
         print(f"   + {len(all_jobs)}")
         write_csv(all_jobs,
-                  ["title","company","location","date","url","department","workplace_type","level","source"],
+                  ["title","company","location","date","url","department","workplace_type","level","source","position_type"],
                   f"huji_jobs_{TODAY}.csv")
         return len(all_jobs)
     except Exception as e:
@@ -747,11 +786,12 @@ def run_technion():
             jobs.append({
                 "title": title, "company": "הטכניון - מכון טכנולוגי לישראל",
                 "location": "חיפה", "date": TODAY, "url": url,
-                "department": dept, "workplace_type": "onsite"
+                "department": dept, "workplace_type": "onsite",
+                "position_type": detect_position_type(title),
             })
         print(f"   + {len(jobs)}")
         write_csv(jobs,
-                  ["title","company","location","date","url","department","workplace_type"],
+                  ["title","company","location","date","url","department","workplace_type","position_type"],
                   f"technion_jobs_{TODAY}.csv")
         return len(jobs)
     except Exception as e:
@@ -837,6 +877,7 @@ def run_maccabi():
                     "workplace_type": "onsite",
                     "source":         "maccabi",
                     "description":    description,
+                    "position_type":  detect_position_type(title, description),
                 })
 
         _parse_page(data)
@@ -857,7 +898,7 @@ def run_maccabi():
 
         print(f"   + {len(jobs)}")
         write_csv(jobs,
-                  ["title","company","location","date","url","department","workplace_type","source","description"],
+                  ["title","company","location","date","url","department","workplace_type","source","description","position_type"],
                   f"maccabi_jobs_{TODAY}.csv")
         return len(jobs)
     except Exception as e:
@@ -943,6 +984,7 @@ def run_leumit():
                     "workplace_type": "onsite",
                     "source":         "leumit",
                     "description":    description,
+                    "position_type":  detect_position_type(title, description),
                 })
             except Exception as e:
                 print(f"   warn {url}: {e}")
@@ -950,7 +992,7 @@ def run_leumit():
 
         print(f"   + {len(jobs)}")
         write_csv(jobs,
-                  ["title","company","location","date","url","department","workplace_type","source","description"],
+                  ["title","company","location","date","url","department","workplace_type","source","description","position_type"],
                   f"leumit_jobs_{TODAY}.csv")
         return len(jobs)
     except Exception as e:
@@ -1052,6 +1094,7 @@ def run_meuhedet():
                     "workplace_type": "onsite",
                     "source":         "meuhedet",
                     "description":    description,
+                    "position_type":  detect_position_type(title, description),
                 })
 
         _parse_hits(result.get("hits", []))
@@ -1071,7 +1114,7 @@ def run_meuhedet():
 
         print(f"   + {len(jobs)}")
         write_csv(jobs,
-                  ["title","company","location","date","url","department","workplace_type","source","description"],
+                  ["title","company","location","date","url","department","workplace_type","source","description","position_type"],
                   f"meuhedet_jobs_{TODAY}.csv")
         return len(jobs)
     except Exception as e:
@@ -1088,6 +1131,7 @@ def update_history(results):
               'agritech','foodtech','rd','product','data','design','sales',
               'marketing','operations','support','management','intern',
               'remote','hybrid','onsite',
+              'maternity_cover','part_time','freelance','internship',
               'linkedin','comeet','greenhouse','lever','ashby','workable','breezy']
 
     rows = []
@@ -1172,6 +1216,10 @@ def update_history(results):
         if 'remote' in wt:   counts['remote'] += 1
         elif 'hybrid' in wt: counts['hybrid'] += 1
         elif wt:             counts['onsite'] += 1
+
+        pt = g(row, 'position_type').lower()
+        if pt in ('maternity_cover', 'part_time', 'freelance', 'internship'):
+            counts[pt] = counts.get(pt, 0) + 1
 
     existing = []
     if os.path.exists(HIST):

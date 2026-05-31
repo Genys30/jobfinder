@@ -248,6 +248,13 @@
   .ab-row:hover .title{color:var(--ab);}
   .wk-row:hover .title{color:var(--wk);}
 
+  /* ─── Position type badges ─── */
+  .pt-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);}
+  .pt-maternity{background:#d4679a;color:#fff;}
+  .pt-part_time{background:#7a6bbf;color:#fff;}
+  .pt-freelance{background:#2e9e7c;color:#fff;}
+  .pt-internship{background:#e08c2a;color:#fff;}
+
   .an-select{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;padding:4px 8px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:3px;cursor:pointer;}
   .an-select:focus{border-color:var(--accent);outline:none;}
   .an-select.is-active{border-color:var(--accent);background:rgba(201,127,12,.08);color:var(--accent);font-weight:700;}
@@ -736,6 +743,13 @@
     <option value="hybrid">Hybrid</option>
     <option value="onsite">On-site</option>
   </select>
+  <select id="positiontype">
+    <option value="">Contract</option>
+    <option value="maternity_cover">חל"ד</option>
+    <option value="part_time">Part-time</option>
+    <option value="freelance">Freelance</option>
+    <option value="internship">Internship</option>
+  </select>
   <select id="sort" aria-label="Sort results">
     <option value="date">Newest</option>
     <option value="relevance" disabled>Best match</option>
@@ -1163,7 +1177,8 @@ const $loewensteinStatus = document.getElementById('loewensteinStatusText');
 const $carmelStatus = document.getElementById('carmelStatusText');
 const $sector    = document.getElementById('sector');
 const $source    = document.getElementById('source');
-const $worktype  = document.getElementById('worktype');
+const $worktype      = document.getElementById('worktype');
+const $positiontype  = document.getElementById('positiontype');
 const $sort      = document.getElementById('sort');
 const $cmStatus = document.getElementById('cmStatusText');
 const $ghStatus = document.getElementById('ghStatusText');
@@ -1286,6 +1301,7 @@ function normComeet(row, filename){
     url:  g('url'),
     updated: g('date')||fnDate,
     workType,
+    positionType: g('position_type'),
     description: g('description').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s{2,}/g,' ').trim(),
     requirements: ''
   };
@@ -1309,6 +1325,7 @@ function normGreenhouse(row, filename){
     url:   g('url'),
     updated: g('date')||fnDate,
     workType,
+    positionType: g('position_type'),
     description: g('description').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s{2,}/g,' ').trim(),
     requirements: ''
   };
@@ -1516,14 +1533,16 @@ function normAshby(row, fname){
   const date = fname.match(/(\d{4}-\d{2}-\d{2})/)?.[1]||'';
   return {source:'ab',fnArea:'ab',title:g('title'),company:g('company'),
     location:g('location'),date:g('date')||date,url:g('url'),
-    workType:(g('workplace_type')||'').toLowerCase()};
+    workType:(g('workplace_type')||'').toLowerCase(),
+    positionType:g('position_type')};
 }
 function normWorkable(row, fname){
   const g = k => (row[k]||'').trim();
   const date = fname.match(/(\d{4}-\d{2}-\d{2})/)?.[1]||'';
   return {source:'wk',fnArea:'wk',title:g('title'),company:g('company'),
     location:g('location'),date:g('date')||date,url:g('url'),
-    workType:(g('workplace_type')||'').toLowerCase()};
+    workType:(g('workplace_type')||'').toLowerCase(),
+    positionType:g('position_type')};
 }
 
 function normLever(row, filename){
@@ -1536,6 +1555,7 @@ function normLever(row, filename){
   const workType=wt.includes('remote')?'remote':wt.includes('hybrid')?'hybrid':wt.includes('on-site')||wt.includes('onsite')?'onsite':'onsite';
   return{source:'lv',fnArea:'lv',title,company,category:g('department')||'lv',
     size:'',level:'',city:g('location'),url:g('url'),updated:g('date')||fnDate,workType,
+    positionType:g('position_type'),
     description:g('description'),requirements:''};
 }
 
@@ -1715,7 +1735,8 @@ function normMitam(row, fname) {
     url:  g('url'),
     updated: g('date') || fnDate,
     deadline: g('deadline') || '',
-    workType
+    workType,
+    positionType: g('position_type'),
   };
 }
 
@@ -1775,6 +1796,7 @@ function normAcademic(row, fname) {
     updated: g('date') || fnDate,
     deadline: g('deadline') || '',
     workType: g('workplace_type'),
+    positionType: g('position_type'),
     description: g('description'),
     requirements: g('requirements'),
   };
@@ -1846,7 +1868,8 @@ function normHuji(row, fname) {
     url: g('url'),
     updated: g('date') || fnDate,
     deadline: g('deadline') || '',
-    workType
+    workType,
+    positionType: g('position_type'),
   };
 }
 
@@ -3050,7 +3073,7 @@ function updateSortUi() {
 
 function updateFilterChrome(){
   updateSortUi();
-  [$company,$segment,$level,$date,$sector,$source,$worktype,$sort].forEach(el=>{
+  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort].forEach(el=>{
     if(!el) return;
     if (el.id === 'sort') el.classList.toggle('is-active', el.value === 'relevance');
     else el.classList.toggle('is-active', el.value !== '');
@@ -3067,6 +3090,7 @@ function readFilterCriteria(){
   const secFilter  = $sector   ? $sector.value   : '';
   const srcFilter  = $source   ? $source.value   : '';
   const wtFilter   = $worktype ? $worktype.value : '';
+  const ptFilter   = $positiontype ? $positiontype.value : '';
   const sort       = $sort ? $sort.value : 'date';
   const days       = $date && $date.value ? parseInt($date.value, 10) : null;
   const cutoff = (()=>{
@@ -3079,7 +3103,7 @@ function readFilterCriteria(){
     return Date.now() - days*86400000;
   })();
   return {
-    q, company, segFilter, lvlFilter, secFilter, srcFilter, wtFilter, sort,
+    q, company, segFilter, lvlFilter, secFilter, srcFilter, wtFilter, ptFilter, sort,
     selectedCities, cutoff,
     dateValue: $date ? $date.value : '',
   };
@@ -3122,6 +3146,7 @@ function runSearchAsync(){
       sector: criteria.secFilter,
       source: criteria.srcFilter,
       worktype: criteria.wtFilter,
+      positiontype: criteria.ptFilter,
       sort: criteria.sort || 'date',
       selectedCities: criteria.selectedCities,
     });
@@ -3169,6 +3194,7 @@ function applyResort() {
       sector: c.secFilter,
       source: c.srcFilter,
       worktype: c.wtFilter,
+      positiontype: c.ptFilter,
       sort: c.sort || 'date',
       selectedCities: c.selectedCities,
     });
@@ -3263,6 +3289,10 @@ function render(){
     const carmelBadge = r.source==='carmel'?'<span class="carmel-badge">Carmel</span>':'';
     const modBadge = r.source==='mod'?'<span class="mod-badge">MOD</span>':'';
     const tgBadge = r.source==='Biltiformali-Telegram'?'<span class="tg-badge">TG</span>':'';
+    const ptLabels = {maternity_cover:'חל"ד',part_time:'Part-time',freelance:'Freelance',internship:'Internship'};
+    const ptClasses = {maternity_cover:'pt-maternity',part_time:'pt-part_time',freelance:'pt-freelance',internship:'pt-internship'};
+    const ptVal = (r.positionType||'').toLowerCase().replace('-','_');
+    const ptBadge = ptVal && ptLabels[ptVal] ? '<span class="pt-badge '+esc(ptClasses[ptVal])+'">'+ptLabels[ptVal]+'</span>' : '';
     const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
@@ -3270,7 +3300,7 @@ function render(){
     const arrowLabel = hasDesc ? '📄' : '➝';
     return '<a class="job'+rowCls+(hasDesc?' has-desc':'')+'" href="'+esc(href)+'" '+(hasDesc?popupClick:'target="_blank" rel="noopener"')+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+ptBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="city-cell">'+esc(r.city||'—')
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
@@ -3358,7 +3388,7 @@ if ($q) {
     }
   });
 }
-[$company,$date,$level,$segment,$sector,$source,$worktype].forEach(el=>{
+[$company,$date,$level,$segment,$sector,$source,$worktype,$positiontype].forEach(el=>{
   if (el) el.addEventListener('change', applyFilters);
 });
 if ($sort) $sort.addEventListener('change', applyResort);
@@ -3370,8 +3400,9 @@ $reset.addEventListener('click',()=>{
   if($sector)$sector.value='';
   if($source)$source.value='';
   if($worktype)$worktype.value='';
+  if($positiontype)$positiontype.value='';
   if($sort)$sort.value='date';
-  [$company,$segment,$level,$date,$sector,$source,$worktype,$sort].forEach(el=>{
+  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort].forEach(el=>{
     if(el) el.classList.remove('is-active');
   });
   if (typeof UrlState !== 'undefined') history.replaceState(null, '', location.pathname);
@@ -3572,13 +3603,14 @@ async function loadIchilov() {
 const SAVED_KEY = 'jf_saved_searches_v2';
 const MAX_SAVED = 15;
 
-const FILTER_IDS = ['q','city','company','segment','level','date','sector','source','worktype','sort'];
+const FILTER_IDS = ['q','city','company','segment','level','date','sector','source','worktype','positiontype','sort'];
 const FILTER_LABELS = {
   segment:{rd:'R&D',product:'Product',data:'Data',design:'Design',sales:'Sales',
            marketing:'Marketing',operations:'Ops',support:'CS',management:'Mgmt',intern:'Intern',medical:'Medical',administrative:'Admin'},
   sector:{startup:'Startup',private:'Private',public:'Public',academic:'Academic',nonprofit:'NGO',defence:'Defence'},
   date:{1:'Today',3:'3d',7:'7d',14:'14d',30:'30d'},
   worktype:{remote:'Remote',hybrid:'Hybrid',onsite:'On-site'},
+  positiontype:{maternity_cover:'חל"ד',part_time:'Part-time',freelance:'Freelance',internship:'Internship'},
   sort:{date:'Newest',relevance:'Best match'},
 };
 
@@ -3834,6 +3866,7 @@ function normMaccabi(row, fname) {
     city: translateCity(g('location')) || 'ישראל',
     url: g('url'), updated: g('date') || date,
     workType: 'onsite', description: g('description') || '',
+    positionType: g('position_type'),
   };
 }
 
@@ -3881,6 +3914,7 @@ function normLeumit(row, fname) {
     city: translateCity(g('location')) || 'ישראל',
     url: g('url'), updated: g('date') || date,
     workType: 'onsite', description: g('description') || '',
+    positionType: g('position_type'),
   };
 }
 
@@ -3928,6 +3962,7 @@ function normMeuhedet(row, fname) {
     city: translateCity(g('location')) || 'ישראל',
     url: g('url'), updated: g('date') || date,
     workType: 'onsite', description: g('description') || '',
+    positionType: g('position_type'),
   };
 }
 
