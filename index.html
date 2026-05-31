@@ -250,6 +250,7 @@
 
   /* ─── Position type badges ─── */
   .pt-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);}
+  .pt-full_time{background:#5a8a5a;color:#fff;}
   .pt-maternity{background:#d4679a;color:#fff;}
   .pt-part_time{background:#7a6bbf;color:#fff;}
   .pt-freelance{background:#2e9e7c;color:#fff;}
@@ -745,6 +746,7 @@
   </select>
   <select id="positiontype">
     <option value="">Contract</option>
+    <option value="full_time">Full-time</option>
     <option value="maternity_cover">Maternity Cover</option>
     <option value="part_time">Part-time</option>
     <option value="freelance">Freelance</option>
@@ -3289,9 +3291,9 @@ function render(){
     const carmelBadge = r.source==='carmel'?'<span class="carmel-badge">Carmel</span>':'';
     const modBadge = r.source==='mod'?'<span class="mod-badge">MOD</span>':'';
     const tgBadge = r.source==='Biltiformali-Telegram'?'<span class="tg-badge">TG</span>':'';
-    const ptLabels = {maternity_cover:'Maternity Cover',part_time:'Part-time',freelance:'Freelance',internship:'Internship'};
-    const ptClasses = {maternity_cover:'pt-maternity',part_time:'pt-part_time',freelance:'pt-freelance',internship:'pt-internship'};
-    const ptVal = (r.positionType||'').toLowerCase().replace('-','_');
+    const ptLabels = {full_time:'Full-time',maternity_cover:'Maternity Cover',part_time:'Part-time',freelance:'Freelance',internship:'Internship'};
+    const ptClasses = {full_time:'pt-full_time',maternity_cover:'pt-maternity',part_time:'pt-part_time',freelance:'pt-freelance',internship:'pt-internship'};
+    const ptVal = (r.positionType||'').toLowerCase().replace('-','_') || (r.positionType==='' || r.positionType==null ? 'full_time' : '');
     const ptBadge = ptVal && ptLabels[ptVal] ? '<span class="pt-badge '+esc(ptClasses[ptVal])+'">'+ptLabels[ptVal]+'</span>' : '';
     const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
@@ -3610,7 +3612,7 @@ const FILTER_LABELS = {
   sector:{startup:'Startup',private:'Private',public:'Public',academic:'Academic',nonprofit:'NGO',defence:'Defence'},
   date:{1:'Today',3:'3d',7:'7d',14:'14d',30:'30d'},
   worktype:{remote:'Remote',hybrid:'Hybrid',onsite:'On-site'},
-  positiontype:{maternity_cover:'Maternity Cover',part_time:'Part-time',freelance:'Freelance',internship:'Internship'},
+  positiontype:{full_time:'Full-time',maternity_cover:'Maternity Cover',part_time:'Part-time',freelance:'Freelance',internship:'Internship'},
   sort:{date:'Newest',relevance:'Best match'},
 };
 
