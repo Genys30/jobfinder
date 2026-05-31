@@ -1,6 +1,6 @@
 "on":
   schedule:
-    - cron: '0 22 * * *'  # 22:00 UTC = midnight Israel time (IDT)
+    - cron: '0 3 * * *'  # 06:00 Israel time (IDT = UTC+3)
   workflow_dispatch:
 
 name: Fetch Jobs
