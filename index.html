@@ -650,7 +650,7 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--mod)"></span><span id="modStatusText">MOD: loading…</span></div>
   <span class="databar-sep">·</span>
-  <div class="datasrc"><span class="src-dot" style="background:var(--inn)"></span><span id="innStatusText">IIA: loading…</span></div>
+  <div class="datasrc"><span class="src-dot" style="background:var(--inn)"></span><span id="innStatusText">Innovation IL: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--brd)"></span><span id="brdStatusText">Brookdale: loading…</span></div>
   </div>
@@ -768,7 +768,7 @@
       <option value="carmel">Carmel 🏥</option>
       <option value="Biltiformali-Telegram">Biltiformali 📱</option>
       <option value="mod">MOD 🛡️</option>
-      <option value="innovation-israel">IIA 🏛️</option>
+      <option value="innovation-israel">Innovation IL 🏛️</option>
       <option value="brookdale">Brookdale 🔬</option>
   </select>
   <select id="worktype">
@@ -3132,7 +3132,7 @@ const DATABAR_SOURCES = [
   { id:'carmelStatusText', key:'carmel', label:'Carmel' },
   { id:'tgStatusText', key:'telegram', label:'Biltiformali' },
   { id:'modStatusText', key:'mod', label:'MOD' },
-  { id:'innStatusText', key:'innovation-israel', label:'IIA' },
+  { id:'innStatusText', key:'innovation-israel', label:'Innovation IL' },
   { id:'brdStatusText', key:'brookdale', label:'Brookdale' },
 ];
 
@@ -3446,7 +3446,7 @@ function render(){
     const carmelBadge = r.source==='carmel'?'<span class="carmel-badge">Carmel</span>':'';
     const modBadge = r.source==='mod'?'<span class="mod-badge">MOD</span>':'';
     const tgBadge = r.source==='Biltiformali-Telegram'?'<span class="tg-badge">TG</span>':'';
-    const innBadge = r.source==='innovation-israel'?'<span class="inn-badge">IIA</span>':'';
+    const innBadge = r.source==='innovation-israel'?'<span class="inn-badge">Innovation IL</span>':'';
     const brdBadge = r.source==='brookdale'?'<span class="brd-badge">Brookdale</span>':'';
     const ptLabels = {full_time:'Full-time',maternity_cover:'Maternity Cover',part_time:'Part-time',freelance:'Freelance',internship:'Internship'};
     const ptClasses = {full_time:'pt-full_time',maternity_cover:'pt-maternity',part_time:'pt-part_time',freelance:'pt-freelance',internship:'pt-internship'};
@@ -4440,7 +4440,7 @@ async function loadMod() {
 }
 
 async function loadInnovationIsrael() {
-  if ($innStatus) $innStatus.innerHTML = 'IIA: <span style="color:var(--ink-faint)">loading…</span>';
+  if ($innStatus) $innStatus.innerHTML = 'Innovation IL: <span style="color:var(--ink-faint)">loading…</span>';
   const filenames = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(); d.setDate(d.getDate() - i);
@@ -4465,13 +4465,13 @@ async function loadInnovationIsrael() {
           url: g('url'), updated: g('date') || fname.match(/(\d{4}-\d{2}-\d{2})/)?.[1] || '',
           workType: g('workplace_type') || 'onsite',
           description: g('description') || '',
-          position_type: g('position_type') || '',
+          positionType: g('position_type') || '',
         };
       }).filter(Boolean);
     } catch(e) { return []; }
   }))).flat();
   if (!allRows.length) {
-    if ($innStatus) $innStatus.innerHTML = 'IIA: <span style="color:var(--ink-faint)">no file yet</span>';
+    if ($innStatus) $innStatus.innerHTML = 'Innovation IL: <span style="color:var(--ink-faint)">no file yet</span>';
     return;
   }
   const seen = new Set();
@@ -4479,7 +4479,7 @@ async function loadInnovationIsrael() {
     const k = r.url || (r.company + '|' + r.title);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($innStatus) $innStatus.innerHTML = `IIA: <strong>${INN_JOBS.length.toLocaleString()} jobs</strong>`;
+  if ($innStatus) $innStatus.innerHTML = `Innovation IL: <strong>${INN_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['innovation-israel'] = INN_JOBS.length;
   populateDropdowns(); applyFilters();
 }
@@ -4510,7 +4510,7 @@ async function loadBrookdale() {
           url: g('url'), updated: g('date') || fname.match(/(\d{4}-\d{2}-\d{2})/)?.[1] || '',
           workType: g('workplace_type') || 'onsite',
           description: g('description') || '',
-          position_type: g('position_type') || '',
+          positionType: g('position_type') || '',
         };
       }).filter(Boolean);
     } catch(e) { return []; }
