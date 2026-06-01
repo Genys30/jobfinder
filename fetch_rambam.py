@@ -2,14 +2,14 @@
 fetch_rambam.py  —  scraper for Rambam Health Care Campus jobs
 Scrapes two pages: digital-IT jobs + general careers page.
 
-Output: rambam_jobs_YYYY-MM-DD.csv
-Run locally and commit manually.
+NOTE: rambam.org.il blocks requests from cloud/CI IPs (GitHub Actions).
+      Run this script LOCALLY and commit the CSV manually.
 
-Usage:
-    py fetch_rambam.py
+Output: rambam_jobs_YYYY-MM-DD.csv
+Usage:  py fetch_rambam.py
 """
 
-import csv, re
+import csv, re, sys
 from datetime import date
 from pathlib import Path
 
@@ -32,8 +32,8 @@ PAGES = [
 
 # Titles to skip — nav/placeholder/template items, not real jobs
 SKIP_TITLES = {
-    "משרות חטיבת הדיגיטל וטכנולוגיות המידע",  # redirect entry on main page
-    "הגעת עד לפה ולא מצאת משרה מתאימה?",       # catch-all placeholder
+    "משרות חטיבת הדיגיטל וטכנולוגיות המידע",
+    "הגעת עד לפה ולא מצאת משרה מתאימה?",
 }
 
 HEADERS = {
@@ -46,8 +46,38 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
-FIELDNAMES = ["title", "company", "department", "location", "url", "date", "description"]
+FIELDNAMES = [
+    "title", "company", "location", "date", "url",
+    "department", "workplace_type", "source", "description", "position_type"
+]
 
+POSITION_TYPE_PATTERNS = {
+    'maternity_cover': re.compile(
+        r'חל"ד|חל״ד|ח\.ל\.ד|החלפה לחופשת לידה|החלפה לח"ל|מילוי מקום לחופשת לידה|'
+        r'maternity.?cover|maternity.?leave.?cover|covering.?maternity|'
+        r'maternity.?leave.?replace|maternity.?replace|replace\w*.?maternity',
+        re.I | re.UNICODE
+    ),
+    'part_time': re.compile(
+        r'משרה חלקית|עבודה חלקית|היקף חלקי|חלקי\b|part.?time|part time',
+        re.I | re.UNICODE
+    ),
+    'freelance': re.compile(
+        r'פרילנס|פרי-לנס|freelance|free.?lance',
+        re.I | re.UNICODE
+    ),
+    'internship': re.compile(
+        r"סטאז'|סטאז|התמחות|מתמחה|intern(ship)?|co.?op\b|trainee",
+        re.I | re.UNICODE
+    ),
+}
+
+def detect_position_type(title='', description=''):
+    text = (title + ' ' + description).strip()
+    for pt, rx in POSITION_TYPE_PATTERNS.items():
+        if rx.search(text):
+            return pt
+    return ''
 
 def clean(text):
     return re.sub(r"\s+", " ", text or "").strip()
@@ -55,7 +85,17 @@ def clean(text):
 
 def scrape_page(url, department):
     print(f"Fetching {url} …")
-    r = requests.get(url, headers=HEADERS, timeout=30)
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=30)
+    except Exception as e:
+        print(f"  ✗ Connection error: {e}")
+        return []
+
+    if r.status_code == 403:
+        print(f"  ✗ 403 Forbidden — rambam.org.il blocks server/CI requests.")
+        print(f"    Run this script locally on your machine.")
+        return []
+
     r.raise_for_status()
     r.encoding = "utf-8"
     soup = BeautifulSoup(r.text, "html.parser")
@@ -67,7 +107,6 @@ def scrape_page(url, department):
             continue
         title = clean(title_tag.get_text())
 
-        # Skip empty, known placeholders, and Vue/Angular template syntax
         if not title or title in SKIP_TITLES or "{{" in title:
             continue
 
@@ -84,13 +123,16 @@ def scrape_page(url, department):
                     break
 
         jobs.append({
-            "title": title,
-            "company": 'רמב"ם',
-            "department": department,
-            "location": "Haifa",
-            "url": apply_link or url,
-            "date": TODAY,
-            "description": desc[:800],
+            "title":         title,
+            "company":       'הקריה הרפואית רמב"ם',
+            "location":      "Haifa",
+            "date":          TODAY,
+            "url":           apply_link or url,
+            "department":    department,
+            "workplace_type": "onsite",
+            "source":        "rambam",
+            "description":   desc[:800],
+            "position_type": detect_position_type(title, desc),
         })
     return jobs
 
@@ -104,12 +146,13 @@ def main():
         new = [j for j in jobs if j["title"] not in seen_titles]
         for j in new:
             seen_titles.add(j["title"])
-        print(f"  → {len(new)} new jobs (skipped {len(jobs) - len(new)} dupes/template)")
+        dupes = len(jobs) - len(new)
+        print(f"  → {len(new)} new jobs" + (f" (skipped {dupes} dupes)" if dupes else ""))
         all_jobs.extend(new)
 
     if not all_jobs:
-        print("⚠️  No jobs found.")
-        return
+        print("⚠️  No jobs found — no file written.")
+        sys.exit(0)
 
     with open(OUTFILE, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
@@ -123,7 +166,7 @@ def main():
 
     print("\nNext steps:")
     print("  git add rambam_jobs_*.csv")
-    print("  git commit -m 'add rambam jobs'")
+    print("  git commit -m 'chore: add rambam jobs'")
     print("  git pull --rebase && git push")
 
 
