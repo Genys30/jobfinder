@@ -778,7 +778,6 @@
     <option value="date">Newest</option>
     <option value="relevance" disabled>Best match</option>
     <option value="entropy-desc">High Signal ↑</option>
-    <option value="entropy-asc">Low Signal ↑</option>
   </select>
   <select id="entropy" aria-label="Description quality">
     <option value="">Signal</option>
@@ -958,12 +957,12 @@
         <div class="an-note">Distribution across all jobs with descriptions</div>
       </div>
       <div class="an-box">
-        <div class="an-box-title">Top-5 most template-like jobs</div>
+        <div class="an-box-title">Avg description entropy by source</div>
         <table class="an-template-table" id="templateJobsTable">
-          <thead><tr><th>Title</th><th>Company</th><th>Bits</th></tr></thead>
+          <thead><tr><th>Source</th><th>Avg bits</th><th>Jobs with desc</th></tr></thead>
           <tbody id="templateJobsTbody"><tr><td colspan="3" style="color:var(--ink-faint);font-style:italic">Loading…</td></tr></tbody>
         </table>
-        <div class="an-note">Lowest entropy descriptions · may be generic/auto-generated</div>
+        <div class="an-note">Sources ranked by avg description richness · Comeet excluded (no descriptions in feed)</div>
       </div>
     </div>
   </div>
@@ -4659,15 +4658,44 @@ async function renderAnalytics(){
   if (elLow) elLow.textContent = jobsWithDesc.length
     ? Math.round(lowCount / jobsWithDesc.length * 100) + '%' : '—';
 
-  // Top-5 most template-like jobs (lowest entropy, with description)
+  // Top-10 sources by avg entropy
   const tbody = document.getElementById('templateJobsTbody');
   if (tbody && entropies.length) {
-    const bottom5 = [...entropies].sort((a, b) => a.e - b.e).slice(0, 5);
-    tbody.innerHTML = bottom5.map(({ r, e }) =>
-      '<tr><td><a href="'+esc(r.url||'#')+'" target="_blank" rel="noopener">'+esc(r.title)+'</a></td>'
-      +'<td>'+esc(r.company)+'</td>'
-      +'<td>'+e.toFixed(2)+'</td></tr>'
-    ).join('');
+    const SOURCE_LABELS = {
+      linkedin:'LinkedIn', greenhouse:'Greenhouse', lv:'Lever', ab:'Ashby',
+      wk:'Workable', direct:'Sponsored', mt:'Mitam', weizmann:'Weizmann',
+      bgu:'BGU', technion:'Technion', 'huji-alumni':'HUJI Alumni', huji:'HUJI',
+      tau:'TAU', haifa:'Haifa U', kpmg:'KPMG', deloitte:'Deloitte', ey:'EY',
+      joint:'Joint', bar:'BAR', bis:'BIS', gf:'GotFriends', ichilov:'Ichilov',
+      rambam:'Rambam', beilinson:'Beilinson', soroka:'Soroka', szmc:'Shaare Zedek',
+      hadassah:'Hadassah', clalit:'Clalit', maccabi:'Maccabi', leumit:'Leumit',
+      meuhedet:'Meuhedet', rabin:'Rabin', meir:'Meir', kaplan:'Kaplan',
+      schneider:'Schneider', yoseftal:'Yoseftal', emek:'Emek',
+      loewenstein:'Loewenstein', carmel:'Carmel', 'Biltiformali-Telegram':'Biltiformali', mod:'MOD'
+    };
+    // Group by source
+    const bySource = {};
+    entropies.forEach(({ r, e }) => {
+      const src = r.source || 'unknown';
+      if (!bySource[src]) bySource[src] = { sum: 0, count: 0 };
+      bySource[src].sum += e;
+      bySource[src].count++;
+    });
+    // Sort by avg descending, take top 10
+    const rows = Object.entries(bySource)
+      .map(([src, d]) => ({ src, avg: d.sum / d.count, count: d.count }))
+      .filter(x => x.count > 0)
+      .sort((a, b) => b.avg - a.avg)
+      .slice(0, 10);
+    tbody.innerHTML = rows.map(({ src, avg, count }) => {
+      const label = SOURCE_LABELS[src] || src;
+      const bar = avg >= 6 ? 'entr-high' : avg >= 4 ? 'entr-med' : 'entr-low';
+      return '<tr>'
+        + '<td>'+esc(label)+'</td>'
+        + '<td><span class="entr-badge '+bar+'">'+avg.toFixed(2)+'</span></td>'
+        + '<td style="color:var(--ink-faint)">'+count+'</td>'
+        + '</tr>';
+    }).join('');
   }
 
   // Histogram
