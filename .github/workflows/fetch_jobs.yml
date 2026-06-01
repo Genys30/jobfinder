@@ -26,6 +26,9 @@ jobs:
         env:
           MITAM_API_KEY: ${{ secrets.MITAM_API_KEY }}
 
+      - name: Fetch GotFriends jobs
+        run: python fetch_gotfriends.py
+
       - name: Remove CSV files older than 7 days
         run: |
           find . -maxdepth 1 -name "*_jobs_*.csv" -mtime +7 -delete
@@ -35,7 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add *_jobs_*.csv history.csv
+          git add *_jobs_*.csv gotfriends_jobs_*.csv gotfriends_file_index.json history.csv
           git diff --staged --quiet || git commit -m "chore: jobs update $(date -u +%Y-%m-%d)"
           git pull --rebase origin main
           git push
