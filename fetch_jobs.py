@@ -1165,6 +1165,11 @@ def run_innovation_israel():
             title = re.sub(r'^\s*JB-\d+\s*[-–]\s*', '', title, flags=re.I).strip()
             if not title:
                 continue
+            # Skip generic listing/nav pages (not actual vacancies)
+            SKIP_TITLES = {'קריירה ברשות', 'משרות פתוחות', 'קריירה ברשות – משרות פתוחות',
+                           'careers', 'job openings', 'jobs'}
+            if title.strip().lower() in {t.lower() for t in SKIP_TITLES}:
+                continue
             # Fetch the job page for description
             description = ""
             try:
