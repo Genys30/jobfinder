@@ -1204,82 +1204,6 @@ def run_innovation_israel():
         print(f"   x {e}")
         return 0
 
-# ── Brookdale Institute (מכון ברוקדייל) ──────────────────────────────────────
-
-def run_brookdale():
-    print("\n-- Brookdale Institute ----------------------------------------------")
-    try:
-        from bs4 import BeautifulSoup
-        LIST_URL = "https://brookdale.jdc.org.il/careers/"
-        HDR = {**HEADERS,
-               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-               "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
-               "Referer": "https://brookdale.jdc.org.il/"}
-        r = requests.get(LIST_URL, headers=HDR, timeout=30)
-        r.raise_for_status()
-        soup = BeautifulSoup(r.text, "html.parser")
-        jobs = []
-        seen = set()
-        # Only links whose href path starts with /careers/ (job posts live there)
-        # and is not the listing page itself
-        for link in soup.select("a[href*='/careers/']"):
-            href = link.get("href", "").strip()
-            if not href:
-                continue
-            # Normalise to absolute URL
-            if href.startswith("/"):
-                href = "https://brookdale.jdc.org.il" + href
-            # Must be on the same domain
-            if "brookdale.jdc.org.il" not in href:
-                continue
-            # Must be a sub-page of /careers/, not the listing itself
-            path = href.replace("https://brookdale.jdc.org.il", "").strip("/")
-            if path == "careers" or not path.startswith("careers/"):
-                continue
-            # Skip pagination, feed, tag, etc.
-            if any(x in href for x in ["?", "#", "/feed", "/page/", "/tag/", "/category/"]):
-                continue
-            if href in seen:
-                continue
-            seen.add(href)
-            title = link.get_text(" ", strip=True)
-            if not title or len(title) < 4:
-                continue
-            # Fetch job page for description
-            description = ""
-            try:
-                rj = requests.get(href, headers=HDR, timeout=20)
-                if rj.ok:
-                    jsoup = BeautifulSoup(rj.text, "html.parser")
-                    content_el = jsoup.select_one("div.entry-content") or \
-                                 jsoup.select_one("article") or \
-                                 jsoup.select_one("main")
-                    if content_el:
-                        description = content_el.get_text(" ", strip=True)[:2000]
-            except Exception:
-                pass
-            jobs.append({
-                "title": title,
-                "company": "מכון ברוקדייל",
-                "location": "ירושלים",
-                "date": TODAY,
-                "url": href,
-                "department": "",
-                "workplace_type": "onsite",
-                "source": "brookdale",
-                "description": description,
-                "position_type": detect_position_type(title, description),
-            })
-        print(f"   + {len(jobs)}")
-        write_csv(jobs,
-                  ["title","company","location","date","url","department",
-                   "workplace_type","source","description","position_type"],
-                  f"brookdale_jobs_{TODAY}.csv")
-        return len(jobs)
-    except Exception as e:
-        print(f"   x {e}")
-        return 0
-
 # ── Summary report ────────────────────────────────────────────────────────────
 
 def print_summary(results):
@@ -1324,7 +1248,7 @@ def main():
     results['technion']   = run_technion()
 
     results['innovation_israel'] = run_innovation_israel()
-    results['brookdale']  = run_brookdale()
+    # Brookdale now tracked via companies.json (Comeet: jerusalem-brookdale-institute/A4)
 
     print("\nUpdating history...")
     update_history(results)
