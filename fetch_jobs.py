@@ -1220,20 +1220,24 @@ def run_brookdale():
         soup = BeautifulSoup(r.text, "html.parser")
         jobs = []
         seen = set()
-        # WordPress posts — links to individual career posts
-        for link in soup.select("a[href*='brookdale.jdc.org.il']"):
-            href = link.get("href", "")
-            # Skip non-career links (nav, footer, categories)
-            if not href or href.rstrip("/") == LIST_URL.rstrip("/"):
+        # Only links whose href path starts with /careers/ (job posts live there)
+        # and is not the listing page itself
+        for link in soup.select("a[href*='/careers/']"):
+            href = link.get("href", "").strip()
+            if not href:
                 continue
-            # Only follow links that look like posts (have a path beyond root)
-            parsed_path = href.replace("https://brookdale.jdc.org.il", "").strip("/")
-            if not parsed_path or "/" not in parsed_path and len(parsed_path) < 5:
+            # Normalise to absolute URL
+            if href.startswith("/"):
+                href = "https://brookdale.jdc.org.il" + href
+            # Must be on the same domain
+            if "brookdale.jdc.org.il" not in href:
                 continue
-            # Skip known non-job sections
-            skip_prefixes = ("tag/", "category/", "population/", "news/",
-                             "about", "research", "publication", "en/", "wp-")
-            if any(parsed_path.startswith(p) for p in skip_prefixes):
+            # Must be a sub-page of /careers/, not the listing itself
+            path = href.replace("https://brookdale.jdc.org.il", "").strip("/")
+            if path == "careers" or not path.startswith("careers/"):
+                continue
+            # Skip pagination, feed, tag, etc.
+            if any(x in href for x in ["?", "#", "/feed", "/page/", "/tag/", "/category/"]):
                 continue
             if href in seen:
                 continue
@@ -1241,7 +1245,7 @@ def run_brookdale():
             title = link.get_text(" ", strip=True)
             if not title or len(title) < 4:
                 continue
-            # Fetch the job page for description
+            # Fetch job page for description
             description = ""
             try:
                 rj = requests.get(href, headers=HDR, timeout=20)
