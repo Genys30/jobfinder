@@ -799,113 +799,6 @@ def run_technion():
         print(f"   x {e}")
         return 0
 
-# ── MACCABI ───────────────────────────────────────────────────────────────────
-
-def run_maccabi():
-    """Fetches Maccabi jobs via JSON API (POST).
-    Endpoint: POST https://www.maccabi4u.co.il/Umbraco/api/SearchJobsApi/FilterJobs
-    Payload fields: FreeText, ResultsPerPage, PageNumber, AdvertisingDestination
-    """
-    print("\n-- Maccabi Health Services (API) ------------------------------------")
-    API_URL = "https://www.maccabi4u.co.il/Umbraco/api/SearchJobsApi/FilterJobs"
-    HEADERS_MAC = {
-        **HEADERS,
-        "Content-Type":   "application/json",
-        "Accept":         "application/json",
-        "Origin":         "https://www.maccabi4u.co.il",
-        "Referer":        "https://www.maccabi4u.co.il/careers/search-job-positions/",
-        "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
-    }
-    RESULTS_PER_PAGE = 100
-    jobs = []
-    seen = set()
-    page = 0
-
-    try:
-        # First call — discover total
-        payload = {
-            "FreeText":            "",
-            "ResultsPerPage":      RESULTS_PER_PAGE,
-            "PageNumber":          0,
-            "AdvertisingDestination": 1,
-        }
-        r = requests.post(API_URL, json=payload, headers=HEADERS_MAC, timeout=30)
-        if not r.ok:
-            print(f"   - HTTP {r.status_code}")
-            return 0
-        data         = r.json()
-        total        = data.get("TotalResults", 0)
-        total_pages  = (total + RESULTS_PER_PAGE - 1) // RESULTS_PER_PAGE
-        print(f"   Total jobs: {total}  pages: {total_pages}")
-
-        def _parse_page(data):
-            for item in data.get("Results", []):
-                title = (item.get("Description") or "").strip()
-                if not title:
-                    continue
-                url = (item.get("JobUrl") or "").strip()
-                if not url:
-                    job_id = item.get("JobId") or ""
-                    if job_id:
-                        url = f"https://www.maccabi4u.co.il/careers/all-positions/{job_id}/"
-                if not url:
-                    continue
-                if url in seen:
-                    continue
-                seen.add(url)
-
-                # Location: first area description
-                areas = item.get("Areas") or []
-                location = areas[0].get("Description", "ישראל") if areas else "ישראל"
-
-                # Department
-                dept = (item.get("Profession") or "").strip()
-
-                # Description: strip HTML tags from Notes
-                notes_raw = (item.get("Notes") or "").strip()
-                import re as _re
-                description = _re.sub(r'<[^>]+>', ' ', notes_raw)
-                description = _re.sub(r'&nbsp;', ' ', description)
-                description = _re.sub(r'\s{2,}', ' ', description).strip()
-
-                jobs.append({
-                    "title":          title,
-                    "company":        "מכבי שירותי בריאות",
-                    "location":       location,
-                    "date":           TODAY,
-                    "url":            url,
-                    "department":     dept,
-                    "workplace_type": "onsite",
-                    "source":         "maccabi",
-                    "description":    description,
-                    "position_type":  detect_position_type(title, description),
-                })
-
-        _parse_page(data)
-        print(f"   Page 0: {len(jobs)} jobs")
-
-        for pg in range(1, total_pages):
-            payload["PageNumber"] = pg
-            try:
-                r = requests.post(API_URL, json=payload, headers=HEADERS_MAC, timeout=30)
-                if not r.ok:
-                    print(f"   - page {pg}: HTTP {r.status_code}")
-                    break
-                _parse_page(r.json())
-                print(f"   Page {pg}: total so far {len(jobs)}")
-            except Exception as e:
-                print(f"   x page {pg}: {e}")
-                break
-
-        print(f"   + {len(jobs)}")
-        write_csv(jobs,
-                  ["title","company","location","date","url","department","workplace_type","source","description","position_type"],
-                  f"maccabi_jobs_{TODAY}.csv")
-        return len(jobs)
-    except Exception as e:
-        print(f"   x {e}")
-        return 0
-
 # ── LEUMIT ────────────────────────────────────────────────────────────────────
 
 def run_leumit():
@@ -1272,7 +1165,6 @@ def main():
     results['ashby']      = run_ashby(companies)
     results['workable']   = run_workable(companies)
     results['breezy']     = run_breezy(companies)
-    results['maccabi']    = run_maccabi()
     results['leumit']     = run_leumit()
     results['meuhedet']   = run_meuhedet()
     results['mitam']      = run_mitam()
