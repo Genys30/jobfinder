@@ -94,7 +94,7 @@ echo   All dependencies OK.
 echo.
 
 :: ── Step 1: Pull ──────────────────────────────────────────────────────────
-echo [1/4] Pulling latest from GitHub...
+echo [1/5] Pulling latest from GitHub...
 
 :: Back up LinkedIn CSVs before clean (git clean deletes untracked files)
 if not exist "%TEMP%\li_backup" mkdir "%TEMP%\li_backup"
@@ -126,20 +126,26 @@ echo.
 :: GitHub Actions every night. This .bat only handles LinkedIn (collected
 :: manually with the Chrome extension) and Telegram.
 
-echo [2/4] Fetching Telegram @biltiformali...
+echo [2/5] Fetching Telegram @biltiformali...
 %PYTHON_CMD% fetch_telegram_biltiformali.py --days 1
 if errorlevel 1 (
     echo WARNING: Telegram fetch failed - continuing anyway.
 )
 %PYTHON_CMD% -c "import os,glob; from datetime import date,timedelta; cutoff=str(date.today()-timedelta(days=30)); [os.remove(f) for f in glob.glob('jobs_telegram_biltiformali_*.csv') if f[-14:-4] < cutoff]"
 echo.
-echo [3/4] Fetching Rambam jobs (local only)...
+echo [3/5] Fetching Rambam jobs (local only)...
 %PYTHON_CMD% fetch_rambam.py
 if errorlevel 1 (
     echo WARNING: Rambam fetch failed - continuing anyway.
 )
 echo.
-echo [4/4] Committing and pushing CSVs...
+echo [4/5] Fetching BGU jobs (local only)...
+%PYTHON_CMD% fetch_bgu.py
+if errorlevel 1 (
+    echo WARNING: BGU fetch failed - continuing anyway.
+)
+echo.
+echo [5/5] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
