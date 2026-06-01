@@ -38,7 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add *_jobs_*.csv gotfriends_jobs_*.csv gotfriends_file_index.json history.csv
+          git add -A
           git diff --staged --quiet || git commit -m "chore: jobs update $(date -u +%Y-%m-%d)"
           git pull --rebase origin main
           git push
