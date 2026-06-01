@@ -121,27 +121,19 @@ echo.
 
 
 
-:: ── Step 2: Fetch jobs ────────────────────────────────────────────────────
-echo [2/4] Fetching jobs from Comeet, Greenhouse, Lever, Taasuka...
-%PYTHON_CMD% fetch_jobs.py
-if errorlevel 1 (
-    echo ERROR: fetch_jobs.py failed. See error above.
-    pause
-    exit /b 1
-)
+:: ── Step 2: Fetch Telegram ────────────────────────────────────────────────
+:: NOTE: fetch_jobs.py and fetch_gotfriends.py now run automatically in
+:: GitHub Actions every night. This .bat only handles LinkedIn (collected
+:: manually with the Chrome extension) and Telegram.
 
-echo.
-
-:: ── Step 3: Commit CSVs ───────────────────────────────────────────────────
-
-echo [2b/4] Fetching Telegram @biltiformali...
+echo [2/3] Fetching Telegram @biltiformali...
 %PYTHON_CMD% fetch_telegram_biltiformali.py --days 1
 if errorlevel 1 (
     echo WARNING: Telegram fetch failed - continuing anyway.
 )
 %PYTHON_CMD% -c "import os,glob; from datetime import date,timedelta; cutoff=str(date.today()-timedelta(days=30)); [os.remove(f) for f in glob.glob('jobs_telegram_biltiformali_*.csv') if f[-14:-4] < cutoff]"
 echo.
-echo [3/4] Committing CSVs...
+echo [3/3] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
@@ -150,8 +142,14 @@ git diff --staged --quiet && (
 )
 echo.
 
-:: ── Step 4: Push ──────────────────────────────────────────────────────────
-echo [4/4] Pushing to GitHub...
+:: ── Step 3b: Pull then Push ───────────────────────────────────────────────
+echo Syncing with GitHub before push...
+git pull --rebase origin main
+if errorlevel 1 (
+    echo ERROR: git pull --rebase failed. Resolve conflicts and run again.
+    pause
+    exit /b 1
+)
 git push
 echo.
 
