@@ -1130,6 +1130,152 @@ def update_history(results):
         w.writerows(existing)
     print(f"   -> history.csv updated ({len(existing)} days)")
 
+# ── Innovation Israel (רשות החדשנות) ─────────────────────────────────────────
+
+def run_innovation_israel():
+    print("\n-- Innovation Israel ------------------------------------------------")
+    try:
+        from bs4 import BeautifulSoup
+        LIST_URL = "https://innovationisrael.org.il/job/"
+        HDR = {**HEADERS,
+               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+               "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
+               "Referer": "https://innovationisrael.org.il/"}
+        r = requests.get(LIST_URL, headers=HDR, timeout=30)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        jobs = []
+        seen = set()
+        # Job links are <a href="/job/slug/"> with title text inline
+        for link in soup.select("a[href*='/job/']"):
+            href = link.get("href", "")
+            # skip the listing page itself and non-job links
+            slug = href.rstrip("/").split("/job/")[-1]
+            if not slug or slug.startswith("?") or slug == "":
+                continue
+            url = href if href.startswith("http") else "https://innovationisrael.org.il" + href
+            if url in seen:
+                continue
+            seen.add(url)
+            title = link.get_text(" ", strip=True)
+            # Strip trailing "לכל הפרטים >" navigation text
+            title = re.sub(r'\s*לכל הפרטים\s*>?\s*$', '', title).strip()
+            # Strip job code like "JB-85" at the end or start
+            title = re.sub(r'\s*[-–]\s*JB-\d+\s*$', '', title, flags=re.I).strip()
+            title = re.sub(r'^\s*JB-\d+\s*[-–]\s*', '', title, flags=re.I).strip()
+            if not title:
+                continue
+            # Fetch the job page for description
+            description = ""
+            try:
+                rj = requests.get(url, headers=HDR, timeout=20)
+                if rj.ok:
+                    jsoup = BeautifulSoup(rj.text, "html.parser")
+                    # Check if page redirected to /no_job/ — closed vacancy
+                    if "/no_job" in rj.url:
+                        continue
+                    # Main content area
+                    content_el = jsoup.select_one("div.elementor-widget-container") or \
+                                 jsoup.select_one("article") or \
+                                 jsoup.select_one("main")
+                    if content_el:
+                        description = content_el.get_text(" ", strip=True)[:2000]
+            except Exception:
+                pass
+            jobs.append({
+                "title": title,
+                "company": "רשות החדשנות",
+                "location": "ירושלים",
+                "date": TODAY,
+                "url": url,
+                "department": "",
+                "workplace_type": "onsite",
+                "source": "innovation-israel",
+                "description": description,
+                "position_type": detect_position_type(title, description),
+            })
+        print(f"   + {len(jobs)}")
+        write_csv(jobs,
+                  ["title","company","location","date","url","department",
+                   "workplace_type","source","description","position_type"],
+                  f"innovation_israel_jobs_{TODAY}.csv")
+        return len(jobs)
+    except Exception as e:
+        print(f"   x {e}")
+        return 0
+
+# ── Brookdale Institute (מכון ברוקדייל) ──────────────────────────────────────
+
+def run_brookdale():
+    print("\n-- Brookdale Institute ----------------------------------------------")
+    try:
+        from bs4 import BeautifulSoup
+        LIST_URL = "https://brookdale.jdc.org.il/careers/"
+        HDR = {**HEADERS,
+               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+               "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
+               "Referer": "https://brookdale.jdc.org.il/"}
+        r = requests.get(LIST_URL, headers=HDR, timeout=30)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        jobs = []
+        seen = set()
+        # WordPress posts — links to individual career posts
+        for link in soup.select("a[href*='brookdale.jdc.org.il']"):
+            href = link.get("href", "")
+            # Skip non-career links (nav, footer, categories)
+            if not href or href.rstrip("/") == LIST_URL.rstrip("/"):
+                continue
+            # Only follow links that look like posts (have a path beyond root)
+            parsed_path = href.replace("https://brookdale.jdc.org.il", "").strip("/")
+            if not parsed_path or "/" not in parsed_path and len(parsed_path) < 5:
+                continue
+            # Skip known non-job sections
+            skip_prefixes = ("tag/", "category/", "population/", "news/",
+                             "about", "research", "publication", "en/", "wp-")
+            if any(parsed_path.startswith(p) for p in skip_prefixes):
+                continue
+            if href in seen:
+                continue
+            seen.add(href)
+            title = link.get_text(" ", strip=True)
+            if not title or len(title) < 4:
+                continue
+            # Fetch the job page for description
+            description = ""
+            try:
+                rj = requests.get(href, headers=HDR, timeout=20)
+                if rj.ok:
+                    jsoup = BeautifulSoup(rj.text, "html.parser")
+                    content_el = jsoup.select_one("div.entry-content") or \
+                                 jsoup.select_one("article") or \
+                                 jsoup.select_one("main")
+                    if content_el:
+                        description = content_el.get_text(" ", strip=True)[:2000]
+            except Exception:
+                pass
+            jobs.append({
+                "title": title,
+                "company": "מכון ברוקדייל",
+                "location": "ירושלים",
+                "date": TODAY,
+                "url": href,
+                "department": "",
+                "workplace_type": "onsite",
+                "source": "brookdale",
+                "description": description,
+                "position_type": detect_position_type(title, description),
+            })
+        print(f"   + {len(jobs)}")
+        write_csv(jobs,
+                  ["title","company","location","date","url","department",
+                   "workplace_type","source","description","position_type"],
+                  f"brookdale_jobs_{TODAY}.csv")
+        return len(jobs)
+    except Exception as e:
+        print(f"   x {e}")
+        return 0
+
 # ── Summary report ────────────────────────────────────────────────────────────
 
 def print_summary(results):
@@ -1172,6 +1318,9 @@ def main():
     results['bgu']        = run_bgu()
     results['huji']       = run_huji()
     results['technion']   = run_technion()
+
+    results['innovation_israel'] = run_innovation_israel()
+    results['brookdale']  = run_brookdale()
 
     print("\nUpdating history...")
     update_history(results)
