@@ -53,7 +53,6 @@
   --mac:#005b82;--mac-pale:rgba(0,91,130,0.07);
   --leu:#c0392b;--leu-pale:rgba(192,57,43,0.07);
   --meu:#e67e22;--meu-pale:rgba(230,126,34,0.07);
-  --mov:#0a8f5b;--mov-pale:rgba(10,143,91,0.07);
   --rabin:#7b3f8f;--rabin-pale:rgba(0,0,0,0.07);
   --meir:#2e7d52;--meir-pale:rgba(0,0,0,0.07);
   --kaplan:#8b5e1a;--kaplan-pale:rgba(0,0,0,0.07);
@@ -628,8 +627,6 @@
   <div class="datasrc"><span class="src-dot" style="background:var(--leu)"></span><span id="leuStatusText">Leumit: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--meu)"></span><span id="meuStatusText">Meuhedet: loading…</span></div>
-  <span class="databar-sep">·</span>
-  <div class="datasrc"><span class="src-dot" style="background:var(--mov)"></span><span id="movStatusText">Movement: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--rabin)"></span><span id="rabinStatusText">Rabin: loading…</span></div>
   <span class="databar-sep">·</span>
@@ -1256,7 +1253,6 @@ const $clStatus  = document.getElementById('clStatusText');
 const $macStatus = document.getElementById('macStatusText');
 const $leuStatus = document.getElementById('leuStatusText');
 const $meuStatus = document.getElementById('meuStatusText');
-const $movStatus = document.getElementById('movStatusText');
 const $rabinStatus = document.getElementById('rabinStatusText');
 const $meirStatus = document.getElementById('meirStatusText');
 const $kaplanStatus = document.getElementById('kaplanStatusText');
@@ -4176,7 +4172,6 @@ function normMovement(row, fname) {
 }
 
 async function loadMovement() {
-  if ($movStatus) $movStatus.innerHTML = 'Movement: <span style="color:var(--ink-faint)">loading\u2026</span>';
   const filenames = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(); d.setDate(d.getDate() - i);
@@ -4193,7 +4188,6 @@ async function loadMovement() {
     } catch(e) { return []; }
   }))).flat();
   if (!allRows.length) {
-    if ($movStatus) $movStatus.innerHTML = 'Movement: <span style="color:var(--ink-faint)">no file yet</span>';
     return;
   }
   const seen = new Set();
@@ -4201,7 +4195,6 @@ async function loadMovement() {
     const k = r.url || (r.company + '|' + r.title + '|' + r.city);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($movStatus) $movStatus.innerHTML = `Movement: <strong>${MOV_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['movement'] = MOV_JOBS.length;
   populateDropdowns(); applyFilters();
 }
