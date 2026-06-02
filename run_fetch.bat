@@ -94,7 +94,7 @@ echo   All dependencies OK.
 echo.
 
 :: ── Step 1: Pull ──────────────────────────────────────────────────────────
-echo [1/6] Pulling latest from GitHub...
+echo [1/7] Pulling latest from GitHub...
 
 :: Back up LinkedIn CSVs before clean (git clean deletes untracked files)
 if not exist "%TEMP%\li_backup" mkdir "%TEMP%\li_backup"
@@ -126,32 +126,38 @@ echo.
 :: GitHub Actions every night. This .bat only handles LinkedIn (collected
 :: manually with the Chrome extension) and Telegram.
 
-echo [2/6] Fetching Telegram @biltiformali...
+echo [2/7] Fetching Telegram @biltiformali...
 %PYTHON_CMD% fetch_telegram_biltiformali.py --days 1
 if errorlevel 1 (
     echo WARNING: Telegram fetch failed - continuing anyway.
 )
 %PYTHON_CMD% -c "import os,glob; from datetime import date,timedelta; cutoff=str(date.today()-timedelta(days=30)); [os.remove(f) for f in glob.glob('jobs_telegram_biltiformali_*.csv') if f[-14:-4] < cutoff]"
 echo.
-echo [3/6] Fetching Rambam jobs (local only)...
+echo [3/7] Fetching Rambam jobs (local only)...
 %PYTHON_CMD% fetch_rambam.py
 if errorlevel 1 (
     echo WARNING: Rambam fetch failed - continuing anyway.
 )
 echo.
-echo [4/6] Fetching BGU jobs (local only)...
+echo [4/7] Fetching BGU jobs (local only)...
 %PYTHON_CMD% fetch_bgu.py
 if errorlevel 1 (
     echo WARNING: BGU fetch failed - continuing anyway.
 )
 echo.
-echo [5/6] Fetching Maccabi jobs (local only)...
+echo [5/7] Fetching Maccabi jobs (local only)...
 %PYTHON_CMD% fetch_maccabi.py
 if errorlevel 1 (
     echo WARNING: Maccabi fetch failed - continuing anyway.
 )
 echo.
-echo [6/6] Committing and pushing CSVs...
+echo [6/7] Fetching MOD jobs (local only)...
+%PYTHON_CMD% fetch_mod_jobs.py
+if errorlevel 1 (
+    echo WARNING: MOD fetch failed - continuing anyway.
+)
+echo.
+echo [7/7] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
