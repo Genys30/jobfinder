@@ -14,18 +14,34 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 google-api-python-client google-auth
+        run: pip install requests beautifulsoup4
       - name: Fetch all jobs
         run: python fetch_jobs.py
         env:
           MITAM_API_KEY: ${{ secrets.MITAM_API_KEY }}
       - name: Fetch GotFriends jobs
         run: python fetch_gotfriends.py
+      - name: Install rclone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
       - name: Upload CSVs to Google Drive
-        run: python upload_to_drive.py
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          mkdir -p rclone_config
+          cat > rclone_config/rclone.conf << RCLONE_EOF
+          [gdrive]
+          type = drive
+          scope = drive
+          token = $RCLONE_TOKEN
+          RCLONE_EOF
+          for f in *_jobs_${TODAY}.csv; do
+            [ -f "$f" ] || continue
+            echo "Uploading $f..."
+            rclone copy "$f" "gdrive:jobfinder-data" --config rclone_config/rclone.conf
+            echo "Done: $f"
+          done
         env:
-          GDRIVE_SERVICE_ACCOUNT: ${{ secrets.GDRIVE_SERVICE_ACCOUNT }}
-          GDRIVE_FOLDER_ID: 18_hQPxPgpkbHwFoevdDgSq2yCAeEw5LU
+          RCLONE_TOKEN: ${{ secrets.RCLONE_TOKEN }}
       - name: Remove CSV files older than 7 days
         run: |
           find . -maxdepth 1 -name "*_jobs_*.csv" -mtime +7 -delete
