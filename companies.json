@@ -3045,5 +3045,31 @@
     "added_by": "manual",
     "added_date": "2026-06-01",
     "active": true
+  },
+  {
+    "name": "QuantHealth",
+    "greenhouse": "quanthealth",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": "https://job-boards.greenhouse.io/quanthealth",
+    "added_by": "manual",
+    "added_date": "2026-06-01",
+    "active": true
+  },
+  {
+    "name": "BeamUp",
+    "greenhouse": "beamup",
+    "lever": null,
+    "comeet": null,
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": "https://job-boards.greenhouse.io/beamup",
+    "added_by": "manual",
+    "added_date": "2026-06-01",
+    "active": true
   }
 ]
