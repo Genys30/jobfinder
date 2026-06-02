@@ -745,7 +745,7 @@ def run_huji():
         print(f"   + {len(all_jobs)}")
         write_csv(all_jobs,
                   ["title","company","location","date","url","department","workplace_type","level","source","position_type"],
-                  f"huji_jobs_{TODAY}.csv")
+                  f"huji_alumni_jobs_{TODAY}.csv")
         return len(all_jobs)
     except Exception as e:
         print(f"   x {e}")
