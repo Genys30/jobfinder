@@ -26,7 +26,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import anthropic
@@ -43,6 +43,10 @@ SESSION_FILE  = "tg_session"          # Telethon session — keep out of git
 SEEN_FILE     = Path("seen_telegram_biltiformali.txt")
 OUT_DIR       = Path(".")             # where dated CSVs land
 SOURCE_NAME   = "Biltiformali-Telegram"
+
+# Vacancies stay visible for this many days from their publication date
+# (date_posted), then drop out of the CSV. 7 = today + 6 previous days.
+RETENTION_DAYS = 7
 
 TG_API_ID     = int(os.environ["TG_API_ID"])
 TG_API_HASH   = os.environ["TG_API_HASH"]
@@ -273,17 +277,45 @@ async def scrape(days: int | None = 7, fetch_all: bool = False, reparse: bool = 
                 "raw_text":    text[:300].replace("\n", " "),
             })
 
-    # Write CSV
-    today = datetime.now().strftime("%Y-%m-%d")
+    # ── Merge with today's existing CSV, then prune by date_posted ───────────
+    # Rationale: a normal --days 1 run only finds *newly seen* messages, so it
+    # must NOT overwrite jobs captured earlier (which would wipe the file).
+    # Instead we merge new jobs into whatever is already in today's CSV, dedup
+    # by id, and drop anything whose date_posted is older than RETENTION_DAYS.
+    today    = datetime.now().strftime("%Y-%m-%d")
     out_path = OUT_DIR / f"jobs_telegram_biltiformali_{today}.csv"
+
+    existing = []
+    if out_path.exists():
+        with open(out_path, newline="", encoding="utf-8-sig") as f:
+            existing = list(csv.DictReader(f))
+
+    # Newly scraped jobs take precedence over older copies of the same id.
+    merged = {}
+    for row in existing:
+        if row.get("id"):
+            merged[row["id"]] = row
+    for row in jobs:
+        merged[row["id"]] = row
+
+    # Keep only vacancies published within the retention window.
+    cutoff_date = (date.today() - timedelta(days=RETENTION_DAYS - 1)).isoformat()
+    final_rows = [r for r in merged.values()
+                  if (r.get("date_posted") or "") >= cutoff_date]
+    # Newest first.
+    final_rows.sort(key=lambda r: r.get("date_posted") or "", reverse=True)
+
     with open(out_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS)
         writer.writeheader()
-        writer.writerows(jobs)
+        writer.writerows(final_rows)
 
     save_seen(new_seen)
 
-    print(f"\n✓ {len(jobs)} jobs written → {out_path}")
+    pruned = len(merged) - len(final_rows)
+    print(f"\n✓ {len(final_rows)} jobs in {out_path}")
+    print(f"  ({len(jobs)} fetched this run, {len(merged) - len(jobs)} kept from before, "
+          f"{pruned} pruned as older than {RETENTION_DAYS} days)")
     print(f"  ({len(new_seen)} messages processed, {len(seen)} already seen)")
 
 
