@@ -16,6 +16,7 @@ Usage:
     python fetch_telegram_biltiformali.py            # last 7 days
     python fetch_telegram_biltiformali.py --days 30  # backfill
     python fetch_telegram_biltiformali.py --all      # full history
+    python fetch_telegram_biltiformali.py --days 3 --reparse  # re-evaluate last 3 days
 """
 
 import asyncio
@@ -57,15 +58,23 @@ CSV_COLUMNS = [
 SYSTEM_PROMPT = """
 You are a structured data extractor for an Israeli job board.
 You receive a raw Telegram message (in Hebrew or English) from the channel
-"מציאת עבודה" (@biltiformali), which focuses on:
-  management, third sector / NGOs, education, informal education,
-  social welfare — mid-level and above positions.
+"מציאת עבודה" (@biltiformali). This channel posts job vacancies across all
+sectors and all seniority levels.
 
-Your job:
-1. Decide if the message is a genuine job posting (is_job: true/false).
-   - Not a job: admin announcements, general discussion, ads for services,
-     "I'm looking for a job" self-posts, etc.
-2. If it IS a job, extract all fields below.
+IMPORTANT: Almost every message in this channel is a job vacancy. Default to
+is_job: true. Accept jobs of ANY seniority (junior, coordinator, administrative,
+mid, senior, management) and ANY sector (government, NGO/nonprofit, education,
+welfare, academia, business, etc.). Seniority and sector must NEVER be a reason
+to reject a posting.
+
+Set is_job: false ONLY when the message is clearly NOT a vacancy, such as:
+  - greetings / holiday wishes / channel rules / admin announcements
+  - advertisements for paid services (courses, CV-writing, coaching)
+  - "I am looking for a job" self-posts (a person seeking work, not an opening)
+  - polls, general discussion, or other non-vacancy chatter
+When in doubt, prefer is_job: true.
+
+If it IS a job, extract all fields below.
 
 Return ONLY valid JSON, no markdown, no explanation:
 
@@ -76,8 +85,8 @@ Return ONLY valid JSON, no markdown, no explanation:
   "city": "City/region in Hebrew, or null",
   "url": "Application URL or contact link, or null",
   "work_type": "משרה מלאה | משרה חלקית | פרילנס | התנדבות | null",
-  "sector": "ממשלתי | עמותות | חינוך | רווחה | עסקי | אחר | null",
-  "level": "בכיר | ניהולי | ביניים | null"
+  "sector": "ממשלתי | עמותות | חינוך | רווחה | אקדמיה | עסקי | אחר | null",
+  "level": "בכיר | ניהולי | ביניים | זוטר | null"
 }
 
 If the message is NOT a job: return { "is_job": false }
@@ -143,10 +152,12 @@ def save_seen(ids: set[int]):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-async def scrape(days: int | None = 7, fetch_all: bool = False):
+async def scrape(days: int | None = 7, fetch_all: bool = False, reparse: bool = False):
     seen = load_seen()
     jobs = []
     new_seen = set()
+    if reparse:
+        print("  [reparse] ignoring seen-cache for messages in this window")
 
     cutoff = None
     if not fetch_all and days:
@@ -161,8 +172,8 @@ async def scrape(days: int | None = 7, fetch_all: bool = False):
             if cutoff and msg.date < cutoff:
                 break
 
-            # Skip already processed
-            if msg.id in seen:
+            # Skip already processed (unless reparsing this window)
+            if msg.id in seen and not reparse:
                 continue
 
             text = msg.message or ""
@@ -221,9 +232,13 @@ if __name__ == "__main__":
                         help="How many days back to fetch (default: 7)")
     parser.add_argument("--all", action="store_true",
                         help="Fetch full channel history")
+    parser.add_argument("--reparse", action="store_true",
+                        help="Re-evaluate messages in the window even if already seen "
+                             "(use to backfill after a prompt change)")
     args = parser.parse_args()
 
     asyncio.run(scrape(
         days=args.days,
         fetch_all=args.all,
+        reparse=args.reparse,
     ))
