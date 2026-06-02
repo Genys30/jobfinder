@@ -2,38 +2,34 @@
   schedule:
     - cron: '0 3 * * *'  # 06:00 Israel time (IDT = UTC+3)
   workflow_dispatch:
-
 name: Fetch Jobs
-
 jobs:
   fetch-jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
-
+        run: pip install requests beautifulsoup4 google-api-python-client google-auth
       - name: Fetch all jobs
         run: python fetch_jobs.py
         env:
           MITAM_API_KEY: ${{ secrets.MITAM_API_KEY }}
-
       - name: Fetch GotFriends jobs
         run: python fetch_gotfriends.py
-
+      - name: Upload CSVs to Google Drive
+        run: python upload_to_drive.py
+        env:
+          GDRIVE_SERVICE_ACCOUNT: ${{ secrets.GDRIVE_SERVICE_ACCOUNT }}
+          GDRIVE_FOLDER_ID: 18_hQPxPgpkbHwFoevdDgSq2yCAeEw5LU
       - name: Remove CSV files older than 7 days
         run: |
           find . -maxdepth 1 -name "*_jobs_*.csv" -mtime +7 -delete
           echo "Old CSVs cleaned up"
-
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"

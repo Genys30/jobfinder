@@ -1,0 +1,26 @@
+ fetch_jobs.yml | 6 [32m+++[m[31m---[m
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+[1mdiff --git a/fetch_jobs.yml b/fetch_jobs.yml[m
+[1mindex 86bfbc8..e4d7c79 100644[m
+[1m--- a/fetch_jobs.yml[m
+[1m+++ b/fetch_jobs.yml[m
+[36m@@ -19,15 +19,15 @@[m [mjobs:[m
+           python-version: '3.11'[m
+ [m
+       - name: Install dependencies[m
+[31m-        run: pip install requests[m
+[32m+[m[32m        run: pip install requests beautifulsoup4[m
+ [m
+[31m-      - name: Fetch Comeet + Greenhouse jobs[m
+[32m+[m[32m      - name: Fetch all jobs[m
+         run: python fetch_jobs.py[m
+ [m
+       - name: Commit CSVs to repo[m
+         run: |[m
+           git config user.name  "github-actions[bot]"[m
+           git config user.email "github-actions[bot]@users.noreply.github.com"[m
+[31m-          git add comeet_jobs_*.csv greenhouse_jobs_*.csv[m
+[32m+[m[32m          git add comeet_jobs_*.csv greenhouse_jobs_*.csv lever_jobs_*.csv ashby_jobs_*.csv workable_jobs_*.csv mitam_jobs_*.csv weizmann_jobs_*.csv bgu_jobs_*.csv huji_jobs_*.csv technion_jobs_*.csv history.csv[m
+           git diff --staged --quiet || git commit -m "chore: jobs update $(date -u +%Y-%m-%d)"[m
+           git push[m
