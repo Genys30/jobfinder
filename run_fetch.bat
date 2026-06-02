@@ -94,7 +94,7 @@ echo   All dependencies OK.
 echo.
 
 :: ── Step 1: Pull ──────────────────────────────────────────────────────────
-echo [1/7] Pulling latest from GitHub...
+echo [1/8] Pulling latest from GitHub...
 
 :: Back up LinkedIn CSVs before clean (git clean deletes untracked files)
 if not exist "%TEMP%\li_backup" mkdir "%TEMP%\li_backup"
@@ -124,40 +124,67 @@ echo.
 :: ── Step 2: Fetch Telegram ────────────────────────────────────────────────
 :: NOTE: fetch_jobs.py and fetch_gotfriends.py now run automatically in
 :: GitHub Actions every night. This .bat only handles LinkedIn (collected
-:: manually with the Chrome extension) and Telegram.
+:: manually with the Chrome extension) and the local-only sources below.
 
-echo [2/7] Fetching Telegram @biltiformali...
+echo [2/8] Fetching Telegram @biltiformali...
 %PYTHON_CMD% fetch_telegram_biltiformali.py --days 1
 if errorlevel 1 (
     echo WARNING: Telegram fetch failed - continuing anyway.
 )
 %PYTHON_CMD% -c "import os,glob; from datetime import date,timedelta; cutoff=str(date.today()-timedelta(days=30)); [os.remove(f) for f in glob.glob('jobs_telegram_biltiformali_*.csv') if f[-14:-4] < cutoff]"
 echo.
-echo [3/7] Fetching Rambam jobs (local only)...
+echo [3/8] Fetching Rambam jobs (local only)...
 %PYTHON_CMD% fetch_rambam.py
 if errorlevel 1 (
     echo WARNING: Rambam fetch failed - continuing anyway.
 )
 echo.
-echo [4/7] Fetching BGU jobs (local only)...
+echo [4/8] Fetching BGU jobs (local only)...
 %PYTHON_CMD% fetch_bgu.py
 if errorlevel 1 (
     echo WARNING: BGU fetch failed - continuing anyway.
 )
 echo.
-echo [5/7] Fetching Maccabi jobs (local only)...
+echo [5/8] Fetching Maccabi jobs (local only)...
 %PYTHON_CMD% fetch_maccabi.py
 if errorlevel 1 (
     echo WARNING: Maccabi fetch failed - continuing anyway.
 )
 echo.
-echo [6/7] Fetching MOD jobs (local only)...
+echo [6/8] Fetching MOD jobs (local only)...
 %PYTHON_CMD% fetch_mod_jobs.py
 if errorlevel 1 (
     echo WARNING: MOD fetch failed - continuing anyway.
 )
 echo.
-echo [7/7] Committing and pushing CSVs...
+
+:: ── Step 7: Upload all CSVs to Google Drive (history archive) ─────────────
+:: rclone only transfers new/changed files, so this is cheap to run daily.
+:: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
+echo [7/8] Uploading CSVs to Google Drive...
+where rclone >nul 2>&1
+if errorlevel 1 (
+    if exist "%PROJECT_DIR%\rclone.exe" (
+        set "RCLONE_CMD=%PROJECT_DIR%\rclone.exe"
+    ) else (
+        echo WARNING: rclone not found - skipping Drive upload.
+        echo   Install rclone or place rclone.exe in the project folder.
+        goto :after_drive
+    )
+) else (
+    set "RCLONE_CMD=rclone"
+)
+"%RCLONE_CMD%" copy . gdrive:jobfinder-data --include "*.csv"
+if errorlevel 1 (
+    echo WARNING: Drive upload failed - continuing anyway.
+) else (
+    echo   Drive archive up to date.
+)
+:after_drive
+echo.
+
+:: ── Step 8: Commit and push ───────────────────────────────────────────────
+echo [8/8] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
@@ -166,7 +193,7 @@ git diff --staged --quiet && (
 )
 echo.
 
-:: ── Step 3b: Pull then Push ───────────────────────────────────────────────
+:: ── Pull then Push ────────────────────────────────────────────────────────
 echo Syncing with GitHub before push...
 git pull --rebase origin main
 if errorlevel 1 (
