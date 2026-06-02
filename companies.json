@@ -3034,19 +3034,6 @@
     "active": true
   },
   {
-    "name": "מכון ברוקדייל",
-    "greenhouse": null,
-    "lever": null,
-    "comeet": "F3.004/A4",
-    "ashby": null,
-    "workable": null,
-    "breezy": null,
-    "careers_url": "https://brookdale.jdc.org.il/careers/",
-    "added_by": "manual",
-    "added_date": "2026-06-01",
-    "active": true
-  },
-  {
     "name": "QuantHealth",
     "greenhouse": "quanthealth",
     "lever": null,
