@@ -1229,6 +1229,99 @@ def print_summary(results):
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 
+# ── MOVEMENT GROUP (private employer) ─────────────────────────────────────────
+
+def run_movement():
+    print("\n-- Movement Group --------------------------------------------------")
+    try:
+        from bs4 import BeautifulSoup
+        import time, re as _re
+        BASE      = "https://movement-group.com"
+        # קריירה (careers) — URL-encoded Hebrew slug
+        LIST_URL  = BASE + "/%d7%a7%d7%a8%d7%99%d7%99%d7%a8%d7%94/"
+        HEADERS_MOV = {**HEADERS,
+            "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
+            "Referer": BASE + "/"}
+
+        r = requests.get(LIST_URL, headers=HEADERS_MOV, timeout=30)
+        if not r.ok:
+            print(f"   - {r.status_code}")
+            return 0
+
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        # Job links look like https://movement-group.com/jobs/<slug>/
+        job_links = set()
+        for a in soup.select("a[href*='/jobs/']"):
+            href = a.get("href", "")
+            if "/jobs/" not in href:
+                continue
+            full = href if href.startswith("http") else (BASE + href)
+            slug = full.rstrip("/").split("/jobs/")[-1]
+            if slug and slug != "jobs":
+                job_links.add(full)
+
+        print(f"   Found {len(job_links)} job links")
+        jobs = []
+
+        def field_value(jsoup, hebrew_class):
+            """Read a WPBakery custom-field value by its Hebrew class token."""
+            el = jsoup.find("div", class_=hebrew_class)
+            if not el:
+                return ""
+            val = el.find("span", class_="w-post-elm-value")
+            target = val if val else el
+            return _re.sub(r"\s{2,}", " ", target.get_text(separator=" ", strip=True)).strip()
+
+        for url in sorted(job_links):
+            try:
+                jr = requests.get(url, headers=HEADERS_MOV, timeout=20)
+                if not jr.ok:
+                    continue
+                jsoup = BeautifulSoup(jr.text, "html.parser")
+
+                title_el = jsoup.select_one("h1.post_title") or jsoup.select_one("h1")
+                title    = title_el.get_text(strip=True) if title_el else ""
+                if not title:
+                    continue
+
+                # location: custom field "מיקום_המשרה"
+                location = field_value(jsoup, "מיקום_המשרה") or "ישראל"
+
+                # job scope: "היקף_המשרה" (Full Time / Part Time)
+                scope = field_value(jsoup, "היקף_המשרה")
+
+                # description: "התפקיד_כולל" (role) + "דרישות_התפקיד" (requirements)
+                role_txt = field_value(jsoup, "התפקיד_כולל")
+                req_txt  = field_value(jsoup, "דרישות_התפקיד")
+                description = " ".join(p for p in (role_txt, req_txt) if p).strip()
+
+                jobs.append({
+                    "title":          title,
+                    "company":        "קבוצת מובמנט",
+                    "location":       location,
+                    "date":           TODAY,
+                    "url":            url,
+                    "department":     "",
+                    "workplace_type": "onsite",
+                    "source":         "movement",
+                    "description":    description,
+                    "position_type":  detect_position_type(title, description + " " + scope),
+                })
+                time.sleep(0.6)  # be polite to their server
+            except Exception as e:
+                print(f"   warn {url}: {e}")
+                continue
+
+        print(f"   + {len(jobs)}")
+        write_csv(jobs,
+                  ["title","company","location","date","url","department","workplace_type","source","description","position_type"],
+                  f"movement_jobs_{TODAY}.csv")
+        return len(jobs)
+    except Exception as e:
+        print(f"   x {e}")
+        return 0
+
 def main():
     print(f"=== fetch_jobs.py {TODAY} ===\n")
 
@@ -1251,6 +1344,8 @@ def main():
     results['bgu']        = run_bgu()
     results['huji']       = run_huji()
     results['technion']   = run_technion()
+
+    results['movement']   = run_movement()
 
     results['innovation_israel'] = run_innovation_israel()
     # Brookdale now tracked via companies.json (Comeet: jerusalem-brookdale-institute/A4)

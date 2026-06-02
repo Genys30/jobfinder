@@ -53,6 +53,7 @@
   --mac:#005b82;--mac-pale:rgba(0,91,130,0.07);
   --leu:#c0392b;--leu-pale:rgba(192,57,43,0.07);
   --meu:#e67e22;--meu-pale:rgba(230,126,34,0.07);
+  --mov:#0a8f5b;--mov-pale:rgba(10,143,91,0.07);
   --rabin:#7b3f8f;--rabin-pale:rgba(0,0,0,0.07);
   --meir:#2e7d52;--meir-pale:rgba(0,0,0,0.07);
   --kaplan:#8b5e1a;--kaplan-pale:rgba(0,0,0,0.07);
@@ -222,6 +223,7 @@
   .leu-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--leu);}
   .leu-row:hover .title{color:var(--leu);}
   .meu-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--meu);}
+  .mov-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--mov);}
   .meu-row:hover .title{color:var(--meu);}
   .rabin-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--rabin);}
   .rabin-row:hover .title{color:var(--rabin);}
@@ -628,6 +630,8 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--meu)"></span><span id="meuStatusText">Meuhedet: loading…</span></div>
   <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--mov)"></span><span id="movStatusText">Movement: loading…</span></div>
+  <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--rabin)"></span><span id="rabinStatusText">Rabin: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--meir)"></span><span id="meirStatusText">Meir: loading…</span></div>
@@ -754,6 +758,7 @@
       <option value="maccabi">Maccabi 🏥</option>
       <option value="leumit">Leumit 🏥</option>
       <option value="meuhedet">Meuhedet 🏥</option>
+      <option value="movement">Movement 🏢</option>
       <option value="rabin">Rabin 🏥</option>
       <option value="meir">Meir 🏥</option>
       <option value="kaplan">Kaplan 🏥</option>
@@ -1189,6 +1194,7 @@ let CL_JOBS  = [];   // Clalit
 let MAC_JOBS = [];   // Maccabi
 let LEU_JOBS = [];   // Leumit
 let MEU_JOBS = [];   // Meuhedet
+let MOV_JOBS = [];   // Movement Group
 let RABIN_JOBS = [];
 let MEIR_JOBS = [];
 let KAPLAN_JOBS = [];
@@ -1252,6 +1258,7 @@ const $clStatus  = document.getElementById('clStatusText');
 const $macStatus = document.getElementById('macStatusText');
 const $leuStatus = document.getElementById('leuStatusText');
 const $meuStatus = document.getElementById('meuStatusText');
+const $movStatus = document.getElementById('movStatusText');
 const $rabinStatus = document.getElementById('rabinStatusText');
 const $meirStatus = document.getElementById('meirStatusText');
 const $kaplanStatus = document.getElementById('kaplanStatusText');
@@ -2417,6 +2424,7 @@ function getPoolInner(){
   if(activeSrc==='maccabi')   return MAC_JOBS;
   if(activeSrc==='leumit')    return LEU_JOBS;
   if(activeSrc==='meuhedet')  return MEU_JOBS;
+  if(activeSrc==='movement')  return MOV_JOBS;
   if(activeSrc==='rabin')    return RABIN_JOBS;
   if(activeSrc==='meir')    return MEIR_JOBS;
   if(activeSrc==='kaplan')    return KAPLAN_JOBS;
@@ -3048,6 +3056,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'maccabi':'public','mac':'public',
   'leumit':'public','leu':'public',
   'meuhedet':'public','meu':'public',
+  'movement':'private','mov':'private',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -3426,6 +3435,7 @@ function render(){
     const macBadge = r.source==='maccabi'?'<span class="mac-badge">Maccabi</span>':'';
     const leuBadge = r.source==='leumit'?'<span class="leu-badge">Leumit</span>':'';
     const meuBadge = r.source==='meuhedet'?'<span class="meu-badge">Meuhedet</span>':'';
+    const movBadge = r.source==='movement'?'<span class="mov-badge">Movement</span>':'';
     const rabinBadge = r.source==='rabin'?'<span class="rabin-badge">Rabin</span>':'';
     const meirBadge = r.source==='meir'?'<span class="meir-badge">Meir</span>':'';
     const kaplanBadge = r.source==='kaplan'?'<span class="kaplan-badge">Kaplan</span>':'';
@@ -3447,14 +3457,14 @@ function render(){
        : entr >= 4 ? '<span class="entr-badge entr-med">'+entr.toFixed(1)+'b</span>'
        : '<span class="entr-badge entr-low">'+entr.toFixed(1)+'b</span>')
       : '';
-    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',maccabi:' mac-row',leumit:' leu-row',meuhedet:' meu-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row','innovation-israel':' inn-row'})[r.source]||'';
+    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',maccabi:' mac-row',leumit:' leu-row',meuhedet:' meu-row',movement:' mov-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row','innovation-israel':' inn-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
     const popupClick = hasDesc ? 'onclick="event.preventDefault();var r=window._jobMap[\''+jobKey+'\'];if(r)openPopup(r);"' : '';
     const arrowLabel = hasDesc ? '📄' : '➝';
     return '<a class="job'+rowCls+(hasDesc?' has-desc':'')+'" href="'+esc(href)+'" '+(hasDesc?popupClick:'target="_blank" rel="noopener"')+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+macBadge+leuBadge+meuBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+innBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+ptBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+macBadge+leuBadge+meuBadge+movBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+innBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+ptBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="city-cell">'+esc(r.city||'—')
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
@@ -4153,6 +4163,53 @@ async function loadMeuhedet() {
   populateDropdowns(); applyFilters();
 }
 
+function normMovement(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const date = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  const title = g('title'); if (!title) return null;
+  return {
+    source: 'movement', fnArea: 'movement', title,
+    company: g('company') || 'קבוצת מובמנט',
+    category: classifySegment(title) || 'administrative',
+    size: '', level: classifyLevel(title),
+    city: translateCity(g('location')) || 'ישראל',
+    url: g('url'), updated: g('date') || date,
+    workType: 'onsite', description: g('description') || '',
+    positionType: g('position_type'),
+  };
+}
+
+async function loadMovement() {
+  if ($movStatus) $movStatus.innerHTML = 'Movement: <span style="color:var(--ink-faint)">loading\u2026</span>';
+  const filenames = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    filenames.push(`movement_jobs_${y}-${m}-${day}.csv`);
+  }
+  const allRows = (await Promise.all(filenames.map(async fname => {
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) return [];
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true,
+        transformHeader: h => h.replace(/^\uFEFF/, '').trim().toLowerCase() });
+      return parsed.data.map(row => normMovement(row, fname)).filter(Boolean);
+    } catch(e) { return []; }
+  }))).flat();
+  if (!allRows.length) {
+    if ($movStatus) $movStatus.innerHTML = 'Movement: <span style="color:var(--ink-faint)">no file yet</span>';
+    return;
+  }
+  const seen = new Set();
+  MOV_JOBS = allRows.filter(r => {
+    const k = r.url || (r.company + '|' + r.title + '|' + r.city);
+    if (seen.has(k)) return false; seen.add(k); return true;
+  });
+  if ($movStatus) $movStatus.innerHTML = `Movement: <strong>${MOV_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['movement'] = MOV_JOBS.length;
+  populateDropdowns(); applyFilters();
+}
+
 function normClalit(row, fname) {
   const g = k => (row[k] == null ? '' : String(row[k]).trim());
   const date = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
@@ -4534,6 +4591,7 @@ render();
     loadMaccabi(),
     loadLeumit(),
     loadMeuhedet(),
+    loadMovement(),
     loadOsem(),
     loadTelegram(),
     loadMod(),
@@ -4729,6 +4787,7 @@ async function renderAnalytics(){
       rambam:'Rambam', beilinson:'Beilinson', soroka:'Soroka', szmc:'Shaare Zedek',
       hadassah:'Hadassah', clalit:'Clalit', maccabi:'Maccabi', leumit:'Leumit',
       meuhedet:'Meuhedet', rabin:'Rabin', meir:'Meir', kaplan:'Kaplan',
+      movement:'Movement',
       schneider:'Schneider', yoseftal:'Yoseftal', emek:'Emek',
       loewenstein:'Loewenstein', carmel:'Carmel', 'Biltiformali-Telegram':'Biltiformali', mod:'MOD'
     };
