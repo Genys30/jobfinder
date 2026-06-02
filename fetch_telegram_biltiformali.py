@@ -90,13 +90,71 @@ Return ONLY valid JSON, no markdown, no explanation:
 }
 
 If the message is NOT a job: return { "is_job": false }
+
+OUTPUT RULES (critical):
+- Return ONLY the raw JSON object. No markdown, no code fences, no explanation
+  before or after it.
+- Inside string values, NEVER use the standard double-quote character ("). For
+  Hebrew abbreviations that normally take gershayim (e.g. עו״ס, מתנ״ס, חל״ד),
+  use the gershayim character ״ (U+05F4), not ".
 """
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
 
 
-def parse_message(text: str) -> dict | None:
+def extract_json(raw: str) -> dict | None:
+    """
+    Best-effort extraction of a single JSON object from a model response.
+
+    Handles common failure modes:
+      - markdown ```json ... ``` fences
+      - prose before/after the JSON object
+      - stray double-quotes inside Hebrew abbreviations (e.g. עו"ס, מתנ"ס),
+        which break naive json.loads — we repair quotes that sit between two
+        Hebrew letters by converting them to the gershayim character (U+05F4).
+    """
+    if not raw:
+        return None
+
+    # Strip markdown fences anywhere in the text
+    s = re.sub(r'```(?:json)?', '', raw).strip()
+
+    # Isolate the first balanced {...} block
+    start = s.find('{')
+    if start == -1:
+        return None
+    depth = 0
+    end = -1
+    for i in range(start, len(s)):
+        if s[i] == '{':
+            depth += 1
+        elif s[i] == '}':
+            depth -= 1
+            if depth == 0:
+                end = i + 1
+                break
+    if end == -1:
+        return None
+    block = s[start:end]
+
+    # Attempt 1: parse as-is
+    try:
+        return json.loads(block)
+    except json.JSONDecodeError:
+        pass
+
+    # Attempt 2: repair inner quotes sitting between Hebrew letters
+    # (Hebrew abbreviations like עו"ס / מתנ"ס embed a literal " inside a value).
+    repaired = re.sub(r'(?<=[\u0590-\u05FF])"(?=[\u0590-\u05FF])', '\u05F4', block)
+    try:
+        return json.loads(repaired)
+    except json.JSONDecodeError:
+        return None
+
+
+def parse_message(text: str, _retry: bool = True) -> dict | None:
     """Call Claude to parse a single Telegram message. Returns dict or None."""
+    raw = ""
     try:
         response = claude.messages.create(
             model="claude-haiku-4-5-20251001",
@@ -105,13 +163,20 @@ def parse_message(text: str) -> dict | None:
             messages=[{"role": "user", "content": text}],
         )
         raw = response.content[0].text.strip()
-        raw = re.sub(r'^```json\s*', '', raw)
-        raw = re.sub(r'\s*```$', '', raw)
-        data = json.loads(raw)
+        data = extract_json(raw)
+        if data is None:
+            # One retry with an explicit format reminder before giving up.
+            if _retry:
+                reminder = (
+                    text
+                    + "\n\n---\nReturn ONLY a valid JSON object. Do not use markdown. "
+                      'Inside string values do not use the " character; for Hebrew '
+                      "abbreviations use the gershayim character \u05F4 instead."
+                )
+                return parse_message(reminder, _retry=False)
+            print(f"  [warn] JSON parse failed | raw: {repr(raw[:100])}")
+            return None
         return data if data.get("is_job") else None
-    except json.JSONDecodeError as e:
-        print(f"  [warn] JSON parse error: {e} | raw: {repr(raw[:100])}")
-        return None
     except Exception as e:
         print(f"  [warn] API error: {type(e).__name__}: {e}")
         return None
