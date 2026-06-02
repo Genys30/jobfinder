@@ -1298,7 +1298,7 @@ def run_movement():
 
                 jobs.append({
                     "title":          title,
-                    "company":        "קבוצת מובמנט",
+                    "company":        "Movement Group",
                     "location":       location,
                     "date":           TODAY,
                     "url":            url,

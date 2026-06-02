@@ -223,7 +223,6 @@
   .leu-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--leu);}
   .leu-row:hover .title{color:var(--leu);}
   .meu-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--meu);}
-  .mov-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--mov);}
   .meu-row:hover .title{color:var(--meu);}
   .rabin-badge{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:2px 5px;border-radius:2px;vertical-align:middle;transform:translateY(-1px);background:var(--rabin);}
   .rabin-row:hover .title{color:var(--rabin);}
@@ -758,7 +757,6 @@
       <option value="maccabi">Maccabi 🏥</option>
       <option value="leumit">Leumit 🏥</option>
       <option value="meuhedet">Meuhedet 🏥</option>
-      <option value="movement">Movement 🏢</option>
       <option value="rabin">Rabin 🏥</option>
       <option value="meir">Meir 🏥</option>
       <option value="kaplan">Kaplan 🏥</option>
@@ -2424,7 +2422,6 @@ function getPoolInner(){
   if(activeSrc==='maccabi')   return MAC_JOBS;
   if(activeSrc==='leumit')    return LEU_JOBS;
   if(activeSrc==='meuhedet')  return MEU_JOBS;
-  if(activeSrc==='movement')  return MOV_JOBS;
   if(activeSrc==='rabin')    return RABIN_JOBS;
   if(activeSrc==='meir')    return MEIR_JOBS;
   if(activeSrc==='kaplan')    return KAPLAN_JOBS;
@@ -2438,7 +2435,7 @@ function getPoolInner(){
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...INN_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3435,7 +3432,6 @@ function render(){
     const macBadge = r.source==='maccabi'?'<span class="mac-badge">Maccabi</span>':'';
     const leuBadge = r.source==='leumit'?'<span class="leu-badge">Leumit</span>':'';
     const meuBadge = r.source==='meuhedet'?'<span class="meu-badge">Meuhedet</span>':'';
-    const movBadge = r.source==='movement'?'<span class="mov-badge">Movement</span>':'';
     const rabinBadge = r.source==='rabin'?'<span class="rabin-badge">Rabin</span>':'';
     const meirBadge = r.source==='meir'?'<span class="meir-badge">Meir</span>':'';
     const kaplanBadge = r.source==='kaplan'?'<span class="kaplan-badge">Kaplan</span>':'';
@@ -3457,14 +3453,14 @@ function render(){
        : entr >= 4 ? '<span class="entr-badge entr-med">'+entr.toFixed(1)+'b</span>'
        : '<span class="entr-badge entr-low">'+entr.toFixed(1)+'b</span>')
       : '';
-    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',maccabi:' mac-row',leumit:' leu-row',meuhedet:' meu-row',movement:' mov-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row','innovation-israel':' inn-row'})[r.source]||'';
+    const rowCls  = ({linkedin:' li-row',comeet:' cm-row',greenhouse:' gh-row',lv:' lv-row',ab:' ab-row',wk:' wk-row',direct:' sp-row',mt:' mt-row',ac:' ac-row',weizmann:' wz-row','huji-alumni':' hj-row',huji:' huji-row',tau:' tau-row',haifa:' uf-row',kpmg:' kpmg-row',deloitte:' dl-row',ey:' ey-row',joint:' jnt-row',bar:' bar-row',bis:' bis-row',gf:' gf-row',ichilov:' ic-row',rambam:' rb-row',beilinson:' bl-row',soroka:' sk-row',szmc:' sz-row',hadassah:' hd-row',clalit:' cl-row',maccabi:' mac-row',leumit:' leu-row',meuhedet:' meu-row',rabin:' rabin-row',meir:' meir-row',kaplan:' kaplan-row',schneider:' schneider-row',yoseftal:' yoseftal-row',emek:' emek-row',loewenstein:' loewenstein-row',carmel:' carmel-row',mod:' mod-row','Biltiformali-Telegram':' tg-row','innovation-israel':' inn-row'})[r.source]||'';
     const jobId   = r.url||(r.title+r.company);
     const tracked = isTracked(jobId);
     const popupClick = hasDesc ? 'onclick="event.preventDefault();var r=window._jobMap[\''+jobKey+'\'];if(r)openPopup(r);"' : '';
     const arrowLabel = hasDesc ? '📄' : '➝';
     return '<a class="job'+rowCls+(hasDesc?' has-desc':'')+'" href="'+esc(href)+'" '+(hasDesc?popupClick:'target="_blank" rel="noopener"')+'>'
       +'<span class="job-date">'+esc(formatDate(r.updated))+'</span>'
-      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+macBadge+leuBadge+meuBadge+movBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+innBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+ptBadge+'</span>'
+      +'<span class="title">'+esc(r.title)+liBadge+cmBadge+ghBadge+lvBadge+abBadge+wkBadge+spBadge+mtBadge+acBadge+wzBadge+hjBadge+szBadge+hdBadge+clBadge+macBadge+leuBadge+meuBadge+rabinBadge+meirBadge+kaplanBadge+schneiderBadge+yoseftalBadge+emekBadge+loewensteinBadge+carmelBadge+modBadge+tgBadge+innBadge+hujiBadge+tauBadge+ufBadge+kpmgBadge+dlBadge+eyBadge+jntBadge+barBadge+bisBadge+gfBadge+icBadge+rbBadge+blBadge+skBadge+ptBadge+'</span>'
       +'<span class="company-cell">'+esc(r.company)+szMarkup+'</span>'
       +'<span class="city-cell">'+esc(r.city||'—')
       +(r.deadline?'<br><span class="deadline">עד '+esc(fmtDeadline(r.deadline))+'</span>':'')
@@ -4169,7 +4165,7 @@ function normMovement(row, fname) {
   const title = g('title'); if (!title) return null;
   return {
     source: 'movement', fnArea: 'movement', title,
-    company: g('company') || 'קבוצת מובמנט',
+    company: g('company') || 'Movement Group',
     category: classifySegment(title) || 'administrative',
     size: '', level: classifyLevel(title),
     city: translateCity(g('location')) || 'ישראל',
