@@ -107,7 +107,7 @@ def scrape_listing_page(start: int, session: requests.Session) -> list[dict]:
         jobs.append(
             {
                 "title": title,
-                "company": "Teva",
+                "company": "Teva Pharmaceuticals",
                 "location": location,
                 "date": "",  # filled from detail page
                 "url": job_url,

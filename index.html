@@ -1812,7 +1812,7 @@ async function loadOsem(){
 function normTeva(row, filename){
   const g = k => (row[k]==null?'':String(row[k]).trim());
   const title   = g('title').split('\n')[0].trim();
-  const company = g('company') || 'Teva';
+  const company = g('company') || 'Teva Pharmaceuticals';
   if(!title) return null;
   const fnDate  = (filename.match(/(\d{4}-\d{2}-\d{2})/)||[])[1]||'';
   return{
