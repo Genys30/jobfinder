@@ -4220,11 +4220,29 @@ async function loadClalit() {
     schneider:SCHNEIDER_JOBS,yoseftal:YOSEFTAL_JOBS,emek:EMEK_JOBS,
     loewenstein:LOEWENSTEIN_JOBS,carmel:CARMEL_JOBS};
   Object.values(buckets).forEach(a=>a.length=0);
+  // clalit_jobs CSV has NO 'source' column — the hospital name is in 'company' (Hebrew).
+  // Map company -> hospital bucket. רבין(Beilinson) & סורוקה have their own loaders, so
+  // returning null drops them from the Clalit buckets to avoid double-counting.
+  const hospitalBy=(company)=>{
+    const c=company||'';
+    if(c.includes('מאיר'))return 'meir';
+    if(c.includes('קפלן'))return 'kaplan';
+    if(c.includes('שניידר'))return 'schneider';
+    if(c.includes('יוספטל'))return 'yoseftal';
+    if(c.includes('העמק'))return 'emek';
+    if(c.includes('לוינשטיין'))return 'loewenstein';
+    if(c.includes('כרמל'))return 'carmel';
+    if(c.includes('רבין'))return null;   // Beilinson loader handles these
+    if(c.includes('סורוקה'))return null;  // Soroka loader handles these
+    return 'clalit';                      // districts (מחוז…) and HQ stay in Clalit
+  };
   const seen=new Set();
   allRows.forEach(r=>{
     const k=r.url||(r.company+'|'+r.title);
     if(seen.has(k))return; seen.add(k);
-    (buckets[r.source]||CL_JOBS).push(r);
+    const b=hospitalBy(r.company);
+    if(b===null)return;            // skip Rabin/Soroka — owned by their own loaders
+    (buckets[b]||CL_JOBS).push(r);
   });
   const statusMap={
     clalit:[$clStatus,'Clalit'],rabin:[$rabinStatus,'Rabin'],meir:[$meirStatus,'Meir'],
