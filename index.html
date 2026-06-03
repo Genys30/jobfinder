@@ -4229,11 +4229,30 @@ async function loadClalit() {
     schneider:SCHNEIDER_JOBS,yoseftal:YOSEFTAL_JOBS,emek:EMEK_JOBS,
     loewenstein:LOEWENSTEIN_JOBS,carmel:CARMEL_JOBS};
   Object.values(buckets).forEach(a=>a.length=0);
+  // The Clalit feed has no "source" column; the hospital name lives in `company`
+  // (Hebrew). Route each row to its hospital bucket by matching that name.
+  // Note: רבין (Rabin Medical Center) and סורוקה (Soroka) have their own dedicated
+  // loaders (Beilinson/Soroka) that read this same file, so rows for those two are
+  // dropped here (returned as null) to keep them out of the general Clalit count.
+  const hospitalBy = c => {
+    if(c.includes('רבין'))    return null;   // shown via Beilinson loader
+    if(c.includes('סורוקה'))  return null;   // shown via Soroka loader
+    if(c.includes('מאיר'))    return 'meir';
+    if(c.includes('קפלן'))    return 'kaplan';
+    if(c.includes('שניידר'))  return 'schneider';
+    if(c.includes('יוספטל'))  return 'yoseftal';
+    if(c.includes('העמק'))    return 'emek';
+    if(c.includes('לוינשטיין'))return 'loewenstein';
+    if(c.includes('כרמל'))    return 'carmel';
+    return 'clalit';
+  };
   const seen=new Set();
   allRows.forEach(r=>{
     const k=r.url||(r.company+'|'+r.title);
     if(seen.has(k))return; seen.add(k);
-    (buckets[r.source]||CL_JOBS).push(r);
+    const key=hospitalBy(r.company||'');
+    if(key===null) return;                  // handled by Beilinson/Soroka loaders
+    (buckets[key]||CL_JOBS).push(r);
   });
   const statusMap={
     clalit:[$clStatus,'Clalit'],rabin:[$rabinStatus,'Rabin'],meir:[$meirStatus,'Meir'],
