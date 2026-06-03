@@ -3058,5 +3058,18 @@
     "added_by": "manual",
     "added_date": "2026-06-01",
     "active": true
+  },
+  {
+    "name": "KPMG",
+    "greenhouse": null,
+    "lever": null,
+    "comeet": "somekhchaikin/F3.007",
+    "ashby": null,
+    "workable": null,
+    "breezy": null,
+    "careers_url": null,
+    "added_by": "manual",
+    "added_date": "2026-06-03",
+    "active": true
   }
 ]
