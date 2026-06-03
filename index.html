@@ -1157,6 +1157,7 @@ const TM_JOBS = [];  // techmap removed from frontend
 let LI_JOBS  = [];   // linkedin
 let CM_JOBS  = [];   // comeet
 let OSEM_JOBS = [];  // osem-nestle
+let TEVA_JOBS = [];  // teva pharmaceuticals
 let GH_JOBS  = [];   // greenhouse
 let LV_JOBS  = [];   // lever
 let AB_JOBS  = [];   // ashby
@@ -1807,6 +1808,55 @@ async function loadOsem(){
   });
   populateDropdowns(); applyFilters();
 }
+// ─── LOAD TEVA ───────────────────────────────────────────────────────────────
+function normTeva(row, filename){
+  const g = k => (row[k]==null?'':String(row[k]).trim());
+  const title   = g('title').split('\n')[0].trim();
+  const company = g('company') || 'Teva';
+  if(!title) return null;
+  const fnDate  = (filename.match(/(\d{4}-\d{2}-\d{2})/)||[])[1]||'';
+  return{
+    source:'teva', fnArea:'teva',
+    title, company,
+    category: g('department')||'teva',
+    size:'', level:'',
+    city: g('location'),
+    url:  g('url'),
+    updated: g('date')||fnDate,
+    workType: 'onsite',
+    description: g('description') || ''
+  };
+}
+
+async function loadTeva(){
+  const filenames=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+    filenames.push('teva_jobs_'+y+'-'+m+'-'+day+'.csv');
+  }
+  const allRows=(await Promise.all(filenames.map(async fname=>{
+    try{
+      const r=await fetch(LI_RAW+fname);
+      if(!r.ok) return [];
+      const text=await r.text();
+      const parsed=Papa.parse(text,{header:true,skipEmptyLines:true,
+        transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase()});
+      return parsed.data.map(row=>normTeva(row,fname)).filter(Boolean);
+    }catch(e){return [];}
+  }))).flat();
+  if(allRows.length===0){ return; }
+  const seen=new Set();
+  TEVA_JOBS=allRows.filter(r=>{
+    const k=r.url||(r.company+'|'+r.title+'|'+r.city);
+    if(seen.has(k))return false; seen.add(k); return true;
+  });
+  TEVA_JOBS.sort((a,b)=>{
+    const da=parseDate(a.updated),db=parseDate(b.updated);
+    if(da&&db)return db-da; if(db)return 1; if(da)return -1; return 0;
+  });
+  populateDropdowns(); applyFilters();
+}
 // ─── LOAD MITAM (NGO jobs) ───────────────────────────────────────────────────
 function normMitam(row, fname) {
   const g = k => (row[k] == null ? '' : String(row[k]).trim());
@@ -2420,7 +2470,7 @@ function getPoolInner(){
   const seen = new Set();
   const seenTitleCo = new Set();
   // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3038,7 +3088,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'maccabi':'public','mac':'public',
   'leumit':'public','leu':'public',
   'meuhedet':'public','meu':'public',
-  'movement':'private','mov':'private','osem':'private',
+  'movement':'private','mov':'private','osem':'private','teva':'private',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -4588,6 +4638,7 @@ render();
     loadMeuhedet(),
     loadMovement(),
     loadOsem(),
+    loadTeva(),
     loadTelegram(),
     loadMod(),
     loadInnovationIsrael(),
