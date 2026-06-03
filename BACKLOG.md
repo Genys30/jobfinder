@@ -12,11 +12,9 @@ currently writes their CSV. They were populated in the past, so historical data 
 on Google Drive, but the scrapers are gone or were never committed.
 
 **Sources with no working scraper:**
-- Universities: HUJI positions (`huji_positions_*`)
-- Advisory: KPMG (`kpmg_jobs_*`), Deloitte (`deloitte_jobs_*`), EY (`ey_jobs_*`), BIS (`bis_jobs_*`)
-- NGO / recruiters: Joint (`joint_jobs_*`), GotFriends (`gotfriends_jobs_*`), TopMatch (`topmatch_jobs_*`)
+- Advisory: KPMG (`kpmg_jobs_*`) — deferred: site redesigned 2026, part of roles now go through Comeet (`somekhchaikin` token). Needs its own investigation.
 
-**Done so far:** TAU ✅, Haifa ✅, BAR ✅, Shaare Zedek ✅, Hadassah ✅ (see resolved items below).
+**Done so far:** TAU ✅, Haifa ✅, BAR ✅, Shaare Zedek ✅, Hadassah ✅, Ichilov ✅, GotFriends ✅, HUJI positions ✅, BIS ✅, Joint ✅, Deloitte ✅, EY ✅, Osem ✅ (see resolved items below).
 
 **Action:** Build or restore one scraper per source, one at a time. Each must write the
 exact filename the loader expects (verified against `index.html`). Follow SDD: audit the
@@ -96,6 +94,51 @@ KPMG/Deloitte/EY/Joint/BIS) CANNOT run in GitHub Actions as configured — the w
 installs `requests beautifulsoup4`, no Playwright/Chromium. They must run locally via
 `run_fetch.bat` where Playwright + Chromium are installed and the Israeli IP isn't blocked.
 
+### ~~Ichilov · GotFriends · HUJI positions~~ ✅ Resolved 2026-06-03 (pure requests)
+All three are server-rendered / API-based, so they run with plain `requests` (no Playwright):
+- **Ichilov** (`topmatch_jobs_*`, read by `loadIchilov`/`normIchilov`): RedMatch/TopMatch
+  candidate API — same platform as Bar-Ilan & Clalit. POST to
+  `careers.topmatch.co.il/CandidateAPI/api//position/Search/{GUID}` with Ichilov's affiliate
+  GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. ~81 jobs. 403 from non-IL IPs.
+- **GotFriends** (`gotfriends_jobs_*`): plain HTML at `/jobslobby/{category}/?page=N&total=`,
+  10 top-level categories, parses `<h2>` links of depth ≥4. ~3200 jobs (was 0 before).
+- **HUJI positions** (`huji_positions_*`): HunterHRMS `huji.hunterhrms.com/search-results/`,
+  `.job-wrap` + `label.job-title[for=jobcode]`, details at `/job-details/?jobcode=`. ~17 jobs.
+
+### ~~BIS · Joint · Deloitte · EY~~ ✅ Resolved 2026-06-03
+Built as standalone scrapers (BIS/Joint/EY on Playwright; Deloitte on Playwright for its
+Load-More). All wired into `run_fetch.bat`:
+- **BIS** (`bis_jobs_*`): Wix site `bis.org.il/jobs`, `p.font_2.wixui-rich-text__text` titles.
+  company "BIS - אגודת סטודנטים בר-אילן", employer-type stays **public** (student-union job
+  board, not academic). ~61 jobs.
+- **Joint** (`joint_jobs_*`): `thejoint.org.il/en/career/`, `a[href*='juid']`, detail pages
+  for description. company "The Joint (ג'וינט)". ~18 jobs.
+- **Deloitte** (`deloitte_jobs_*`): site **redesigned 2026** to `careers.deloitte.co.il/positions/`.
+  Jobs are `div.position-row` (`.position-row-title`, `.position-location` "{City}, Israel",
+  `.position-interest`=dept, `.position-row-link a`=/position/{id}-en/). Shows 7, then AJAX
+  Load More via `a.positions-paginate-load-button` (admin-ajax.php, data-total=82). Playwright
+  clicks that exact button until the row count stops growing. ~82 jobs.
+- **EY** (`ey_jobs_*`): `ey.co.il/career/`, `a[href*='/open-jobs/']`, opens each detail page,
+  Hebrew markers תיאור התפקיד / מה נדרש. ~10 jobs.
+
+### ~~Osem-Nestlé — convert from source to company (option B)~~ ✅ Resolved 2026-06-03
+Osem is a **company**, not a source — converted like Movement Group: removed from the data bar
+and the source filter, kept its own scraper (`fetch_osem.py`), now displayed in the **company
+filter under Private**. Company name stays **Osem-Nestlé**.
+- Scraper uses **curl_cffi** (`impersonate=chrome110`) to bypass the Akamai WAF — NOT Playwright.
+- Two-phase: list pages `/career/open-positions?page=N` → then each job's detail page for the
+  description. Description comes from `div.description_single`; department from the JSON-LD
+  `JobPosting.industry`; employment type from `employmentType`. ~44 jobs, all with descriptions.
+- index.html: removed `osemStatusText` (data bar), `<option value="osem">` (source filter),
+  the `if(activeSrc==='osem')` branch, and the data-bar status writes in `loadOsem`; added
+  `'osem':'private'` to the employer-type map and `description: g('description')` to `normOsem`
+  so the job pop-up shows the description.
+
+**KPMG still deferred:** careers site redesigned in 2026; general vacancies page errored, and
+part of KPMG (Somekh Chaikin) roles route through Comeet (`somekhchaikin` token, e.g.
+`comeet.com/jobs/somekhchaikin/...`). Needs a dedicated look — possibly just adding the Comeet
+token to the existing `run_comeet` flow rather than a new scraper.
+
 ---
 
 ## 📦 Google Drive archive (set up 2026-06-02)
@@ -127,16 +170,25 @@ storage quota). That's why we use rclone with OAuth instead of the service-accou
 
 ## 🛠 `run_fetch.bat` step reference (as of 2026-06-03)
 
-The manual local runner now has 14 steps:
+The manual local runner now has 22 steps:
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore)
 2. Telegram @biltiformali (`fetch_telegram_biltiformali.py`)
 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
 7. Clalit (`fetch_clalit.py`) · 8. TAU (`fetch_tau.py`) · 9. Haifa (`fetch_haifa.py`) · 10. Bar-Ilan (`fetch_bar.py`)
-11. Shaare Zedek (`fetch_szmc.py`, Playwright) · 12. Hadassah (`fetch_hadassah.py`, Playwright)
-13. rclone upload all CSVs to Google Drive (graceful skip if rclone missing)
-14. commit + push
+11. Ichilov (`fetch_ichilov.py`) · 12. GotFriends (`fetch_gotfriends.py`) · 13. HUJI positions (`fetch_huji_positions.py`)
+14. Shaare Zedek (`fetch_szmc.py`, PW) · 15. Hadassah (`fetch_hadassah.py`, PW)
+16. Deloitte (`fetch_deloitte.py`, PW) · 17. EY (`fetch_ey.py`, PW) · 18. BIS (`fetch_bis.py`, PW) · 19. Joint (`fetch_joint.py`, PW)
+20. Osem-Nestlé (`fetch_osem.py`, curl_cffi)
+21. rclone upload all CSVs to Google Drive (graceful skip if rclone missing)
+22. commit + push
 
 Local-only scrapers (run from `run_fetch.bat`, not in GitHub Actions):
+`fetch_clalit.py`, `fetch_rambam.py`, `fetch_bgu.py`, `fetch_maccabi.py`,
+`fetch_mod_jobs.py`, `fetch_telegram_biltiformali.py`, `fetch_tau.py`,
+`fetch_haifa.py`, `fetch_bar.py`, `fetch_ichilov.py`, `fetch_gotfriends.py`,
+`fetch_huji_positions.py`, `fetch_szmc.py` (PW), `fetch_hadassah.py` (PW),
+`fetch_deloitte.py` (PW), `fetch_ey.py` (PW), `fetch_bis.py` (PW),
+`fetch_joint.py` (PW), `fetch_osem.py` (curl_cffi).
 `fetch_clalit.py`, `fetch_rambam.py`, `fetch_bgu.py`, `fetch_maccabi.py`,
 `fetch_mod_jobs.py`, `fetch_telegram_biltiformali.py`, `fetch_tau.py`,
 `fetch_haifa.py`, `fetch_bar.py`, `fetch_szmc.py` (Playwright), `fetch_hadassah.py` (Playwright).
