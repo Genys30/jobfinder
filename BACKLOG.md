@@ -15,9 +15,8 @@ on Google Drive, but the scrapers are gone or were never committed.
 - Universities: HUJI positions (`huji_positions_*`)
 - Advisory: KPMG (`kpmg_jobs_*`), Deloitte (`deloitte_jobs_*`), EY (`ey_jobs_*`), BIS (`bis_jobs_*`)
 - NGO / recruiters: Joint (`joint_jobs_*`), GotFriends (`gotfriends_jobs_*`), TopMatch (`topmatch_jobs_*`)
-- Hospitals: Hadassah (`hadassah_jobs_*`), Shaare Zedek (`szmc_jobs_*`)
 
-**Done so far:** TAU ✅, Haifa ✅, BAR ✅ (see resolved items below).
+**Done so far:** TAU ✅, Haifa ✅, BAR ✅, Shaare Zedek ✅, Hadassah ✅ (see resolved items below).
 
 **Action:** Build or restore one scraper per source, one at a time. Each must write the
 exact filename the loader expects (verified against `index.html`). Follow SDD: audit the
@@ -76,6 +75,27 @@ Schneider 23, Emek 16, Loewenstein 14, Carmel 8; Beilinson 38 / Soroka 26 unchan
 **Note:** Beilinson == Rabin Medical Center (the `רבין` rows). Beilinson's loader already
 surfaces those, which is why Rabin's own bucket is intentionally left empty.
 
+### ~~Shaare Zedek + Hadassah hospitals~~ ✅ Resolved 2026-06-03
+Both are independent Jerusalem hospitals (NOT part of Clalit), so they need their own
+scrapers. Built `fetch_szmc.py` and `fetch_hadassah.py` as standalone Playwright scripts
+(same pattern as TAU/Haifa/BAR — local-only, run from `run_fetch.bat`):
+- **Shaare Zedek** (`szmc_jobs_*`): HunterHRMS portal `szmc.hunterhrms.com`. JS-rendered, so
+  Playwright opens the page, clicks each job category to reveal all jobs, collects job-codes,
+  then fetches each job-detail page (`/פרטי-משרה/?jobcode=...`) for description/requirements. ~16 jobs.
+- **Hadassah** (`hadassah_jobs_*`): Next.js site `he.hadassah.org.il/wanted/careers/`. Playwright
+  collects `a[href*='position-']` links, fetches each for the description. ~51 jobs.
+
+**Root cause of the earlier outage:** these scrapers used to live inside a much larger
+`fetch_jobs.py` that also had KPMG/Deloitte/EY/Joint/BAR/BIS Playwright functions. That
+big version was never committed to the repo (the repo `fetch_jobs.py` is the leaner 1360-line
+one that has none of the Playwright scrapers). So szmc/hadassah CSVs silently stopped after
+~mid-May; the site loads only the last 7 days from GitHub, hence "no file yet".
+
+**Key lesson:** Playwright scrapers (szmc, hadassah, and the still-pending
+KPMG/Deloitte/EY/Joint/BIS) CANNOT run in GitHub Actions as configured — the workflow only
+installs `requests beautifulsoup4`, no Playwright/Chromium. They must run locally via
+`run_fetch.bat` where Playwright + Chromium are installed and the Israeli IP isn't blocked.
+
 ---
 
 ## 📦 Google Drive archive (set up 2026-06-02)
@@ -107,18 +127,19 @@ storage quota). That's why we use rclone with OAuth instead of the service-accou
 
 ## 🛠 `run_fetch.bat` step reference (as of 2026-06-03)
 
-The manual local runner now has 12 steps:
+The manual local runner now has 14 steps:
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore)
 2. Telegram @biltiformali (`fetch_telegram_biltiformali.py`)
 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
 7. Clalit (`fetch_clalit.py`) · 8. TAU (`fetch_tau.py`) · 9. Haifa (`fetch_haifa.py`) · 10. Bar-Ilan (`fetch_bar.py`)
-11. rclone upload all CSVs to Google Drive (graceful skip if rclone missing)
-12. commit + push
+11. Shaare Zedek (`fetch_szmc.py`, Playwright) · 12. Hadassah (`fetch_hadassah.py`, Playwright)
+13. rclone upload all CSVs to Google Drive (graceful skip if rclone missing)
+14. commit + push
 
 Local-only scrapers (run from `run_fetch.bat`, not in GitHub Actions):
 `fetch_clalit.py`, `fetch_rambam.py`, `fetch_bgu.py`, `fetch_maccabi.py`,
 `fetch_mod_jobs.py`, `fetch_telegram_biltiformali.py`, `fetch_tau.py`,
-`fetch_haifa.py`, `fetch_bar.py`.
+`fetch_haifa.py`, `fetch_bar.py`, `fetch_szmc.py` (Playwright), `fetch_hadassah.py` (Playwright).
 
 ---
 
