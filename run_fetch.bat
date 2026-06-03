@@ -175,19 +175,37 @@ if errorlevel 1 (
     echo WARNING: Haifa fetch failed - continuing anyway.
 )
 echo.
-echo [10/14] Fetching Bar-Ilan jobs (local only)...
+echo [10/17] Fetching Bar-Ilan jobs (local only)...
 %PYTHON_CMD% fetch_bar.py
 if errorlevel 1 (
     echo WARNING: Bar-Ilan fetch failed - continuing anyway.
 )
 echo.
-echo [11/14] Fetching Shaare Zedek jobs (local only, Playwright)...
+echo [11/17] Fetching Ichilov jobs (local only)...
+%PYTHON_CMD% fetch_ichilov.py
+if errorlevel 1 (
+    echo WARNING: Ichilov fetch failed - continuing anyway.
+)
+echo.
+echo [12/17] Fetching GotFriends jobs (local only)...
+%PYTHON_CMD% fetch_gotfriends.py
+if errorlevel 1 (
+    echo WARNING: GotFriends fetch failed - continuing anyway.
+)
+echo.
+echo [13/17] Fetching HUJI positions (local only)...
+%PYTHON_CMD% fetch_huji_positions.py
+if errorlevel 1 (
+    echo WARNING: HUJI positions fetch failed - continuing anyway.
+)
+echo.
+echo [14/17] Fetching Shaare Zedek jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_szmc.py
 if errorlevel 1 (
     echo WARNING: Shaare Zedek fetch failed - continuing anyway.
 )
 echo.
-echo [12/14] Fetching Hadassah jobs (local only, Playwright)...
+echo [15/17] Fetching Hadassah jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_hadassah.py
 if errorlevel 1 (
     echo WARNING: Hadassah fetch failed - continuing anyway.
@@ -197,7 +215,7 @@ echo.
 :: ── Step 13: Upload all CSVs to Google Drive (history archive) ────────────
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [13/14] Uploading CSVs to Google Drive...
+echo [16/17] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -220,7 +238,7 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 8: Commit and push ───────────────────────────────────────────────
-echo [14/14] Committing and pushing CSVs...
+echo [17/17] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
