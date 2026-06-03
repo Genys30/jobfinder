@@ -574,7 +574,6 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--lv)"></span><span id="lvStatusText">Lever: loading…</span></div>
   <span class="databar-sep">·</span>
-  <div class="datasrc"><span class="src-dot" style="background:#e8792a"></span><span id="osemStatusText">Osem-Nestlé: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--sp)"></span><span id="spStatusText">Direct: loading…</span></div>
   <span class="databar-sep">·</span>
@@ -726,7 +725,6 @@
     <option value="comeet">Comeet</option>
     <option value="greenhouse">Greenhouse</option>
     <option value="lv">Lever</option>
-        <option value="osem">Osem-Nestlé</option>
     <option value="ab">Ashby</option>
       <option value="direct">Direct</option>
       <option value="mt">Mitam 🏛️</option>
@@ -1006,7 +1004,7 @@
       <div><strong>🤝 Nonprofits &amp; NGOs:</strong> Joint (JDC), Biltiformali, Impact networks.</div>
       <div><strong>🎓 Academia:</strong> Weizmann, Technion, HUJI, TAU, BGU, Haifa, BAR.</div>
       <div><strong>🏥 Healthcare:</strong> Clalit, Ichilov, Rambam, Hadassah, Soroka, and 10+ medical centers.</div>
-      <div><strong>🏢 Advisory:</strong> KPMG, Deloitte, EY, BIS, Osem-Nestlé.</div>
+      <div><strong>🏢 Advisory:</strong> KPMG, Deloitte, EY, BIS.</div>
     </div>
     <footer style="font-size:0.8rem; border-top:1px solid var(--rule); padding-top:0.8rem; color:var(--ink-faint);">
       Built by <a href="https://www.linkedin.com/in/jennysotnik/" target="_blank" style="color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent); padding-bottom:1px; font-weight:bold;">Jenny Sotnik Talisman</a> — turning messy public data into real-time operational signal.
@@ -1777,13 +1775,12 @@ function normOsem(row, filename){
     city: g('location'),
     url:  g('url'),
     updated: g('date')||fnDate,
-    workType: 'onsite'
+    workType: 'onsite',
+    description: g('description') || ''
   };
 }
 
 async function loadOsem(){
-  const $osemStatus = document.getElementById('osemStatusText');
-  if($osemStatus) $osemStatus.innerHTML='Osem-Nestlé: <span style="color:var(--ink-faint)">loading…</span>';
   const filenames=[];
   for(let i=0;i<2;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
@@ -1800,10 +1797,7 @@ async function loadOsem(){
       return parsed.data.map(row=>normOsem(row,fname)).filter(Boolean);
     }catch(e){return [];}
   }))).flat();
-  if(allRows.length===0){
-    if($osemStatus) $osemStatus.innerHTML='';
-    return;
-  }
+  if(allRows.length===0){ return; }
   const seen=new Set();
   OSEM_JOBS=allRows.filter(r=>{
     const k=r.url||(r.company+'|'+r.title+'|'+r.city);
@@ -1813,8 +1807,6 @@ async function loadOsem(){
     const da=parseDate(a.updated),db=parseDate(b.updated);
     if(da&&db)return db-da; if(db)return 1; if(da)return -1; return 0;
   });
-  if($osemStatus) $osemStatus.innerHTML='Osem-Nestlé: <strong>'+OSEM_JOBS.length.toLocaleString()+' jobs</strong>';
-  TOTALS['osem'] = OSEM_JOBS.length;
   populateDropdowns(); applyFilters();
 }
 // ─── LOAD MITAM (NGO jobs) ───────────────────────────────────────────────────
@@ -2388,7 +2380,6 @@ function getPoolInner(){
   if(activeSrc==='comeet')      return CM_JOBS;
   if(activeSrc==='greenhouse') return GH_JOBS;
   if(activeSrc==='lv') return LV_JOBS;
-  if(activeSrc==='osem') return OSEM_JOBS;
   if(activeSrc==='ab') return AB_JOBS;
   if(activeSrc==='wk') return WK_JOBS;
   if(activeSrc==='direct') return SP_JOBS;
@@ -3049,7 +3040,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'maccabi':'public','mac':'public',
   'leumit':'public','leu':'public',
   'meuhedet':'public','meu':'public',
-  'movement':'private','mov':'private',
+  'movement':'private','mov':'private','osem':'private',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -4229,30 +4220,11 @@ async function loadClalit() {
     schneider:SCHNEIDER_JOBS,yoseftal:YOSEFTAL_JOBS,emek:EMEK_JOBS,
     loewenstein:LOEWENSTEIN_JOBS,carmel:CARMEL_JOBS};
   Object.values(buckets).forEach(a=>a.length=0);
-  // The Clalit feed has no "source" column; the hospital name lives in `company`
-  // (Hebrew). Route each row to its hospital bucket by matching that name.
-  // Note: רבין (Rabin Medical Center) and סורוקה (Soroka) have their own dedicated
-  // loaders (Beilinson/Soroka) that read this same file, so rows for those two are
-  // dropped here (returned as null) to keep them out of the general Clalit count.
-  const hospitalBy = c => {
-    if(c.includes('רבין'))    return null;   // shown via Beilinson loader
-    if(c.includes('סורוקה'))  return null;   // shown via Soroka loader
-    if(c.includes('מאיר'))    return 'meir';
-    if(c.includes('קפלן'))    return 'kaplan';
-    if(c.includes('שניידר'))  return 'schneider';
-    if(c.includes('יוספטל'))  return 'yoseftal';
-    if(c.includes('העמק'))    return 'emek';
-    if(c.includes('לוינשטיין'))return 'loewenstein';
-    if(c.includes('כרמל'))    return 'carmel';
-    return 'clalit';
-  };
   const seen=new Set();
   allRows.forEach(r=>{
     const k=r.url||(r.company+'|'+r.title);
     if(seen.has(k))return; seen.add(k);
-    const key=hospitalBy(r.company||'');
-    if(key===null) return;                  // handled by Beilinson/Soroka loaders
-    (buckets[key]||CL_JOBS).push(r);
+    (buckets[r.source]||CL_JOBS).push(r);
   });
   const statusMap={
     clalit:[$clStatus,'Clalit'],rabin:[$rabinStatus,'Rabin'],meir:[$meirStatus,'Meir'],
