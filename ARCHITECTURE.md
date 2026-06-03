@@ -224,6 +224,9 @@ doesn't abort the rest.
 - A scraper tested with a single-company call (e.g. `run_comeet([{...}], {})`) will
   **overwrite that source's CSV with only that company** — don't commit such a partial CSV;
   the full nightly run regenerates it.
+- **Keep this doc current.** At the end of every session, update `ARCHITECTURE.md` — add a
+  Session-log entry (§11) and revise any section the session changed. Claude proposes this
+  update by default at session end (same as it does for `BACKLOG.md`).
 
 ---
 
