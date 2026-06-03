@@ -169,17 +169,23 @@ if errorlevel 1 (
     echo WARNING: TAU fetch failed - continuing anyway.
 )
 echo.
-echo [9/11] Fetching Haifa jobs (local only)...
+echo [9/12] Fetching Haifa jobs (local only)...
 %PYTHON_CMD% fetch_haifa.py
 if errorlevel 1 (
     echo WARNING: Haifa fetch failed - continuing anyway.
 )
 echo.
+echo [10/12] Fetching Bar-Ilan jobs (local only)...
+%PYTHON_CMD% fetch_bar.py
+if errorlevel 1 (
+    echo WARNING: Bar-Ilan fetch failed - continuing anyway.
+)
+echo.
 
-:: ── Step 10: Upload all CSVs to Google Drive (history archive) ────────────
+:: ── Step 11: Upload all CSVs to Google Drive (history archive) ────────────
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [10/11] Uploading CSVs to Google Drive...
+echo [11/12] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -202,7 +208,7 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 8: Commit and push ───────────────────────────────────────────────
-echo [11/11] Committing and pushing CSVs...
+echo [12/12] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
