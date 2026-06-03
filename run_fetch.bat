@@ -205,17 +205,47 @@ if errorlevel 1 (
     echo WARNING: Shaare Zedek fetch failed - continuing anyway.
 )
 echo.
-echo [15/17] Fetching Hadassah jobs (local only, Playwright)...
+echo [15/22] Fetching Hadassah jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_hadassah.py
 if errorlevel 1 (
     echo WARNING: Hadassah fetch failed - continuing anyway.
 )
 echo.
+echo [16/22] Fetching Deloitte jobs (local only, Playwright)...
+%PYTHON_CMD% fetch_deloitte.py
+if errorlevel 1 (
+    echo WARNING: Deloitte fetch failed - continuing anyway.
+)
+echo.
+echo [17/22] Fetching EY jobs (local only, Playwright)...
+%PYTHON_CMD% fetch_ey.py
+if errorlevel 1 (
+    echo WARNING: EY fetch failed - continuing anyway.
+)
+echo.
+echo [18/22] Fetching BIS jobs (local only, Playwright)...
+%PYTHON_CMD% fetch_bis.py
+if errorlevel 1 (
+    echo WARNING: BIS fetch failed - continuing anyway.
+)
+echo.
+echo [19/22] Fetching Joint jobs (local only, Playwright)...
+%PYTHON_CMD% fetch_joint.py
+if errorlevel 1 (
+    echo WARNING: Joint fetch failed - continuing anyway.
+)
+echo.
+echo [20/22] Fetching Osem-Nestle jobs (local only, curl_cffi)...
+%PYTHON_CMD% fetch_osem.py
+if errorlevel 1 (
+    echo WARNING: Osem fetch failed - continuing anyway.
+)
+echo.
 
-:: ── Step 13: Upload all CSVs to Google Drive (history archive) ────────────
+:: ── Step 21: Upload all CSVs to Google Drive (history archive) ────────────
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [16/17] Uploading CSVs to Google Drive...
+echo [21/22] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -238,7 +268,7 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 8: Commit and push ───────────────────────────────────────────────
-echo [17/17] Committing and pushing CSVs...
+echo [22/22] Committing and pushing CSVs...
 git add -- *.csv
 git diff --staged --quiet && (
     echo No new data to commit.
