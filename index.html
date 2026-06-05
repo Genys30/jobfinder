@@ -1361,8 +1361,11 @@ function normLinkedIn(row, filename){
     .filter(s => !/ago$/i.test(s))
     .filter(s => !/^\d+\s/i.test(s))           // remove lines starting with a number
     [0] || '';
+  // Normalize company name variants
+  const COMPANY_NORM = {'kpmg israel':'KPMG','kpmg il':'KPMG'};
+  const companyNorm = COMPANY_NORM[company.toLowerCase()] || company;
   const url = g('url',['link','job url','apply','job_url']);
-  if(!title || !company || !url) return null;  // skip partial rows
+  if(!title || !companyNorm || !url) return null;  // skip partial rows
 
   const fnDate = (filename.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
 
@@ -1373,7 +1376,7 @@ function normLinkedIn(row, filename){
 
   return {
     source:'linkedin', fnArea:'linkedin',
-    title, company, category:'linkedin', size:'', level:'',
+    title, company:companyNorm, category:'linkedin', size:'', level:'',
     city:cleanCity(rawLoc),
     url,
     updated: g('date',['posted','date posted']) || fnDate,
@@ -2216,25 +2219,17 @@ function normKPMG(row, fname) {
     department:g('department'), description:g('description'), requirements:g('requirements'), workType:'onsite' };
 }
 async function loadKPMG() {
-  if ($kpmgStatus) $kpmgStatus.innerHTML = 'KPMG: <span style="color:var(--ink-faint)">loading…</span>';
-  const rows = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
-    const fname = `kpmg_jobs_${y}-${m}-${day}.csv`;
-    try {
-      const r = await fetch(LI_RAW + fname); if (!r.ok) continue;
-      const text = await r.text();
-      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase() });
-      parsed.data.forEach(row => { const n = normKPMG(row, fname); if (n) rows.push(n); });
-      break;
-    } catch(e) {}
+  // KPMG is scraped via Comeet (somekhchaikin) — no separate file.
+  // CM_JOBS is already populated (Phase 1) by the time this runs (Phase 2).
+  KPMG_JOBS = CM_JOBS.filter(r => (r.company || '').toLowerCase().includes('kpmg'));
+  const total = KPMG_JOBS.length;
+  if (!$kpmgStatus) return;
+  if (!total) {
+    $kpmgStatus.innerHTML = 'KPMG: <span style="color:var(--ink-faint)">0 jobs</span>';
+  } else {
+    $kpmgStatus.innerHTML = `KPMG: <strong>${total.toLocaleString()} jobs</strong>`;
   }
-  if (!rows.length) { if ($kpmgStatus) $kpmgStatus.innerHTML = 'KPMG: <span style="color:var(--ink-faint)">no file yet</span>'; return; }
-  const seen = new Set();
-  KPMG_JOBS = rows.filter(r => { const k = r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
-  if ($kpmgStatus) $kpmgStatus.innerHTML = `KPMG: <strong>${KPMG_JOBS.length.toLocaleString()} jobs</strong>`;
-  TOTALS['kpmg'] = KPMG_JOBS.length;
+  TOTALS['kpmg'] = total;
 }
 
 // ─── LOAD DELOITTE ────────────────────────────────────────────────────────────
