@@ -167,7 +167,7 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (22 steps)
+## 8. `run_fetch.bat` — the local nightly runner (23 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
@@ -175,9 +175,10 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 11. Ichilov · 12. GotFriends · 13. HUJI positions
 14. Shaare Zedek (PW) · 15. Hadassah (PW)
 16. Deloitte (PW) · 17. EY (PW) · 18. BIS (PW) · 19. Joint (PW)
-20. Osem-Nestlé (curl_cffi)
-21. rclone upload all CSVs → Google Drive (graceful skip if rclone missing)
-22. commit + push
+20. Osem-Nestlé (curl_cffi) · 21. Teva Pharmaceuticals (req)
+22. `fetch_jobs.py` — ATS sources (Comeet incl. KPMG, Greenhouse, Lever, Ashby) + local sources
+23. rclone upload all CSVs → Google Drive
++ commit + push
 
 Each fetch step uses `if errorlevel 1 ( WARNING … continuing anyway )` so one failure
 doesn't abort the rest.
@@ -246,3 +247,26 @@ Newest first. Keep entries short — details go in `BACKLOG.md`.
 - BGU re-run after a transient empty CSV (Salesforce gave 0; bgu.ac.il pages gave 9).
 - `run_fetch.bat` grown to **22 steps**.
 - Created this `ARCHITECTURE.md`.
+
+### 2026-06-04 / 2026-06-05
+- **Teva Pharmaceuticals** added as a new source (`fetch_teva.py`, SAP SuccessFactors,
+  req+BeautifulSoup). Follows "company not source" pattern (§7) — appears in company
+  filter under Private type. Local-only (careers.teva blocks non-Israeli IPs).
+  `run_fetch.bat` grown to **23 steps** (step 21: Teva, step 22: fetch_jobs.py).
+- **Google Sheets Analytics Dashboard** built from scratch (`Code.gs`, ~1200 lines).
+  Reads all job CSVs from Google Drive via Apps Script. 1,017 files, 36,062 unique jobs.
+  8 sheets: Raw, Daily, Companies, Roles, Market, Dashboard, Charts, Weekly.
+  Daily trigger at 07:00 via `setupTrigger()`. Title classification (`classifyTitle`)
+  maps titles to 20 standard categories; reduced dept count from 473 → 34.
+  Spreadsheet: Jobfinder-Analytics (sotnik@gmail.com).
+
+### 2026-06-06
+- **`first_seen` date preservation** implemented in scrapers.
+  Sources without a published `date_posted` were writing `TODAY` on every run, causing all
+  their jobs to appear in the "Today" filter daily even when not new.
+- Added `load_first_seen(pattern, key_field)` helper to **`fetch_jobs.py`**: reads the
+  previous day's CSV, returns `{key: date}` dict; only truly new jobs get today's date.
+  Patched: `run_weizmann`, `run_technion`, `run_leumit`, `run_movement`,
+  `run_innovation_israel` (key: URL); `run_bgu` (key: title — all BGU jobs share one URL).
+- Added standalone `load_first_seen()` to **`fetch_maccabi.py`** (key: URL).
+- Not patched (already have real dates from API): Clalit, Meuhedet, Ichilov, BAR.
