@@ -87,6 +87,38 @@ def write_csv(rows, fields, fname):
         w.writerows(rows)
     print(f"   -> {len(rows)} jobs saved to {fname}")
 
+def load_first_seen(pattern, key_field='url'):
+    """Read yesterday's CSV (matching glob pattern) and return {key: date} dict.
+    key_field is 'url' for most sources, 'title' for sources where all jobs share one URL.
+    Falls back to an empty dict if no previous file is found."""
+    import glob
+    from datetime import date, timedelta
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    # pattern example: 'leumit_jobs_*.csv'
+    candidates = sorted(glob.glob(pattern))
+    # prefer yesterday's file; otherwise take the most recent available
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]  # most recent available
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding='utf-8-sig', newline='') as f:
+            for row in csv.DictReader(f):
+                k = row.get(key_field, '').strip()
+                d = row.get('date', '').strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
+
+
 def load_companies():
     """Загружает единый реестр компаний из companies.json"""
     try:
@@ -575,6 +607,7 @@ def run_weizmann():
     print("\n-- Weizmann Institute -----------------------------------------------")
     try:
         from bs4 import BeautifulSoup
+        first_seen = load_first_seen("weizmann_jobs_*.csv", key_field="url")
         r = requests.get(
             "https://www.weizmann.ac.il/career/jobs",
             headers={**HEADERS, "Accept-Language": "he-IL,he;q=0.9,en;q=0.8"},
@@ -606,7 +639,7 @@ def run_weizmann():
                 elif "היקף" in label: workplace_type = value
             jobs.append({
                 "title": title, "company": "מכון ויצמן למדע",
-                "location": "רחובות", "date": TODAY, "url": url,
+                "location": "רחובות", "date": first_seen.get(url, TODAY), "url": url,
                 "department": department, "workplace_type": workplace_type,
                 "position_type": detect_position_type(title),
             })
@@ -625,6 +658,7 @@ def run_bgu():
     print("\n-- BGU --------------------------------------------------------------")
     try:
         from bs4 import BeautifulSoup
+        first_seen = load_first_seen("bgu_jobs_*.csv", key_field="title")
         URL = "https://bguhr.my.salesforce-sites.com/Gius?mode=external"
         def parse_date(s):
             m = re.search(r'(\d{1,2})/(\d{1,2})/(\d{2,4})', s)
@@ -653,7 +687,7 @@ def run_bgu():
             display_title = f"{title} (מס' {job_id})" if job_id else title
             jobs.append({
                 "title": display_title, "company": "אוניברסיטת בן-גוריון בנגב",
-                "location": "באר שבע", "date": TODAY,
+                "location": "באר שבע", "date": first_seen.get(display_title, TODAY),
                 "deadline": parse_date(date_str) if date_str else "",
                 "url": URL, "department": "", "workplace_type": "onsite",
                 "position_type": detect_position_type(display_title),
@@ -757,6 +791,7 @@ def run_technion():
     print("\n-- Technion HR ------------------------------------------------------")
     try:
         from bs4 import BeautifulSoup
+        first_seen = load_first_seen("technion_jobs_*.csv", key_field="url")
         URL = "https://hr.technion.ac.il/positions/"
         r = requests.get(URL, headers={**HEADERS,
             "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
@@ -786,7 +821,7 @@ def run_technion():
             seen.add(key)
             jobs.append({
                 "title": title, "company": "הטכניון - מכון טכנולוגי לישראל",
-                "location": "חיפה", "date": TODAY, "url": url,
+                "location": "חיפה", "date": first_seen.get(url, TODAY), "url": url,
                 "department": dept, "workplace_type": "onsite",
                 "position_type": detect_position_type(title),
             })
@@ -805,6 +840,7 @@ def run_leumit():
     print("\n-- Leumit Health Services -------------------------------------------")
     try:
         from bs4 import BeautifulSoup
+        first_seen = load_first_seen("leumit_jobs_*.csv", key_field="url")
         BASE     = "https://www.leumit.co.il"
         LIST_URL = BASE + "/jobs/work-in-leumit/"
         HEADERS_LEU = {**HEADERS,
@@ -872,7 +908,7 @@ def run_leumit():
                     "title":          title,
                     "company":        "לאומית שירותי בריאות",
                     "location":       location,
-                    "date":           TODAY,
+                    "date":           first_seen.get(url, TODAY),
                     "url":            url,
                     "department":     "",
                     "workplace_type": "onsite",
@@ -1136,6 +1172,7 @@ def run_innovation_israel():
     print("\n-- Innovation Israel ------------------------------------------------")
     try:
         from bs4 import BeautifulSoup
+        first_seen = load_first_seen("innovation_israel_jobs_*.csv", key_field="url")
         LIST_URL = "https://innovationisrael.org.il/job/"
         HDR = {**HEADERS,
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -1191,7 +1228,7 @@ def run_innovation_israel():
                 "title": title,
                 "company": "רשות החדשנות",
                 "location": "ירושלים",
-                "date": TODAY,
+                "date": first_seen.get(url, TODAY),
                 "url": url,
                 "department": "",
                 "workplace_type": "onsite",
@@ -1236,6 +1273,7 @@ def run_movement():
     try:
         from bs4 import BeautifulSoup
         import time, re as _re
+        first_seen = load_first_seen("movement_jobs_*.csv", key_field="url")
         BASE      = "https://movement-group.com"
         # קריירה (careers) — URL-encoded Hebrew slug
         LIST_URL  = BASE + "/%d7%a7%d7%a8%d7%99%d7%99%d7%a8%d7%94/"
@@ -1300,7 +1338,7 @@ def run_movement():
                     "title":          title,
                     "company":        "Movement Group",
                     "location":       location,
-                    "date":           TODAY,
+                    "date":           first_seen.get(url, TODAY),
                     "url":            url,
                     "department":     "",
                     "workplace_type": "onsite",

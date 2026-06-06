@@ -9,8 +9,8 @@ Output: maccabi_jobs_YYYY-MM-DD.csv
 Usage:  py fetch_maccabi.py
 """
 
-import csv, re, sys
-from datetime import date
+import csv, re, sys, glob
+from datetime import date, timedelta
 
 import requests
 
@@ -66,9 +66,36 @@ def strip_html(raw):
     return re.sub(r'\s{2,}', ' ', text).strip()
 
 
+def load_first_seen():
+    """Read the most recent previous maccabi CSV and return {url: date} dict."""
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob("maccabi_jobs_*.csv"))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding='utf-8-sig', newline='') as f:
+            for row in csv.DictReader(f):
+                url = row.get('url', '').strip()
+                d   = row.get('date', '').strip()
+                if url and d:
+                    result[url] = d
+    except Exception:
+        pass
+    return result
+
+
 def fetch_all_jobs() -> list[dict]:
     jobs = []
     seen = set()
+    first_seen = load_first_seen()
 
     payload = {
         "FreeText":               "",
@@ -120,7 +147,7 @@ def fetch_all_jobs() -> list[dict]:
                 "title":          title,
                 "company":        "מכבי שירותי בריאות",
                 "location":       location,
-                "date":           TODAY,
+                "date":           first_seen.get(url, TODAY),
                 "url":            url,
                 "department":     dept,
                 "workplace_type": "onsite",
