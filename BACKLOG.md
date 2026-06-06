@@ -6,22 +6,14 @@ Items discovered during the May 2026 refactor session that were intentionally de
 
 ## 🔴 High Priority
 
-### Missing scrapers — universities & advisory firms show "no file yet"
-These sources have a loader in `index.html` and a slot in the data bar, but no scraper
-currently writes their CSV. They were populated in the past, so historical data exists
-on Google Drive, but the scrapers are gone or were never committed.
+### ~~Missing scrapers — KPMG shows "no file yet"~~ ✅ Resolved 2026-06-04
+KPMG routes through Comeet as *Somekh Chaikin* (`"comeet": "somekhchaikin/F3.007"` in
+`companies.json`). The entry was already correct, but Comeet API returns 403 from
+GitHub Actions (datacenter IP not in allowlist). Fix: added `fetch_jobs.py` as step 22
+in `run_fetch.bat` so it runs locally each morning with an Israeli IP. KPMG now populates
+via the regular `comeet_jobs_*` CSV.
 
-**Sources with no working scraper:**
-- Advisory: KPMG (`kpmg_jobs_*`) — deferred: site redesigned 2026, part of roles now go through Comeet (`somekhchaikin` token). Needs its own investigation.
-
-**Done so far:** TAU ✅, Haifa ✅, BAR ✅, Shaare Zedek ✅, Hadassah ✅, Ichilov ✅, GotFriends ✅, HUJI positions ✅, BIS ✅, Joint ✅, Deloitte ✅, EY ✅, Osem ✅ (see resolved items below).
-
-**Action:** Build or restore one scraper per source, one at a time. Each must write the
-exact filename the loader expects (verified against `index.html`). Follow SDD: audit the
-career page, confirm column mapping, implement, verify on the live site.
-
-**Note:** GotFriends is already called in the nightly workflow but produces no data —
-needs debugging, not a new scraper.
+**Done so far:** TAU ✅, Haifa ✅, BAR ✅, Shaare Zedek ✅, Hadassah ✅, Ichilov ✅, GotFriends ✅, HUJI positions ✅, BIS ✅, Joint ✅, Deloitte ✅, EY ✅, Osem ✅, KPMG ✅
 
 ### ~~Lever — 5 companies returning 404~~ ✅ Resolved 2026-05-30
 - Contrast Security Israel → no open positions → `active: false`
@@ -31,113 +23,31 @@ needs debugging, not a new scraper.
 - Vault Platform → no open positions → `active: false`
 
 ### ~~HUJI Alumni Career — wrong output filename~~ ✅ Resolved 2026-06-02
-`fetch_jobs.py` wrote `huji_jobs_*` but the site loader expects `huji_alumni_jobs_*`.
-Renamed the output in `fetch_jobs.py` (line ~748). HUJI Alumni Career now shows ~300 jobs.
-
 ### ~~Clalit scraper not running~~ ✅ Resolved 2026-06-02
-`fetch_clalit.py` worked but was not called by any runner, so Clalit went stale after
-~2026-05-30. Added `fetch_clalit.py` to `run_fetch.bat`. Clalit now shows ~557 jobs.
-
 ### ~~TAU scraper~~ ✅ Resolved 2026-06-02
-Built `fetch_tau.py`. Source: Hebrew page `tau.ac.il/positions?qt-jobs_tabs=0` (admin)
-and `=1` (academic), jobs rendered in HTML as `table.views-table`. Writes `tau_jobs_*`.
-Wired into `run_fetch.bat`. ~29 jobs. Note: 403 from non-Israeli IPs, runs fine locally.
-
 ### ~~Haifa University scraper~~ ✅ Resolved 2026-06-02
-Built `fetch_haifa.py`. Source: `hr.haifa.ac.il/דרושים/` (WordPress/Elementor), jobs are
-`<a>` links matching `hr.haifa.ac.il/{number}-`. Writes `haifa_jobs_*`. Wired into
-`run_fetch.bat`. ~20 jobs. Also 403 from non-Israeli IPs.
-
 ### ~~Bar-Ilan (BAR) scraper~~ ✅ Resolved 2026-06-03
-Built `fetch_bar.py`. The official HR portal is behind employee login, so the scraper
-uses the RedMatch/TopMatch candidate API that powers `careers.topmatch.co.il/biu/`:
-`POST .../CandidateAPI/api//position/Search/{AFFILIATE_GUID}` with body
-`{"KeyWords":"","CategoryId":[],"countryId":2,"cityId":[]}`. The GUID
-`D8D6FFC7-31E2-46C1-94B4-985C99B9A913` is BIU's affiliate ID. Response has a `positions[]`
-array (compPositionID, jobTitleText, displayLocation, fieldDesc, description HTML,
-scheduleExpirationDate). Writes `bar_jobs_*`. Wired into `run_fetch.bat`. ~13 jobs.
-403 from non-Israeli IPs. (RedMatch is reusable for any TopMatch affiliate — just swap the GUID.)
-
 ### ~~Clalit medical centers showing 0 jobs~~ ✅ Resolved 2026-06-03
-The data bar listed Rabin, Meir, Kaplan, Schneider, Yoseftal, Emek, Loewenstein, Carmel —
-all stuck at "0 jobs". Root cause: `loadClalit()` split rows into hospital buckets by a
-`r.source` field that **does not exist** in `clalit_jobs_*.csv` (its columns are
-title, company, location, date, url, department, workplace_type, description). So every
-row fell into the general Clalit bucket. The hospital name actually lives in `company`
-(Hebrew, e.g. `מרכז רפואי מאיר`). Fixed `loadClalit()` to route by a `hospitalBy(company)`
-substring match. Rows for `רבין` and `סורוקה` are dropped from the Clalit bucket because
-Beilinson and Soroka have their own dedicated loaders reading the same file (avoids double
-counting). Result: Clalit ~333 (district roles only), Meir 40, Kaplan 35, Yoseftal 24,
-Schneider 23, Emek 16, Loewenstein 14, Carmel 8; Beilinson 38 / Soroka 26 unchanged.
-
-**Note:** Beilinson == Rabin Medical Center (the `רבין` rows). Beilinson's loader already
-surfaces those, which is why Rabin's own bucket is intentionally left empty.
-
 ### ~~Shaare Zedek + Hadassah hospitals~~ ✅ Resolved 2026-06-03
-Both are independent Jerusalem hospitals (NOT part of Clalit), so they need their own
-scrapers. Built `fetch_szmc.py` and `fetch_hadassah.py` as standalone Playwright scripts
-(same pattern as TAU/Haifa/BAR — local-only, run from `run_fetch.bat`):
-- **Shaare Zedek** (`szmc_jobs_*`): HunterHRMS portal `szmc.hunterhrms.com`. JS-rendered, so
-  Playwright opens the page, clicks each job category to reveal all jobs, collects job-codes,
-  then fetches each job-detail page (`/פרטי-משרה/?jobcode=...`) for description/requirements. ~16 jobs.
-- **Hadassah** (`hadassah_jobs_*`): Next.js site `he.hadassah.org.il/wanted/careers/`. Playwright
-  collects `a[href*='position-']` links, fetches each for the description. ~51 jobs.
-
-**Root cause of the earlier outage:** these scrapers used to live inside a much larger
-`fetch_jobs.py` that also had KPMG/Deloitte/EY/Joint/BAR/BIS Playwright functions. That
-big version was never committed to the repo (the repo `fetch_jobs.py` is the leaner 1360-line
-one that has none of the Playwright scrapers). So szmc/hadassah CSVs silently stopped after
-~mid-May; the site loads only the last 7 days from GitHub, hence "no file yet".
-
-**Key lesson:** Playwright scrapers (szmc, hadassah, and the still-pending
-KPMG/Deloitte/EY/Joint/BIS) CANNOT run in GitHub Actions as configured — the workflow only
-installs `requests beautifulsoup4`, no Playwright/Chromium. They must run locally via
-`run_fetch.bat` where Playwright + Chromium are installed and the Israeli IP isn't blocked.
-
-### ~~Ichilov · GotFriends · HUJI positions~~ ✅ Resolved 2026-06-03 (pure requests)
-All three are server-rendered / API-based, so they run with plain `requests` (no Playwright):
-- **Ichilov** (`topmatch_jobs_*`, read by `loadIchilov`/`normIchilov`): RedMatch/TopMatch
-  candidate API — same platform as Bar-Ilan & Clalit. POST to
-  `careers.topmatch.co.il/CandidateAPI/api//position/Search/{GUID}` with Ichilov's affiliate
-  GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. ~81 jobs. 403 from non-IL IPs.
-- **GotFriends** (`gotfriends_jobs_*`): plain HTML at `/jobslobby/{category}/?page=N&total=`,
-  10 top-level categories, parses `<h2>` links of depth ≥4. ~3200 jobs (was 0 before).
-- **HUJI positions** (`huji_positions_*`): HunterHRMS `huji.hunterhrms.com/search-results/`,
-  `.job-wrap` + `label.job-title[for=jobcode]`, details at `/job-details/?jobcode=`. ~17 jobs.
-
+### ~~Ichilov · GotFriends · HUJI positions~~ ✅ Resolved 2026-06-03
 ### ~~BIS · Joint · Deloitte · EY~~ ✅ Resolved 2026-06-03
-Built as standalone scrapers (BIS/Joint/EY on Playwright; Deloitte on Playwright for its
-Load-More). All wired into `run_fetch.bat`:
-- **BIS** (`bis_jobs_*`): Wix site `bis.org.il/jobs`, `p.font_2.wixui-rich-text__text` titles.
-  company "BIS - אגודת סטודנטים בר-אילן", employer-type stays **public** (student-union job
-  board, not academic). ~61 jobs.
-- **Joint** (`joint_jobs_*`): `thejoint.org.il/en/career/`, `a[href*='juid']`, detail pages
-  for description. company "The Joint (ג'וינט)". ~18 jobs.
-- **Deloitte** (`deloitte_jobs_*`): site **redesigned 2026** to `careers.deloitte.co.il/positions/`.
-  Jobs are `div.position-row` (`.position-row-title`, `.position-location` "{City}, Israel",
-  `.position-interest`=dept, `.position-row-link a`=/position/{id}-en/). Shows 7, then AJAX
-  Load More via `a.positions-paginate-load-button` (admin-ajax.php, data-total=82). Playwright
-  clicks that exact button until the row count stops growing. ~82 jobs.
-- **EY** (`ey_jobs_*`): `ey.co.il/career/`, `a[href*='/open-jobs/']`, opens each detail page,
-  Hebrew markers תיאור התפקיד / מה נדרש. ~10 jobs.
-
 ### ~~Osem-Nestlé — convert from source to company (option B)~~ ✅ Resolved 2026-06-03
-Osem is a **company**, not a source — converted like Movement Group: removed from the data bar
-and the source filter, kept its own scraper (`fetch_osem.py`), now displayed in the **company
-filter under Private**. Company name stays **Osem-Nestlé**.
-- Scraper uses **curl_cffi** (`impersonate=chrome110`) to bypass the Akamai WAF — NOT Playwright.
-- Two-phase: list pages `/career/open-positions?page=N` → then each job's detail page for the
-  description. Description comes from `div.description_single`; department from the JSON-LD
-  `JobPosting.industry`; employment type from `employmentType`. ~44 jobs, all with descriptions.
-- index.html: removed `osemStatusText` (data bar), `<option value="osem">` (source filter),
-  the `if(activeSrc==='osem')` branch, and the data-bar status writes in `loadOsem`; added
-  `'osem':'private'` to the employer-type map and `description: g('description')` to `normOsem`
-  so the job pop-up shows the description.
 
-**KPMG still deferred:** careers site redesigned in 2026; general vacancies page errored, and
-part of KPMG (Somekh Chaikin) roles route through Comeet (`somekhchaikin` token, e.g.
-`comeet.com/jobs/somekhchaikin/...`). Needs a dedicated look — possibly just adding the Comeet
-token to the existing `run_comeet` flow rather than a new scraper.
+### ~~`first_seen` date preservation for no-date sources~~ ✅ Resolved 2026-06-06
+
+Sources that don't publish a `date_posted` were writing `TODAY` on every run, causing
+all their jobs to appear in the "Today" filter daily. Fixed by adding a `load_first_seen()`
+helper to each affected scraper: on each run it reads the previous day's CSV and preserves
+the original discovery date for existing jobs; only truly new jobs get today's date.
+
+**Patched in `fetch_jobs.py`** (key: URL unless noted):
+- `run_weizmann`, `run_technion`, `run_leumit`, `run_movement`, `run_innovation_israel`
+- `run_bgu` — key: title (all BGU jobs share one listing URL)
+
+**Patched in `fetch_maccabi.py`** — key: URL
+
+**Not patched** (already have real publication dates):
+- Clalit, Meuhedet (`JobTimeSortAttr`), Ichilov (`activationDate`), BAR (`activationDate`)
 
 ---
 
@@ -149,49 +59,83 @@ only the last 7 days of `*_jobs_*` files; the full history lives on Drive.
 - **Account:** sncentral.data@gmail.com
 - **Folder:** `jobfinder-data` (ID `18_hQPxPgpkbHwFoevdDgSq2yCAeEw5LU`)
 - **Nightly upload:** GitHub Actions installs rclone and uploads via `RCLONE_TOKEN` secret
-- **Manual upload:** `run_fetch.bat` step [11/12] uploads all CSVs via local rclone config
+- **Manual upload:** `run_fetch.bat` step [23/23] uploads all CSVs via local rclone config
 - **Upload pattern:** `*.csv` (covers `*_jobs_*`, `jobs_telegram_*`, `huji_positions_*`, etc.)
 - rclone only transfers new/changed files, so daily runs are cheap
 
-**Known limitation:** A Google service-account cannot upload to a personal Drive (no
-storage quota). That's why we use rclone with OAuth instead of the service-account JSON.
-
-**Orphan scrapers identified (do NOT wire into runners — duplicates):**
-- `fetch_huji.py` → duplicate of HUJI logic in `fetch_jobs.py`
-- `fetch_osem.py` → site has no `osem_jobs_*` loader
-- `fetch_bgu_extra.py` → duplicate of `fetch_bgu.py`
-- `fetch_jobs_from_companies.py` → duplicate of `fetch_jobs.py` (Comeet parse fails on UTF-8 BOM)
-- `fetch_mitam.py`, `fetch_weizmann.py` → superseded by `fetch_jobs.py`
-
-**Future:** Google Sheets analytics dashboard reading from the Drive archive
-(trends over time, period-over-period comparison, top companies/roles).
+**Orphan scrapers (do NOT wire into runners — duplicates):**
+- `fetch_huji.py`, `fetch_bgu_extra.py`, `fetch_jobs_from_companies.py`, `fetch_mitam.py`, `fetch_weizmann.py`
 
 ---
 
-## 🛠 `run_fetch.bat` step reference (as of 2026-06-03)
+## 📊 Google Sheets Analytics Dashboard (built 2026-06-04)
 
-The manual local runner now has 22 steps:
-1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore)
-2. Telegram @biltiformali (`fetch_telegram_biltiformali.py`)
-3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit (`fetch_clalit.py`) · 8. TAU (`fetch_tau.py`) · 9. Haifa (`fetch_haifa.py`) · 10. Bar-Ilan (`fetch_bar.py`)
-11. Ichilov (`fetch_ichilov.py`) · 12. GotFriends (`fetch_gotfriends.py`) · 13. HUJI positions (`fetch_huji_positions.py`)
-14. Shaare Zedek (`fetch_szmc.py`, PW) · 15. Hadassah (`fetch_hadassah.py`, PW)
-16. Deloitte (`fetch_deloitte.py`, PW) · 17. EY (`fetch_ey.py`, PW) · 18. BIS (`fetch_bis.py`, PW) · 19. Joint (`fetch_joint.py`, PW)
-20. Osem-Nestlé (`fetch_osem.py`, curl_cffi)
-21. rclone upload all CSVs to Google Drive (graceful skip if rclone missing)
-22. commit + push
+Full analytics pipeline reading job CSVs from Google Drive via Google Apps Script.
 
-Local-only scrapers (run from `run_fetch.bat`, not in GitHub Actions):
-`fetch_clalit.py`, `fetch_rambam.py`, `fetch_bgu.py`, `fetch_maccabi.py`,
-`fetch_mod_jobs.py`, `fetch_telegram_biltiformali.py`, `fetch_tau.py`,
-`fetch_haifa.py`, `fetch_bar.py`, `fetch_ichilov.py`, `fetch_gotfriends.py`,
-`fetch_huji_positions.py`, `fetch_szmc.py` (PW), `fetch_hadassah.py` (PW),
-`fetch_deloitte.py` (PW), `fetch_ey.py` (PW), `fetch_bis.py` (PW),
-`fetch_joint.py` (PW), `fetch_osem.py` (curl_cffi).
-`fetch_clalit.py`, `fetch_rambam.py`, `fetch_bgu.py`, `fetch_maccabi.py`,
-`fetch_mod_jobs.py`, `fetch_telegram_biltiformali.py`, `fetch_tau.py`,
-`fetch_haifa.py`, `fetch_bar.py`, `fetch_szmc.py` (Playwright), `fetch_hadassah.py` (Playwright).
+- **Spreadsheet:** Jobfinder-Analytics (account: sotnik@gmail.com, Drive folder shared from sncentral.data@gmail.com)
+- **Script:** `Code.gs` (Apps Script, ~1200 lines)
+- **Daily trigger:** 07:00 via `setupTrigger()` — runs `importIncremental`
+- **Manual update:** Extensions → Apps Script → Run `importIncremental`
+
+**Sheets:**
+
+| Sheet | Contents |
+|---|---|
+| Raw | 36,062 unique jobs deduped by URL (full history from April 2026) |
+| Daily | Jobs per source per day — 374 days × 35 sources |
+| Companies | 4,137 companies with total, last_30d, prev_30d, first_seen, hiring_status |
+| Roles | All departments ranked + workplace type breakdown |
+| Market | Dept × Month pivot (34 depts × 40 months) with MoM % |
+| Dashboard | KPI summary + 4 live QUERY formula tables |
+| Charts | 5 charts: dept trend, Apr vs May, top companies, workplace pie, sources |
+| Weekly | Last 7 days snapshot: KPIs, by dept/source/company, top 50 jobs table |
+
+**Key functions in Code.gs:**
+
+- `resetAndImport()` — full reload from scratch (clears Raw, re-imports all 1017 files)
+- `continueImport()` — continue interrupted import from checkpoint
+- `importIncremental()` — daily update, new files only
+- `reclassifyRaw()` — reclassify all dept/company fields in Raw (run after classifyTitle changes)
+- `continueReclassify()` — continue interrupted reclassification
+- `buildCharts()` — rebuild Charts sheet manually
+- `buildWeekly()` — rebuild Weekly sheet manually
+- `debugOther()` — show top titles in "Other" category (for improving classifyTitle)
+- `setupTrigger()` — set daily 07:00 trigger (one-time)
+
+**Title classification (`classifyTitle`):**
+Function maps job titles to 20 standard categories using keyword matching + `DEPT_MAP` lookup.
+Categories: R&D & Engineering, Data & AI, DevOps & Cloud, Cyber & Security, Embedded & Hardware,
+QA & Automation, Product, Solutions Engineering, Sales, Marketing, HR & Recruiting,
+Finance & Accounting, Legal & Compliance, Operations & Logistics, Management & Executive,
+Support & Customer Success, Design, Medical & Clinical, Academic & Research,
+Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
+
+**Stats after reclassification (2026-06-04):**
+- Other reduced from 10,153 → 5,468 (46% improvement)
+- Departments: 473 → 34 clean categories
+- Companies: 4,978 → 4,137 (LinkedIn artifacts cleaned)
+- Workplace types: 12 → 7 (normalised onsite/on-site, fulltime/full_time etc.)
+
+**Known issues / next steps:**
+- `Other` still contains ~5,468 rows — mostly agency names in title field (GotFriends,
+  Club Med resort jobs, Telugu micro-tasks, company names like "nvidia", "comblack")
+- `workplace_type` normalisation needs to be applied in scrapers too (not just in Sheets)
+
+---
+
+## 🛠 `run_fetch.bat` step reference (as of 2026-06-04)
+
+The manual local runner now has 23 steps:
+1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore)
+2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan
+11. Ichilov · 12. GotFriends · 13. HUJI positions
+14. Shaare Zedek (PW) · 15. Hadassah (PW)
+16. Deloitte (PW) · 17. EY (PW) · 18. BIS (PW) · 19. Joint (PW)
+20. Osem-Nestlé (curl_cffi) · 21. Teva (req)
+22. `fetch_jobs.py` — ATS sources (Comeet incl. KPMG, Greenhouse, Lever, Ashby)
+23. rclone upload all CSVs → Google Drive
++ commit + push
 
 ---
 
@@ -200,35 +144,44 @@ Local-only scrapers (run from `run_fetch.bat`, not in GitHub Actions):
 ### LinkedIn — manual upload every morning
 Currently scraped manually each morning and uploaded as `linkedin_jobs_YYYY-MM-DD.csv`.
 
-**Action:** Investigate automation options. LinkedIn blocks most scrapers, but tools like Apify or a browser extension could help. Low priority until a reliable solution is found.
+**Action:** Investigate automation options. LinkedIn blocks most scrapers, but tools like Apify or a browser extension could help.
 
 ### Workable / Breezy — frozen sources, revisit in ~1 month
 Both sources were frozen (`active: false`) because their APIs return 403 from GitHub Actions.
 
-**Action:** Check in ~1 month whether the APIs have opened up. If yes, set `active: true` in `companies.json` for the relevant companies.
+**Action:** Check in ~1 month whether the APIs have opened up.
 
 Companies frozen:
 - **Workable:** Atera Networks, BigPanda, Cloudinary, Healthy.io, Innovid, Papaya Global, Poptin, SolarEdge Technologies, Trustmi, Vayyar Imaging
 - **Breezy:** Ayyeka, Dalet, Descope Technologies, Insights.US, Lynx.MD
+
+### Role filter expansion in jobfinder (frontend)
+The current role filter in `index.html` uses a limited set of categories. Should be expanded
+to match the 20 categories now used in the analytics dashboard:
+
+R&D & Engineering, Data & AI, DevOps & Cloud, Cyber & Security, Embedded & Hardware,
+QA & Automation, Product, Solutions Engineering, Sales, Marketing, HR & Recruiting,
+Finance & Accounting, Legal & Compliance, Operations & Logistics, Management & Executive,
+Support & Customer Success, Design, Medical & Clinical, Academic & Research,
+Defense & Aerospace, FinTech, IT, Technology Consulting.
+
+### `workplace_type` normalisation in scrapers
+Currently normalised only in Apps Script (`normaliseWorkplace()`). Should also be
+normalised at scrape time in `fetch_jobs.py` and other scrapers so the site frontend
+also benefits. Standard values: `remote`, `hybrid`, `onsite`, `full_time`, `part_time`.
 
 ---
 
 ## 🟢 Low Priority
 
 ### Ashby — only 2 companies tracked
-Currently tracking: Datawizz.AI, Nexxen.
-
 **Action:** Find more Israeli companies using Ashby ATS and add them to `companies.json`.
 
 ### BGU — intermittently returns 0 jobs
-The BGU scraper works correctly but the university sometimes has no open positions.
-
 **Action:** Monitor over time. No fix needed unless it stays at 0 for weeks.
 
 ### Node.js 20 deprecation warning in GitHub Actions
-Actions emit a warning about Node.js 20 being deprecated (forced to Node.js 24 from June 16, 2026).
-
-**Action:** Update workflow versions in `.github/workflows/fetch_jobs.yml`:
+**Action:** Update `.github/workflows/fetch_jobs.yml`:
 - `actions/checkout@v4` → `actions/checkout@v4.2.2`
 - `actions/setup-python@v5` → `actions/setup-python@v5.6.0`
 
@@ -240,7 +193,8 @@ Actions emit a warning about Node.js 20 being deprecated (forced to Node.js 24 f
 - **Company health check** — weekly script that pings each ATS token and flags dead ones
 - **Salary data** — enrich jobs with salary ranges where available
 - **Duplicate detection** — same job appearing via LinkedIn and Comeet
+- **Comeet description scraping** — `fetch_jobs.py` doesn't scrape full descriptions for Comeet, causing Comeet jobs to always appear in "No Description"
 
 ---
 
-*Last updated: 2026-06-03*
+*Last updated: 2026-06-06*
