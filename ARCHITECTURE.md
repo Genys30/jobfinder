@@ -270,3 +270,63 @@ Newest first. Keep entries short — details go in `BACKLOG.md`.
   `run_innovation_israel` (key: URL); `run_bgu` (key: title — all BGU jobs share one URL).
 - Added standalone `load_first_seen()` to **`fetch_maccabi.py`** (key: URL).
 - Not patched (already have real dates from API): Clalit, Meuhedet, Ichilov, BAR.
+
+### 2026-06-06 (session 3 — Google Sheets Analytics extended)
+- **Charts sheet** added: 5 Google Charts (dept trend last 6 months, Apr vs May bar,
+  top 20 companies, workplace pie, top 15 sources by last 30d).
+- **Weekly sheet** added: WoW %, by dept/source/company, top 50 jobs table.
+- **Date parsing fixed**: `parseDateSafe()` now handles both Date objects (from Sheets)
+  and YYYY-MM-DD strings — fixes `last30=0` bug in Dashboard KPIs.
+- **Title classifier** improved via `debugOther()` (4 rounds): Other reduced 10,153 → 5,468.
+  Added `DEPT_MAP` exact-match lookup, Hebrew dept normalisation, garbage detection.
+  `reclassifyRaw()` / `continueReclassify()` added for retroactive reclassification.
+- **Company filtering** added: `shouldExcludeCompany()` with explicit `RECRUITING_COMPANIES`
+  blacklist, logo/garbage pattern detection, job-title detection, recruiting keyword check.
+  `cleanCompany()` strips LinkedIn multiline artifacts from company field.
+- `normaliseWorkplace()` consolidates variants → 7 standard values.
+- Code.gs grown to **~1600 lines**. New §12 added to this doc.
+
+---
+
+## 12. Google Sheets Analytics Dashboard
+
+A private analytics tool reading all historical CSVs from Google Drive via Apps Script.
+
+- **Spreadsheet:** Jobfinder-Analytics (sotnik@gmail.com)
+- **Drive folder:** `jobfinder-data` shared from sncentral.data@gmail.com
+- **Script:** `Code.gs` (~1600 lines), Apps Script bound to the spreadsheet
+- **Trigger:** daily at 07:00 via `setupTrigger()` → runs `importIncremental`
+
+**Sheets:**
+
+| Sheet | Contents |
+|---|---|
+| Raw | Every unique job ever seen (36K+), deduped by URL |
+| Daily | Jobs per source per day — use for trend charts |
+| Companies | Real employers only (recruiters/agencies filtered out) with hiring_status |
+| Roles | All departments ranked + workplace type breakdown |
+| Market | Dept × Month pivot with MoM % — main research table |
+| Dashboard | KPI summary + 4 live QUERY formula tables |
+| Charts | 5 Google Charts (dept trend, Apr vs May, top companies, workplace pie, sources) |
+| Weekly | Last 7 days: WoW %, by dept/source/company, top 50 jobs |
+
+**Key functions:**
+- `importIncremental()` — daily delta import (new files only)
+- `resetAndImport()` / `continueImport()` — full reload from scratch
+- `reclassifyRaw()` / `continueReclassify()` — re-run title classification on all Raw rows
+- `buildCharts()`, `buildWeekly()` — rebuild individual sheets manually
+- `debugOther()` — show top titles in "Other" category (helps improve classifier)
+
+**Title classification (`classifyTitle` + `DEPT_MAP`):**
+Maps job title → one of 20+ standard categories using keyword matching (EN + HE) and
+exact-match lookup table. Applied at parse time and via `reclassifyRaw()`.
+
+**Company filtering (`shouldExcludeCompany`):**
+Companies sheet excludes: explicit recruiter blacklist (`RECRUITING_COMPANIES`), logo/image
+filenames, names that look like job titles (2+ keywords like "engineer"/"developer"),
+names containing recruiting keywords (השמה, staffing, headhunt…), names outside 2–80 chars.
+To add a new recruiter: `"Company Name": true` in `RECRUITING_COMPANIES` in Code.gs.
+
+**Important:** the site loads data from GitHub (not Drive). This dashboard is separate
+from the live site — it reads the full Drive archive independently.
+
