@@ -248,12 +248,26 @@ doesn't abort the rest.
 - **Keep this doc current.** At the end of every session, update `ARCHITECTURE.md` — add a
   Session-log entry (§11) and revise any section the session changed. Claude proposes this
   update by default at session end (same as it does for `BACKLOG.md`).
+- **Developer tooling — `rtk` (token compression):** A Rust CLI tool that compresses shell
+  command output before passing it to LLMs (60–90% token reduction). Installed as a native
+  Windows binary (`rtk.exe`) at `C:\Users\Anna\AppData\Local\Programs\rtk\rtk`. Hooked into
+  Claude Code via `~/.claude/settings.json` (Windows-side). Shell: Git Bash (MSYS2/MinGW64) —
+  WSL is not used and not needed. Hook fires automatically on `git status` and other commands.
+  To verify: run `git status` in Claude Code — output should appear compressed.
+  This is a developer tooling note only — `rtk` is not part of JobFinder's data pipeline.
 
 ---
 
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-07 (rtk developer tooling)
+- **`rtk` token-compression tool** documented (§10). Native Windows `.exe` installed at
+  `C:\Users\Anna\AppData\Local\Programs\rtk\rtk`, hooked into Claude Code via Windows-side
+  `~/.claude/settings.json`. Shell environment is Git Bash (MINGW64), not WSL — WSL not
+  needed. Hook confirmed working (`git status` output compressed). Developer tooling note
+  only — `rtk` is not part of JobFinder's data pipeline.
 
 ### 2026-06-07 (session 2 — multi-select filters)
 - **Multi-select filters** implemented in frontend (`index.html`, `js/filters.js`, `js/url-state.js`).
