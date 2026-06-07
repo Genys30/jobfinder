@@ -16,11 +16,39 @@ import csv
 import re
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    import glob
+    from datetime import timedelta
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as fh:
+            for row in csv.DictReader(fh):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
+
 BASE = "https://he.hadassah.org.il"
 CAREERS = BASE + "/wanted/careers/"
 COMPANY = "הדסה"
@@ -82,6 +110,7 @@ def write_csv(rows, fname):
 
 def run_hadassah():
     print("\n-- Hadassah Medical Center (הדסה) -----------------------------------")
+    first_seen = load_first_seen("hadassah_jobs_*.csv", key_field="url")
     html = pw_get(CAREERS, wait_selector="a[href*='position-']", wait_ms=3000)
     if not html:
         print("   x could not fetch Hadassah careers page")
@@ -111,7 +140,7 @@ def run_hadassah():
             "title": re.sub(r"\s+", " ", title).strip(),
             "company": COMPANY,
             "location": LOCATION,
-            "date": TODAY,
+            "date": first_seen.get(url, TODAY),
             "url": url,
             "department": "",
             "workplace_type": "onsite",

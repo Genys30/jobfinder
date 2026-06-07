@@ -10,15 +10,41 @@ Output: haifa_jobs_{TODAY}.csv with the columns the frontend's normHaifa() expec
 """
 
 import csv
+import glob
 import re
 import sys
-from datetime import date
+from datetime import date, timedelta
 from urllib.parse import unquote
 
 import requests
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
 BASE = "https://hr.haifa.ac.il"
 # URL-encoded Hebrew word "דרושים" (vacancies)
 LISTING_URL = BASE + "/%d7%93%d7%a8%d7%95%d7%a9%d7%99%d7%9d/"
@@ -54,7 +80,7 @@ def fetch(url):
         return None
 
 
-def parse(soup):
+def parse(soup, first_seen):
     jobs = []
     seen = set()
     for a in soup.find_all("a", href=True):
@@ -81,7 +107,7 @@ def parse(soup):
             "title": title,
             "company": "אוניברסיטת חיפה",
             "location": "חיפה",
-            "date": TODAY,
+            "date": first_seen.get(href, TODAY),
             "deadline": "",
             "url": href,
             "department": "",
@@ -103,11 +129,12 @@ def write_csv(rows, fname):
 
 def run_haifa():
     print("\n-- Haifa University -------------------------------------------------")
+    first_seen = load_first_seen("haifa_jobs_*.csv", key_field="url")
     soup = fetch(LISTING_URL)
     if not soup:
         write_csv([], f"haifa_jobs_{TODAY}.csv")
         return 0
-    jobs = parse(soup)
+    jobs = parse(soup, first_seen)
     write_csv(jobs, f"haifa_jobs_{TODAY}.csv")
     return len(jobs)
 

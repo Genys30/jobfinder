@@ -16,12 +16,40 @@ import csv
 import re
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 
 import requests
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    import glob
+    from datetime import timedelta
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as fh:
+            for row in csv.DictReader(fh):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
+
 BASE = "https://huji.hunterhrms.com"
 SEARCH_URL = BASE + "/search-results/"
 COMPANY = "האוניברסיטה העברית בירושלים"
@@ -93,6 +121,7 @@ def write_csv(rows, fname):
 
 def run_huji_positions():
     print("\n-- HUJI Positions (האוניברסיטה העברית בירושלים) ----------------------")
+    first_seen = load_first_seen("huji_positions_*.csv", key_field="url")
     soup = fetch_page(SEARCH_URL)
     if not soup:
         print("   x could not fetch HUJI positions page")
@@ -120,7 +149,7 @@ def run_huji_positions():
                 break
         jobs.append({
             "title": title, "company": COMPANY, "location": "ירושלים",
-            "date": TODAY, "deadline": parse_deadline(deadline_raw),
+            "date": first_seen.get(url, TODAY), "deadline": parse_deadline(deadline_raw),
             "jobcode": jobcode, "campus": campus, "department": "",
             "workplace_type": "onsite", "description": "", "requirements": "",
             "url": "",

@@ -12,15 +12,41 @@ Output: tau_jobs_{TODAY}.csv with the columns the frontend's normTAU() expects.
 """
 
 import csv
+import glob
 import re
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 
 import requests
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
 BASE = "https://www.tau.ac.il"
 TABS = {
     "0": "administrative",  # משרות סגל מנהלי
@@ -94,7 +120,7 @@ def parse_tab(soup, staff_type):
                 "title": title,
                 "company": "אוניברסיטת תל אביב",
                 "location": "תל אביב",
-                "date": TODAY,
+                "date": first_seen.get(url, TODAY),
                 "deadline": deadline,
                 "url": url,
                 "department": department,
@@ -117,6 +143,7 @@ def write_csv(rows, fname):
 
 def run_tau():
     print("\n-- TAU (Tel Aviv University) ---------------------------------------")
+    first_seen = load_first_seen("tau_jobs_*.csv", key_field="url")
     all_jobs = []
     seen = set()
     for tab, staff_type in TABS.items():

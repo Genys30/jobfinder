@@ -13,14 +13,40 @@ Requires Playwright. Runs locally.
 """
 
 import csv
+import glob
 import re
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as fh:
+            for row in csv.DictReader(fh):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
 BASE = "https://www.thejoint.org.il"
 LIST_URL = BASE + "/en/career/"
 COMPANY = "The Joint (ג'וינט)"
@@ -64,6 +90,7 @@ def write_csv(rows, fname):
 
 def run_joint():
     print("\n-- The Joint (ג'וינט) ------------------------------------------------")
+    first_seen = load_first_seen("joint_jobs_*.csv", key_field="url")
     html = pw_get(LIST_URL, wait_selector="a[href*='juid']", wait_ms=3000)
     if not html:
         print("   x could not fetch Joint career page")
@@ -92,7 +119,7 @@ def run_joint():
         if dm:
             pp = dm.group(1).split("/")
             pub_date = f"{pp[2]}-{pp[1]}-{pp[0]}"
-        job_links.append({"title": title, "url": url, "date": pub_date or TODAY})
+        job_links.append({"title": title, "url": url, "date": pub_date or first_seen.get(url, TODAY)})
 
     print(f"   Found {len(job_links)} listings — fetching descriptions...")
     jobs = []

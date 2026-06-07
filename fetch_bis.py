@@ -15,11 +15,39 @@ Requires Playwright. Runs locally.
 import csv
 import re
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    import glob
+    from datetime import timedelta
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as fh:
+            for row in csv.DictReader(fh):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
+
 URL = "https://www.bis.org.il/jobs"
 COMPANY = "BIS - אגודת סטודנטים בר-אילן"
 CITY = "רמת גן"
@@ -61,6 +89,7 @@ def write_csv(rows, fname):
 
 def run_bis():
     print("\n-- BIS - אגודת סטודנטים בר-אילן ------------------------------------")
+    first_seen = load_first_seen("bis_jobs_*.csv", key_field="url")
     html = pw_get(URL)
     if not html:
         print("   x could not fetch BIS jobs page")
@@ -116,7 +145,7 @@ def run_bis():
 
         jobs.append({
             "title": t, "company": COMPANY, "city": CITY,
-            "url": apply_url, "date": TODAY, "deadline": "",
+            "url": apply_url, "date": first_seen.get(apply_url, TODAY), "deadline": "",
             "department": "", "workplace_type": worktype,
             "description": desc, "requirements": reqs,
         })

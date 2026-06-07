@@ -14,11 +14,39 @@ Requires Playwright. Runs locally.
 
 import csv
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 from bs4 import BeautifulSoup
 
 TODAY = date.today().isoformat()
+
+
+def load_first_seen(pattern, key_field="url"):
+    import glob
+    from datetime import timedelta
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as fh:
+            for row in csv.DictReader(fh):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
+
 CAREER_URL = "https://ey.co.il/career/"
 BASE = "https://ey.co.il"
 COMPANY = "EY Israel"
@@ -62,6 +90,7 @@ def write_csv(rows, fname):
 
 def run_ey():
     print("\n-- EY Israel ---------------------------------------------------------")
+    first_seen = load_first_seen("ey_jobs_*.csv", key_field="url")
     html = pw_get(CAREER_URL, wait_selector="a[href*='/open-jobs/']")
     if not html:
         print("   x could not fetch EY career page")
@@ -124,7 +153,7 @@ def run_ey():
             reqs = after.strip()
         jobs.append({
             "title": title, "company": COMPANY, "city": city,
-            "date": TODAY, "url": url, "department": dept,
+            "date": first_seen.get(url, TODAY), "url": url, "department": dept,
             "workplace_type": worktype, "description": desc, "requirements": reqs,
         })
         print(f"   [{i}/{len(job_urls)}] {title[:60]}")

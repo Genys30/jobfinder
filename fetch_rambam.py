@@ -83,7 +83,9 @@ def clean(text):
     return re.sub(r"\s+", " ", text or "").strip()
 
 
-def scrape_page(url, department):
+def scrape_page(url, department, first_seen=None):
+    if first_seen is None:
+        first_seen = {}
     print(f"Fetching {url} …")
     try:
         r = requests.get(url, headers=HEADERS, timeout=30)
@@ -126,7 +128,7 @@ def scrape_page(url, department):
             "title":         title,
             "company":       'הקריה הרפואית רמב"ם',
             "location":      "Haifa",
-            "date":          TODAY,
+            "date":          first_seen.get(apply_link or url, TODAY),
             "url":           apply_link or url,
             "department":    department,
             "workplace_type": "onsite",
@@ -138,11 +140,12 @@ def scrape_page(url, department):
 
 
 def main():
+    first_seen = load_first_seen("rambam_jobs_*.csv", key_field="url")
     all_jobs = []
     seen_titles = set()
 
     for page in PAGES:
-        jobs = scrape_page(page["url"], page["department"])
+        jobs = scrape_page(page["url"], page["department"], first_seen)
         new = [j for j in jobs if j["title"] not in seen_titles]
         for j in new:
             seen_titles.add(j["title"])
