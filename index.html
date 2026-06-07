@@ -477,6 +477,42 @@
     .city-multi-list{max-height:50vh;}
   }
 
+  /* ─── Generic multi-select filter ─── */
+  .ms-wrap{position:relative;display:inline-block;flex-shrink:0;}
+  .ms-btn{font-family:'Carlito','Calibri',sans-serif;font-size:13px;color:var(--ink);
+    background:#fff;border:1px solid var(--rule);border-radius:3px;padding:5px 8px;
+    outline:none;cursor:pointer;height:30px;white-space:nowrap;
+    -webkit-appearance:none;appearance:none;
+    padding-right:20px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 6px center;
+    max-width:130px;overflow:hidden;text-overflow:ellipsis;text-align:left;}
+  .ms-btn:focus{border-color:var(--accent);}
+  .ms-btn.is-active{border-color:var(--accent)!important;background-color:rgba(201,127,12,.08)!important;
+    color:var(--accent)!important;font-weight:700;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c97f0c'/%3E%3C/svg%3E");}
+  .ms-panel{display:none;position:absolute;top:calc(100% + 3px);left:0;z-index:900;
+    background:#fff;border:1px solid var(--rule);border-radius:3px;
+    box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:180px;max-width:280px;}
+  .ms-panel.open{display:block;}
+  .ms-list{list-style:none;margin:0;padding:4px 0;max-height:280px;overflow-y:auto;}
+  .ms-item{display:flex;align-items:center;gap:6px;padding:5px 10px;cursor:pointer;user-select:none;}
+  .ms-item:hover{background:rgba(201,127,12,.07);}
+  .ms-item input[type=checkbox]{accent-color:var(--accent);cursor:pointer;flex-shrink:0;
+    margin:0;width:14px;height:14px;min-width:14px;}
+  .ms-item-label{font-family:'Carlito',sans-serif;font-size:13px;color:var(--ink);
+    flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ms-clear-row{display:flex;align-items:center;justify-content:center;padding:5px 12px;
+    cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);border-top:1px solid var(--rule);margin-top:2px;}
+  .ms-clear-row:hover{color:var(--accent-2);}
+  @media(max-width:600px){
+    .ms-panel{position:fixed!important;left:8px!important;right:8px!important;
+      width:auto!important;min-width:0!important;max-width:none!important;
+      top:auto;z-index:1500;}
+    .ms-list{max-height:50vh;}
+  }
+
   /* ─── Entropy ─── */
   .entr-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;
     letter-spacing:.05em;padding:1px 5px;border-radius:3px;vertical-align:middle;
@@ -677,30 +713,40 @@
     </div>
   </div>
   <select id="company"><option value="">Company</option></select>
-  <select id="segment">
-    <option value="">Role</option>
-    <option value="rd">R&amp;D / Eng</option>
-    <option value="product">Product</option>
-    <option value="data">Data</option>
-    <option value="design">Design</option>
-    <option value="sales">Sales</option>
-    <option value="marketing">Marketing</option>
-    <option value="operations">Ops</option>
-    <option value="hr">HR</option>
-    <option value="support">CS</option>
-    <option value="management">Mgmt</option>
-    <option value="intern">Intern</option>
-    <option value="medical">Medical</option>
-    <option value="administrative">Administrative</option>
-  </select>
-  <select id="level">
-    <option value="">Level</option>
-    <option value="entry">Junior</option>
-    <option value="mid">Mid</option>
-    <option value="senior">Senior</option>
-    <option value="advanced">Staff</option>
-    <option value="director">Director+</option>
-  </select>
+  <div class="ms-wrap" id="segmentWrap">
+    <button class="ms-btn" id="segmentBtn" type="button">Role &#9662;</button>
+    <div class="ms-panel" id="segmentPanel">
+      <ul class="ms-list" id="segmentList">
+        <li class="ms-item" data-value="rd"><input type="checkbox" id="seg_rd"><label class="ms-item-label" for="seg_rd">R&amp;D / Eng</label></li>
+        <li class="ms-item" data-value="product"><input type="checkbox" id="seg_product"><label class="ms-item-label" for="seg_product">Product</label></li>
+        <li class="ms-item" data-value="data"><input type="checkbox" id="seg_data"><label class="ms-item-label" for="seg_data">Data</label></li>
+        <li class="ms-item" data-value="design"><input type="checkbox" id="seg_design"><label class="ms-item-label" for="seg_design">Design</label></li>
+        <li class="ms-item" data-value="sales"><input type="checkbox" id="seg_sales"><label class="ms-item-label" for="seg_sales">Sales</label></li>
+        <li class="ms-item" data-value="marketing"><input type="checkbox" id="seg_marketing"><label class="ms-item-label" for="seg_marketing">Marketing</label></li>
+        <li class="ms-item" data-value="operations"><input type="checkbox" id="seg_operations"><label class="ms-item-label" for="seg_operations">Ops</label></li>
+        <li class="ms-item" data-value="hr"><input type="checkbox" id="seg_hr"><label class="ms-item-label" for="seg_hr">HR</label></li>
+        <li class="ms-item" data-value="support"><input type="checkbox" id="seg_support"><label class="ms-item-label" for="seg_support">CS</label></li>
+        <li class="ms-item" data-value="management"><input type="checkbox" id="seg_management"><label class="ms-item-label" for="seg_management">Mgmt</label></li>
+        <li class="ms-item" data-value="intern"><input type="checkbox" id="seg_intern"><label class="ms-item-label" for="seg_intern">Intern</label></li>
+        <li class="ms-item" data-value="medical"><input type="checkbox" id="seg_medical"><label class="ms-item-label" for="seg_medical">Medical</label></li>
+        <li class="ms-item" data-value="administrative"><input type="checkbox" id="seg_administrative"><label class="ms-item-label" for="seg_administrative">Administrative</label></li>
+      </ul>
+      <div class="ms-clear-row" id="segmentClear">Clear</div>
+    </div>
+  </div>
+  <div class="ms-wrap" id="levelWrap">
+    <button class="ms-btn" id="levelBtn" type="button">Level &#9662;</button>
+    <div class="ms-panel" id="levelPanel">
+      <ul class="ms-list" id="levelList">
+        <li class="ms-item" data-value="entry"><input type="checkbox" id="lvl_entry"><label class="ms-item-label" for="lvl_entry">Junior</label></li>
+        <li class="ms-item" data-value="mid"><input type="checkbox" id="lvl_mid"><label class="ms-item-label" for="lvl_mid">Mid</label></li>
+        <li class="ms-item" data-value="senior"><input type="checkbox" id="lvl_senior"><label class="ms-item-label" for="lvl_senior">Senior</label></li>
+        <li class="ms-item" data-value="advanced"><input type="checkbox" id="lvl_advanced"><label class="ms-item-label" for="lvl_advanced">Staff</label></li>
+        <li class="ms-item" data-value="director"><input type="checkbox" id="lvl_director"><label class="ms-item-label" for="lvl_director">Director+</label></li>
+      </ul>
+      <div class="ms-clear-row" id="levelClear">Clear</div>
+    </div>
+  </div>
   <select id="date">
     <option value="">Posted</option>
     <option value="1">Today</option>
@@ -709,73 +755,93 @@
     <option value="14">14 days</option>
     <option value="30">30 days</option>
   </select>
-  <select id="sector">
-    <option value="">Employer Type</option>
-    <option value="startup">🚀 Startup / Scale-up</option>
-    <option value="private">🏢 Private</option>
-    <option value="public">🏛️ Public Sector</option>
-    <option value="academic">🎓 Academic / Research</option>
-    <option value="nonprofit">🤝 Nonprofit / NGO</option>
-    <option value="defence">🛡️ Defence</option>
-  </select>
-  <select id="source">
-    <option value="">Source</option>
-    <option value="linkedin">LinkedIn</option>
-    <option value="comeet">Comeet</option>
-    <option value="greenhouse">Greenhouse</option>
-    <option value="lv">Lever</option>
-    <option value="ab">Ashby</option>
-      <option value="direct">Direct</option>
-      <option value="mt">Mitam 🏛️</option>
-      <option value="weizmann">Weizmann 🔬</option>
-      <option value="bgu">BGU 🎓</option>
-      <option value="technion">Technion 🎓</option>
-      <option value="huji-alumni">HUJI Alumni Career</option>
-      <option value="huji">HUJI 🎓</option>
-      <option value="tau">TAU 🎓</option>
-      <option value="haifa">Haifa U 🎓</option>
-      <option value="kpmg">KPMG</option>
-      <option value="deloitte">Deloitte</option>
-      <option value="ey">EY</option>
-      <option value="joint">Joint</option>
-      <option value="bar">BAR 🎓</option>
-      <option value="bis">BIS</option>
-      <option value="gf">GotFriends</option>
-      <option value="ichilov">Ichilov 🏥</option>
-      <option value="rambam">Rambam 🏥</option>
-      <option value="beilinson">Beilinson 🏥</option>
-      <option value="soroka">Soroka 🏥</option>
-      <option value="szmc">Shaare Zedek 🏥</option>
-      <option value="hadassah">Hadassah 🏥</option>
-      <option value="clalit">Clalit 🏥</option>
-      <option value="maccabi">Maccabi 🏥</option>
-      <option value="leumit">Leumit 🏥</option>
-      <option value="meuhedet">Meuhedet 🏥</option>
-      <option value="meir">Meir 🏥</option>
-      <option value="kaplan">Kaplan 🏥</option>
-      <option value="schneider">Schneider 🏥</option>
-      <option value="yoseftal">Yoseftal 🏥</option>
-      <option value="emek">Emek 🏥</option>
-      <option value="loewenstein">Loewenstein 🏥</option>
-      <option value="carmel">Carmel 🏥</option>
-      <option value="Biltiformali-Telegram">Biltiformali 📱</option>
-      <option value="mod">MOD 🛡️</option>
-      <option value="innovation-israel">IIA 🏛️</option>
-  </select>
-  <select id="worktype">
-    <option value="">Type</option>
-    <option value="remote">Remote</option>
-    <option value="hybrid">Hybrid</option>
-    <option value="onsite">On-site</option>
-  </select>
-  <select id="positiontype">
-    <option value="">Contract</option>
-    <option value="full_time">Full-time</option>
-    <option value="maternity_cover">Maternity Cover</option>
-    <option value="part_time">Part-time</option>
-    <option value="freelance">Freelance</option>
-    <option value="internship">Internship</option>
-  </select>
+  <div class="ms-wrap" id="sectorWrap">
+    <button class="ms-btn" id="sectorBtn" type="button">Employer Type &#9662;</button>
+    <div class="ms-panel" id="sectorPanel">
+      <ul class="ms-list" id="sectorList">
+        <li class="ms-item" data-value="startup"><input type="checkbox" id="sec_startup"><label class="ms-item-label" for="sec_startup">&#x1F680; Startup / Scale-up</label></li>
+        <li class="ms-item" data-value="private"><input type="checkbox" id="sec_private"><label class="ms-item-label" for="sec_private">&#x1F3E2; Private</label></li>
+        <li class="ms-item" data-value="public"><input type="checkbox" id="sec_public"><label class="ms-item-label" for="sec_public">&#x1F3DB;&#xFE0F; Public Sector</label></li>
+        <li class="ms-item" data-value="academic"><input type="checkbox" id="sec_academic"><label class="ms-item-label" for="sec_academic">&#x1F393; Academic / Research</label></li>
+        <li class="ms-item" data-value="nonprofit"><input type="checkbox" id="sec_nonprofit"><label class="ms-item-label" for="sec_nonprofit">&#x1F91D; Nonprofit / NGO</label></li>
+        <li class="ms-item" data-value="defence"><input type="checkbox" id="sec_defence"><label class="ms-item-label" for="sec_defence">&#x1F6E1;&#xFE0F; Defence</label></li>
+      </ul>
+      <div class="ms-clear-row" id="sectorClear">Clear</div>
+    </div>
+  </div>
+  <div class="ms-wrap" id="sourceWrap">
+    <button class="ms-btn" id="sourceBtn" type="button">Source &#9662;</button>
+    <div class="ms-panel" id="sourcePanel">
+      <ul class="ms-list" id="sourceList">
+        <li class="ms-item" data-value="linkedin"><input type="checkbox" id="src_linkedin"><label class="ms-item-label" for="src_linkedin">LinkedIn</label></li>
+        <li class="ms-item" data-value="comeet"><input type="checkbox" id="src_comeet"><label class="ms-item-label" for="src_comeet">Comeet</label></li>
+        <li class="ms-item" data-value="greenhouse"><input type="checkbox" id="src_greenhouse"><label class="ms-item-label" for="src_greenhouse">Greenhouse</label></li>
+        <li class="ms-item" data-value="lv"><input type="checkbox" id="src_lv"><label class="ms-item-label" for="src_lv">Lever</label></li>
+        <li class="ms-item" data-value="ab"><input type="checkbox" id="src_ab"><label class="ms-item-label" for="src_ab">Ashby</label></li>
+        <li class="ms-item" data-value="direct"><input type="checkbox" id="src_direct"><label class="ms-item-label" for="src_direct">Direct</label></li>
+        <li class="ms-item" data-value="mt"><input type="checkbox" id="src_mt"><label class="ms-item-label" for="src_mt">Mitam &#x1F3DB;&#xFE0F;</label></li>
+        <li class="ms-item" data-value="weizmann"><input type="checkbox" id="src_weizmann"><label class="ms-item-label" for="src_weizmann">Weizmann &#x1F52C;</label></li>
+        <li class="ms-item" data-value="bgu"><input type="checkbox" id="src_bgu"><label class="ms-item-label" for="src_bgu">BGU &#x1F393;</label></li>
+        <li class="ms-item" data-value="technion"><input type="checkbox" id="src_technion"><label class="ms-item-label" for="src_technion">Technion &#x1F393;</label></li>
+        <li class="ms-item" data-value="huji-alumni"><input type="checkbox" id="src_huji_alumni"><label class="ms-item-label" for="src_huji_alumni">HUJI Alumni Career</label></li>
+        <li class="ms-item" data-value="huji"><input type="checkbox" id="src_huji"><label class="ms-item-label" for="src_huji">HUJI &#x1F393;</label></li>
+        <li class="ms-item" data-value="tau"><input type="checkbox" id="src_tau"><label class="ms-item-label" for="src_tau">TAU &#x1F393;</label></li>
+        <li class="ms-item" data-value="haifa"><input type="checkbox" id="src_haifa"><label class="ms-item-label" for="src_haifa">Haifa U &#x1F393;</label></li>
+        <li class="ms-item" data-value="kpmg"><input type="checkbox" id="src_kpmg"><label class="ms-item-label" for="src_kpmg">KPMG</label></li>
+        <li class="ms-item" data-value="deloitte"><input type="checkbox" id="src_deloitte"><label class="ms-item-label" for="src_deloitte">Deloitte</label></li>
+        <li class="ms-item" data-value="ey"><input type="checkbox" id="src_ey"><label class="ms-item-label" for="src_ey">EY</label></li>
+        <li class="ms-item" data-value="joint"><input type="checkbox" id="src_joint"><label class="ms-item-label" for="src_joint">Joint</label></li>
+        <li class="ms-item" data-value="bar"><input type="checkbox" id="src_bar"><label class="ms-item-label" for="src_bar">BAR &#x1F393;</label></li>
+        <li class="ms-item" data-value="bis"><input type="checkbox" id="src_bis"><label class="ms-item-label" for="src_bis">BIS</label></li>
+        <li class="ms-item" data-value="gf"><input type="checkbox" id="src_gf"><label class="ms-item-label" for="src_gf">GotFriends</label></li>
+        <li class="ms-item" data-value="ichilov"><input type="checkbox" id="src_ichilov"><label class="ms-item-label" for="src_ichilov">Ichilov &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="rambam"><input type="checkbox" id="src_rambam"><label class="ms-item-label" for="src_rambam">Rambam &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="beilinson"><input type="checkbox" id="src_beilinson"><label class="ms-item-label" for="src_beilinson">Beilinson &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="soroka"><input type="checkbox" id="src_soroka"><label class="ms-item-label" for="src_soroka">Soroka &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="szmc"><input type="checkbox" id="src_szmc"><label class="ms-item-label" for="src_szmc">Shaare Zedek &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="hadassah"><input type="checkbox" id="src_hadassah"><label class="ms-item-label" for="src_hadassah">Hadassah &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="clalit"><input type="checkbox" id="src_clalit"><label class="ms-item-label" for="src_clalit">Clalit &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="maccabi"><input type="checkbox" id="src_maccabi"><label class="ms-item-label" for="src_maccabi">Maccabi &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="leumit"><input type="checkbox" id="src_leumit"><label class="ms-item-label" for="src_leumit">Leumit &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="meuhedet"><input type="checkbox" id="src_meuhedet"><label class="ms-item-label" for="src_meuhedet">Meuhedet &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="meir"><input type="checkbox" id="src_meir"><label class="ms-item-label" for="src_meir">Meir &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="kaplan"><input type="checkbox" id="src_kaplan"><label class="ms-item-label" for="src_kaplan">Kaplan &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="schneider"><input type="checkbox" id="src_schneider"><label class="ms-item-label" for="src_schneider">Schneider &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="yoseftal"><input type="checkbox" id="src_yoseftal"><label class="ms-item-label" for="src_yoseftal">Yoseftal &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="emek"><input type="checkbox" id="src_emek"><label class="ms-item-label" for="src_emek">Emek &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="loewenstein"><input type="checkbox" id="src_loewenstein"><label class="ms-item-label" for="src_loewenstein">Loewenstein &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="carmel"><input type="checkbox" id="src_carmel"><label class="ms-item-label" for="src_carmel">Carmel &#x1F3E5;</label></li>
+        <li class="ms-item" data-value="Biltiformali-Telegram"><input type="checkbox" id="src_telegram"><label class="ms-item-label" for="src_telegram">Biltiformali &#x1F4F1;</label></li>
+        <li class="ms-item" data-value="mod"><input type="checkbox" id="src_mod"><label class="ms-item-label" for="src_mod">MOD &#x1F6E1;&#xFE0F;</label></li>
+        <li class="ms-item" data-value="innovation-israel"><input type="checkbox" id="src_iia"><label class="ms-item-label" for="src_iia">IIA &#x1F3DB;&#xFE0F;</label></li>
+      </ul>
+      <div class="ms-clear-row" id="sourceClear">Clear</div>
+    </div>
+  </div>
+  <div class="ms-wrap" id="worktypeWrap">
+    <button class="ms-btn" id="worktypeBtn" type="button">Type &#9662;</button>
+    <div class="ms-panel" id="worktypePanel">
+      <ul class="ms-list" id="worktypeList">
+        <li class="ms-item" data-value="remote"><input type="checkbox" id="wt_remote"><label class="ms-item-label" for="wt_remote">Remote</label></li>
+        <li class="ms-item" data-value="hybrid"><input type="checkbox" id="wt_hybrid"><label class="ms-item-label" for="wt_hybrid">Hybrid</label></li>
+        <li class="ms-item" data-value="onsite"><input type="checkbox" id="wt_onsite"><label class="ms-item-label" for="wt_onsite">On-site</label></li>
+      </ul>
+      <div class="ms-clear-row" id="worktypeClear">Clear</div>
+    </div>
+  </div>
+  <div class="ms-wrap" id="positiontypeWrap">
+    <button class="ms-btn" id="positiontypeBtn" type="button">Contract &#9662;</button>
+    <div class="ms-panel" id="positiontypePanel">
+      <ul class="ms-list" id="positiontypeList">
+        <li class="ms-item" data-value="full_time"><input type="checkbox" id="pt_full_time"><label class="ms-item-label" for="pt_full_time">Full-time</label></li>
+        <li class="ms-item" data-value="maternity_cover"><input type="checkbox" id="pt_maternity"><label class="ms-item-label" for="pt_maternity">Maternity Cover</label></li>
+        <li class="ms-item" data-value="part_time"><input type="checkbox" id="pt_part_time"><label class="ms-item-label" for="pt_part_time">Part-time</label></li>
+        <li class="ms-item" data-value="freelance"><input type="checkbox" id="pt_freelance"><label class="ms-item-label" for="pt_freelance">Freelance</label></li>
+        <li class="ms-item" data-value="internship"><input type="checkbox" id="pt_internship"><label class="ms-item-label" for="pt_internship">Internship</label></li>
+      </ul>
+      <div class="ms-clear-row" id="positiontypeClear">Clear</div>
+    </div>
+  </div>
   <select id="sort" aria-label="Sort results">
     <option value="date">Newest</option>
     <option value="relevance" disabled>Best match</option>
@@ -1220,8 +1286,36 @@ const $stamp    = document.getElementById('stamp');
 const $lastBuild= document.getElementById('lastBuild');
 const $export   = document.getElementById('export');
 const $liStatus  = document.getElementById('liStatusText');
-const $level     = document.getElementById('level');
-const $segment   = document.getElementById('segment');
+// ─── Multi-select filter state (Sets of selected values) ─────────────────────
+let selectedSegments = new Set();
+let selectedLevels   = new Set();
+let selectedSectors  = new Set();
+let selectedSources  = new Set();
+let selectedWorktypes = new Set();
+let selectedPositiontypes = new Set();
+
+// Multi-select DOM refs (buttons + panels)
+const $segmentBtn   = document.getElementById('segmentBtn');
+const $segmentPanel = document.getElementById('segmentPanel');
+const $levelBtn     = document.getElementById('levelBtn');
+const $levelPanel   = document.getElementById('levelPanel');
+const $sectorBtn    = document.getElementById('sectorBtn');
+const $sectorPanel  = document.getElementById('sectorPanel');
+const $sourceBtn    = document.getElementById('sourceBtn');
+const $sourcePanel  = document.getElementById('sourcePanel');
+const $worktypeBtn  = document.getElementById('worktypeBtn');
+const $worktypePanel= document.getElementById('worktypePanel');
+const $positiontypeBtn   = document.getElementById('positiontypeBtn');
+const $positiontypePanel = document.getElementById('positiontypePanel');
+
+// Legacy aliases: keep these as null so old code that reads .value gets '' safely
+const $level     = null;
+const $segment   = null;
+const $sector    = null;
+const $source    = null;
+const $worktype  = null;
+const $positiontype = null;
+
 const $count     = document.getElementById('countBar');
 const $abStatus  = document.getElementById('abStatusText');
 const $wkStatus  = document.getElementById('wkStatusText');
@@ -1259,10 +1353,6 @@ const $emekStatus = document.getElementById('emekStatusText');
 const $loewensteinStatus = document.getElementById('loewensteinStatusText');
 const $carmelStatus = document.getElementById('carmelStatusText');
 const $innStatus = document.getElementById('innStatusText');
-const $sector    = document.getElementById('sector');
-const $source    = document.getElementById('source');
-const $worktype      = document.getElementById('worktype');
-const $positiontype  = document.getElementById('positiontype');
 const $sort      = document.getElementById('sort');
 const $entropy   = document.getElementById('entropy');
 const $cmStatus = document.getElementById('cmStatusText');
@@ -2419,6 +2509,20 @@ async function loadBIS() {
 
 // ─── POOL ────────────────────────────────────────────────────────────────────
 function getPoolInner(){
+  // Multi-source: return full merged pool, filtering happens in jobPassesFilters
+  if(activeSrc==='multi' || activeSrc==='all'){
+    const seen = new Set();
+    const seenTitleCo = new Set();
+    // Priority: Comeet/GH/GF first (rich data), LinkedIn last
+    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
+      const k = r.url;
+      const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
+      if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
+      if(k) seen.add(k);
+      seenTitleCo.add(k2);
+      return true;
+    });
+  }
   if(activeSrc==='linkedin') return LI_JOBS;
   if(activeSrc==='comeet')      return CM_JOBS;
   if(activeSrc==='greenhouse') return GH_JOBS;
@@ -2462,9 +2566,9 @@ function getPoolInner(){
   if(activeSrc==='carmel')    return CARMEL_JOBS;
   if(activeSrc==='mod')        return MOD_JOBS;
   if(activeSrc==='innovation-israel') return INN_JOBS;
+  // fallback: full merged pool
   const seen = new Set();
   const seenTitleCo = new Set();
-  // Priority: Comeet/GH/GF first (rich data), LinkedIn last
   return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
@@ -2858,6 +2962,92 @@ document.addEventListener('click', e => {
   if ($cityWrap && !$cityWrap.contains(e.target)) $cityPanel.classList.remove('open');
 });
 
+// ─── GENERIC MULTI-SELECT HELPERS ────────────────────────────────────────────
+function updateMsBtn(btn, selSet, defaultLabel) {
+  if (!btn) return;
+  if (selSet.size === 0) {
+    btn.textContent = defaultLabel + ' ▾';
+  } else if (selSet.size === 1) {
+    // Find label from list
+    const val = [...selSet][0];
+    const panelId = btn.id.replace('Btn', 'Panel');
+    const panel = document.getElementById(panelId);
+    const item = panel && panel.querySelector('[data-value="' + CSS.escape(val) + '"] .ms-item-label');
+    btn.textContent = (item ? item.textContent : val) + ' ▾';
+  } else {
+    btn.textContent = selSet.size + ' selected ▾';
+  }
+}
+
+function clearMsChecks(panelId) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  panel.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+}
+
+function initMsPanel(btnEl, panelEl, selSet, clearEl, defaultLabel) {
+  if (!btnEl || !panelEl) return;
+  // Toggle open
+  btnEl.addEventListener('click', e => {
+    e.stopPropagation();
+    // Close all other ms panels
+    document.querySelectorAll('.ms-panel.open').forEach(p => {
+      if (p !== panelEl) p.classList.remove('open');
+    });
+    panelEl.classList.toggle('open');
+    if (panelEl.classList.contains('open') && window.innerWidth <= 600) {
+      const rect = btnEl.getBoundingClientRect();
+      panelEl.style.top = (rect.bottom + 4) + 'px';
+    }
+  });
+  // Checkbox changes
+  panelEl.addEventListener('change', e => {
+    if (e.target.type !== 'checkbox') return;
+    const item = e.target.closest('[data-value]');
+    if (!item) return;
+    const val = item.dataset.value;
+    if (e.target.checked) selSet.add(val);
+    else selSet.delete(val);
+    updateMsBtn(btnEl, selSet, defaultLabel);
+    applyFilters();
+  });
+  // Row click (not on checkbox itself)
+  panelEl.addEventListener('click', e => {
+    const item = e.target.closest('[data-value]');
+    if (item && e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
+      const cb = item.querySelector('input[type=checkbox]');
+      if (cb) cb.click();
+    }
+  });
+  // Clear button
+  if (clearEl) {
+    clearEl.addEventListener('click', e => {
+      e.stopPropagation();
+      selSet.clear();
+      panelEl.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+      updateMsBtn(btnEl, selSet, defaultLabel);
+      applyFilters();
+    });
+  }
+}
+
+// Close all ms panels on outside click
+document.addEventListener('click', e => {
+  document.querySelectorAll('.ms-panel.open').forEach(p => {
+    const wrap = p.closest('.ms-wrap');
+    if (wrap && !wrap.contains(e.target)) p.classList.remove('open');
+  });
+});
+
+// Initialise all multi-select panels
+initMsPanel($segmentBtn, $segmentPanel, selectedSegments, document.getElementById('segmentClear'), 'Role');
+initMsPanel($levelBtn,   $levelPanel,   selectedLevels,   document.getElementById('levelClear'),   'Level');
+initMsPanel($sectorBtn,  $sectorPanel,  selectedSectors,  document.getElementById('sectorClear'),  'Employer Type');
+initMsPanel($sourceBtn,  $sourcePanel,  selectedSources,  document.getElementById('sourceClear'),  'Source');
+initMsPanel($worktypeBtn, $worktypePanel, selectedWorktypes, document.getElementById('worktypeClear'), 'Type');
+initMsPanel($positiontypeBtn, $positiontypePanel, selectedPositiontypes, document.getElementById('positiontypeClear'), 'Contract');
+
+
 // ─── SEGMENT CLASSIFIER ──────────────────────────────────────────────────────
 const SEGMENTS = {
   intern:     /\b(intern|internship|student|trainee|apprentice|co-op|coop|graduate program|סטודנט|מתמחה|מתנדב)\b/i,
@@ -2903,7 +3093,7 @@ function classifyLevel(title) {
 
 // Highlight active filters
 function highlightFilters(){
-  [$q,$segment,$level,$date,$worktype,$sort,$company,$sector,$source].forEach(el=>{
+  [$q,$date,$sort,$company].forEach(el=>{
     if(!el) return;
     const field = el.closest('.field');
     if(!field) return;
@@ -3169,12 +3359,12 @@ function updateDatabar() {
     ($q        && $q.value.trim()) ||
     (selectedCities.size)            ||
     ($company  && $company.value)  ||
-    ($segment  && $segment.value)  ||
-    ($level    && $level.value)    ||
+    selectedSegments.size > 0      ||
+    selectedLevels.size > 0        ||
     ($date     && $date.value)     ||
-    ($sector   && $sector.value)   ||
-    ($source   && $source.value)   ||
-    ($worktype && $worktype.value)
+    selectedSectors.size > 0       ||
+    selectedSources.size > 0       ||
+    selectedWorktypes.size > 0
   );
 
   DATABAR_SOURCES.forEach(({ id, key, label }) => {
@@ -3215,24 +3405,39 @@ function updateSortUi() {
 
 function updateFilterChrome(){
   updateSortUi();
-  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort,$entropy].forEach(el=>{
+  // Legacy selects ($company, $date, $sort, $entropy)
+  [$company,$date,$sort,$entropy].forEach(el=>{
     if(!el) return;
     if (el.id === 'sort') el.classList.toggle('is-active', el.value === 'relevance' || el.value.startsWith('entropy'));
     else el.classList.toggle('is-active', el.value !== '');
   });
   if($q) $q.classList.toggle('is-active', $q.value.trim() !== '');
+  // Multi-select buttons
+  if($segmentBtn) $segmentBtn.classList.toggle('is-active', selectedSegments.size > 0);
+  if($levelBtn)   $levelBtn.classList.toggle('is-active', selectedLevels.size > 0);
+  if($sectorBtn)  $sectorBtn.classList.toggle('is-active', selectedSectors.size > 0);
+  if($sourceBtn)  $sourceBtn.classList.toggle('is-active', selectedSources.size > 0);
+  if($worktypeBtn) $worktypeBtn.classList.toggle('is-active', selectedWorktypes.size > 0);
+  if($positiontypeBtn) $positiontypeBtn.classList.toggle('is-active', selectedPositiontypes.size > 0);
+  // Update button labels
+  updateMsBtn($segmentBtn, selectedSegments, 'Role');
+  updateMsBtn($levelBtn,   selectedLevels,   'Level');
+  updateMsBtn($sectorBtn,  selectedSectors,  'Employer Type');
+  updateMsBtn($sourceBtn,  selectedSources,  'Source');
+  updateMsBtn($worktypeBtn, selectedWorktypes, 'Type');
+  updateMsBtn($positiontypeBtn, selectedPositiontypes, 'Contract');
   updateCityBtn();
 }
 
 function readFilterCriteria(){
   const q          = $q ? $q.value.trim() : '';
   const company    = $company ? $company.value : '';
-  const segFilter  = $segment  ? $segment.value  : '';
-  const lvlFilter  = $level    ? $level.value    : '';
-  const secFilter  = $sector   ? $sector.value   : '';
-  const srcFilter  = $source   ? $source.value   : '';
-  const wtFilter   = $worktype ? $worktype.value : '';
-  const ptFilter   = $positiontype ? $positiontype.value : '';
+  const segFilter  = selectedSegments;
+  const lvlFilter  = selectedLevels;
+  const secFilter  = selectedSectors;
+  const srcFilter  = selectedSources;
+  const wtFilter   = selectedWorktypes;
+  const ptFilter   = selectedPositiontypes;
   const entrFilter = $entropy  ? $entropy.value  : '';
   const sort       = $sort ? $sort.value : 'date';
   const days       = $date && $date.value ? parseInt($date.value, 10) : null;
@@ -3292,19 +3497,21 @@ function syncFilterFallback(criteria, pool, filterHelpers){
 function runSearchAsync(){
   updateFilterChrome();
   const criteria = readFilterCriteria();
-  activeSrc = criteria.srcFilter || 'all';
+  activeSrc = (criteria.srcFilter && criteria.srcFilter.size === 1)
+    ? [...criteria.srcFilter][0]
+    : (criteria.srcFilter && criteria.srcFilter.size > 1 ? 'multi' : 'all');
 
   if (typeof UrlState !== 'undefined') {
     UrlState.replaceFromCriteria({
       q: criteria.q,
       company: criteria.company,
-      segment: criteria.segFilter,
-      level: criteria.lvlFilter,
+      segment: [...criteria.segFilter].join(','),
+      level: [...criteria.lvlFilter].join(','),
       date: criteria.dateValue,
-      sector: criteria.secFilter,
-      source: criteria.srcFilter,
-      worktype: criteria.wtFilter,
-      positiontype: criteria.ptFilter,
+      sector: [...criteria.secFilter].join(','),
+      source: [...criteria.srcFilter].join(','),
+      worktype: [...criteria.wtFilter].join(','),
+      positiontype: [...criteria.ptFilter].join(','),
       sort: criteria.sort || 'date',
       selectedCities: criteria.selectedCities,
     });
@@ -3364,13 +3571,13 @@ function applyResort() {
     UrlState.replaceFromCriteria({
       q: c.q,
       company: c.company,
-      segment: c.segFilter,
-      level: c.lvlFilter,
+      segment: [...c.segFilter].join(','),
+      level: [...c.lvlFilter].join(','),
       date: c.dateValue,
-      sector: c.secFilter,
-      source: c.srcFilter,
-      worktype: c.wtFilter,
-      positiontype: c.ptFilter,
+      sector: [...c.secFilter].join(','),
+      source: [...c.srcFilter].join(','),
+      worktype: [...c.wtFilter].join(','),
+      positiontype: [...c.ptFilter].join(','),
       sort: c.sort || 'date',
       selectedCities: c.selectedCities,
     });
@@ -3581,24 +3788,34 @@ if ($q) {
     }
   });
 }
-[$company,$date,$level,$segment,$sector,$source,$worktype,$positiontype,$entropy].forEach(el=>{
+[$company,$date,$entropy].forEach(el=>{
   if (el) el.addEventListener('change', applyFilters);
 });
 if ($sort) $sort.addEventListener('change', applyResort);
 $reset.addEventListener('click',()=>{
   $q.value='';$q.classList.remove('is-active');$company.value='';$date.value='';
   selectedCities.clear(); buildCityTree(''); updateCityBtn();
-  if($level)$level.value='';
-  if($segment)$segment.value='';
-  if($sector)$sector.value='';
-  if($source)$source.value='';
-  if($worktype)$worktype.value='';
-  if($positiontype)$positiontype.value='';
+  // Clear all multi-select Sets and uncheck all checkboxes
+  selectedSegments.clear(); clearMsChecks('segmentPanel');
+  selectedLevels.clear();   clearMsChecks('levelPanel');
+  selectedSectors.clear();  clearMsChecks('sectorPanel');
+  selectedSources.clear();  clearMsChecks('sourcePanel');
+  selectedWorktypes.clear(); clearMsChecks('worktypePanel');
+  selectedPositiontypes.clear(); clearMsChecks('positiontypePanel');
   if($sort)$sort.value='date';
   if($entropy)$entropy.value='';
-  [$company,$segment,$level,$date,$sector,$source,$worktype,$positiontype,$sort,$entropy].forEach(el=>{
+  [$company,$date,$sort,$entropy].forEach(el=>{
     if(el) el.classList.remove('is-active');
   });
+  [$segmentBtn,$levelBtn,$sectorBtn,$sourceBtn,$worktypeBtn,$positiontypeBtn].forEach(btn=>{
+    if(btn) btn.classList.remove('is-active');
+  });
+  updateMsBtn($segmentBtn, selectedSegments, 'Role');
+  updateMsBtn($levelBtn,   selectedLevels,   'Level');
+  updateMsBtn($sectorBtn,  selectedSectors,  'Employer Type');
+  updateMsBtn($sourceBtn,  selectedSources,  'Source');
+  updateMsBtn($worktypeBtn, selectedWorktypes, 'Type');
+  updateMsBtn($positiontypeBtn, selectedPositiontypes, 'Contract');
   if (typeof UrlState !== 'undefined') history.replaceState(null, '', location.pathname);
   applyFilters();
 });
@@ -3794,10 +4011,9 @@ async function loadIchilov() {
 // ─── SAVED SEARCHES ──────────────────────────────────────────────────────────
 // Saves the full filter state (position + all dropdowns), not just the text.
 
-const SAVED_KEY = 'jf_saved_searches_v2';
+const SAVED_KEY = 'jf_saved_searches_v3';  // bumped — old format incompatible
 const MAX_SAVED = 15;
 
-const FILTER_IDS = ['q','city','company','segment','level','date','sector','source','worktype','positiontype','sort'];
 const FILTER_LABELS = {
   segment:{rd:'R&D',product:'Product',data:'Data',design:'Design',sales:'Sales',
            marketing:'Marketing',operations:'Ops',support:'CS',management:'Mgmt',intern:'Intern',medical:'Medical',administrative:'Admin'},
@@ -3810,35 +4026,63 @@ const FILTER_LABELS = {
 
 function captureFilters() {
   const state = {};
-  FILTER_IDS.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el || !el.value) return;
-    if (id === 'sort' && el.value === 'date') return;
-    state[id] = el.value;
-  });
+  const q = $q && $q.value.trim();
+  if (q) state.q = q;
+  if ($company && $company.value) state.company = $company.value;
+  if ($date && $date.value) state.date = $date.value;
+  if ($sort && $sort.value && $sort.value !== 'date') state.sort = $sort.value;
+  if ($entropy && $entropy.value) state.entropy = $entropy.value;
+  if (selectedCities.size) state.cities = [...selectedCities];
+  if (selectedSegments.size) state.segment = [...selectedSegments];
+  if (selectedLevels.size) state.level = [...selectedLevels];
+  if (selectedSectors.size) state.sector = [...selectedSectors];
+  if (selectedSources.size) state.source = [...selectedSources];
+  if (selectedWorktypes.size) state.worktype = [...selectedWorktypes];
+  if (selectedPositiontypes.size) state.positiontype = [...selectedPositiontypes];
   return state;
 }
 
 function applyFilterState(state) {
-  FILTER_IDS.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.value = state[id] || (id === 'sort' ? 'date' : '');
-  });
+  if ($q) $q.value = state.q || '';
+  if ($company) $company.value = state.company || '';
+  if ($date) $date.value = state.date || '';
+  if ($sort) $sort.value = state.sort || 'date';
+  if ($entropy) $entropy.value = state.entropy || '';
+  // Cities
+  selectedCities.clear();
+  if (state.cities && state.cities.length) state.cities.forEach(c => selectedCities.add(c));
+  buildCityTree(''); updateCityBtn();
+  // Multi-select Sets
+  const restoreMs = (set, vals, panelId, btn, defLabel) => {
+    set.clear();
+    if (vals && vals.length) vals.forEach(v => set.add(v));
+    const panel = document.getElementById(panelId);
+    if (panel) panel.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      const it = cb.closest('[data-value]');
+      if (it) cb.checked = set.has(it.dataset.value);
+    });
+    updateMsBtn(btn, set, defLabel);
+  };
+  restoreMs(selectedSegments, state.segment, 'segmentPanel', $segmentBtn, 'Role');
+  restoreMs(selectedLevels,   state.level,   'levelPanel',   $levelBtn,   'Level');
+  restoreMs(selectedSectors,  state.sector,  'sectorPanel',  $sectorBtn,  'Employer Type');
+  restoreMs(selectedSources,  state.source,  'sourcePanel',  $sourceBtn,  'Source');
+  restoreMs(selectedWorktypes, state.worktype, 'worktypePanel', $worktypeBtn, 'Type');
+  restoreMs(selectedPositiontypes, state.positiontype, 'positiontypePanel', $positiontypeBtn, 'Contract');
   applyFilters();
 }
 
 function stateLabel(state) {
   const parts = [];
-  if (state.q)        parts.push(state.q);
-  if (state.city)     parts.push(state.city);
-  if (state.company)  parts.push(state.company);
-  if (state.segment)  parts.push(FILTER_LABELS.segment[state.segment] || state.segment);
-  if (state.level)    parts.push(state.level.charAt(0).toUpperCase()+state.level.slice(1));
-  if (state.date)     parts.push(FILTER_LABELS.date[state.date] || state.date);
-  if (state.sector)   parts.push(FILTER_LABELS.sector[state.sector] || state.sector);
-  if (state.source)   parts.push(state.source);
-  if (state.worktype) parts.push(FILTER_LABELS.worktype[state.worktype] || state.worktype);
+  if (state.q)         parts.push(state.q);
+  if (state.cities && state.cities.length) parts.push(state.cities.join(', '));
+  if (state.company)   parts.push(state.company);
+  if (state.segment && state.segment.length) parts.push(state.segment.map(v => FILTER_LABELS.segment[v] || v).join('/'));
+  if (state.level && state.level.length) parts.push(state.level.map(v => v.charAt(0).toUpperCase()+v.slice(1)).join('/'));
+  if (state.date)      parts.push(FILTER_LABELS.date[state.date] || state.date);
+  if (state.sector && state.sector.length) parts.push(state.sector.map(v => FILTER_LABELS.sector[v] || v).join('/'));
+  if (state.source && state.source.length) parts.push(state.source.join('/'));
+  if (state.worktype && state.worktype.length) parts.push(state.worktype.map(v => FILTER_LABELS.worktype[v] || v).join('/'));
   if (state.sort)      parts.push(FILTER_LABELS.sort[state.sort] || state.sort);
   return parts.join(' · ') || '(all jobs)';
 }
@@ -4576,6 +4820,32 @@ if (typeof UrlState !== 'undefined') {
       buildCityTree('');
       updateCityBtn();
     },
+    getMs: key => {
+      const MAP = {segment:selectedSegments,level:selectedLevels,sector:selectedSectors,
+                   source:selectedSources,worktype:selectedWorktypes,positiontype:selectedPositiontypes};
+      return MAP[key] || new Set();
+    },
+    setMs: (key, vals) => {
+      const MAP = {
+        segment: [selectedSegments, 'segmentPanel', $segmentBtn, 'Role'],
+        level:   [selectedLevels,   'levelPanel',   $levelBtn,   'Level'],
+        sector:  [selectedSectors,  'sectorPanel',  $sectorBtn,  'Employer Type'],
+        source:  [selectedSources,  'sourcePanel',  $sourceBtn,  'Source'],
+        worktype:[selectedWorktypes,'worktypePanel',$worktypeBtn,'Type'],
+        positiontype:[selectedPositiontypes,'positiontypePanel',$positiontypeBtn,'Contract'],
+      };
+      const entry = MAP[key];
+      if (!entry) return;
+      const [set, panelId, btn, defLabel] = entry;
+      set.clear();
+      vals.forEach(v => set.add(v));
+      const panel = document.getElementById(panelId);
+      if (panel) panel.querySelectorAll('input[type=checkbox]').forEach(cb => {
+        const it = cb.closest('[data-value]');
+        if (it) cb.checked = set.has(it.dataset.value);
+      });
+      updateMsBtn(btn, set, defLabel);
+    },
   });
   UrlState.readFromUrl();
 }
@@ -4717,9 +4987,9 @@ async function renderAnalytics(){
   if(topRole){ document.getElementById('anTopRole').textContent=ROLE_LABELS[topRole[0]]||topRole[0]; document.getElementById('anTopRoleN').textContent=topRole[1]+' jobs'; }
   const remCount=jobs.filter(r=>(r.workType||'').includes('remote')).length;
   document.getElementById('anRemote').textContent=Math.round(remCount/jobs.length*100)+'%';
-  document.getElementById('anCardSector').onclick=()=>{ if(topSec) switchToJobs(()=>{ if($sector)$sector.value=topSec[0]; }); };
-  document.getElementById('anCardRole').onclick=()=>{ if(topRole) switchToJobs(()=>{ if($segment)$segment.value=topRole[0]; }); };
-  document.getElementById('anCardRemote').onclick=()=>{ switchToJobs(()=>{ if($worktype)$worktype.value='remote'; }); };
+  document.getElementById('anCardSector').onclick=()=>{ if(topSec) switchToJobs(()=>{ selectedSectors.clear(); selectedSectors.add(topSec[0]); document.querySelectorAll('#sectorPanel input[type=checkbox]').forEach(cb=>{ const it=cb.closest('[data-value]'); if(it) cb.checked=it.dataset.value===topSec[0]; }); updateMsBtn($sectorBtn,selectedSectors,'Employer Type'); applyFilters(); }); };
+  document.getElementById('anCardRole').onclick=()=>{ if(topRole) switchToJobs(()=>{ selectedSegments.clear(); selectedSegments.add(topRole[0]); document.querySelectorAll('#segmentPanel input[type=checkbox]').forEach(cb=>{ const it=cb.closest('[data-value]'); if(it) cb.checked=it.dataset.value===topRole[0]; }); updateMsBtn($segmentBtn,selectedSegments,'Role'); applyFilters(); }); };
+  document.getElementById('anCardRemote').onclick=()=>{ switchToJobs(()=>{ selectedWorktypes.clear(); selectedWorktypes.add('remote'); document.querySelectorAll('#worktypePanel input[type=checkbox]').forEach(cb=>{ const it=cb.closest('[data-value]'); if(it) cb.checked=it.dataset.value==='remote'; }); updateMsBtn($worktypeBtn,selectedWorktypes,'Type'); applyFilters(); }); };
 
   // ── Role donut ──
   destroyChart('role');
@@ -4728,7 +4998,7 @@ async function renderAnalytics(){
     type:'doughnut',
     data:{labels:roleData.map(([k])=>ROLE_LABELS[k]||k),datasets:[{data:roleData.map(([,v])=>v),backgroundColor:PALETTE}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},
-      onClick:(_,els)=>{ if(els[0]!=null){ switchToJobs(()=>{ if($segment)$segment.value=roleData[els[0].index][0]; }); } }}
+      onClick:(_,els)=>{ if(els[0]!=null){ const v=roleData[els[0].index][0]; switchToJobs(()=>{ selectedSegments.clear(); selectedSegments.add(v); document.querySelectorAll('#segmentPanel input[type=checkbox]').forEach(cb=>{ const it=cb.closest('[data-value]'); if(it) cb.checked=it.dataset.value===v; }); updateMsBtn($segmentBtn,selectedSegments,'Role'); applyFilters(); }); } }}
   });
 
   // ── Level donut ──
@@ -4740,7 +5010,7 @@ async function renderAnalytics(){
     type:'doughnut',
     data:{labels:levelData.map(([k])=>LEVEL_LABELS[k]||k),datasets:[{data:levelData.map(([,v])=>v),backgroundColor:['#c97f0c','#0a66c2','#2e7d32','#7c3aed','#d63916','#888']}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},
-      onClick:(_,els)=>{ if(els[0]!=null){ switchToJobs(()=>{ if($level)$level.value=levelData[els[0].index][0]; }); } }}
+      onClick:(_,els)=>{ if(els[0]!=null){ const v=levelData[els[0].index][0]; switchToJobs(()=>{ selectedLevels.clear(); selectedLevels.add(v); document.querySelectorAll('#levelPanel input[type=checkbox]').forEach(cb=>{ const it=cb.closest('[data-value]'); if(it) cb.checked=it.dataset.value===v; }); updateMsBtn($levelBtn,selectedLevels,'Level'); applyFilters(); }); } }}
   });
 
   // ── Work type donut ──
@@ -4752,7 +5022,7 @@ async function renderAnalytics(){
     type:'doughnut',
     data:{labels:wtData.map(([k])=>wtMap[k]||k),datasets:[{data:wtData.map(([,v])=>v),backgroundColor:['#2e7d32','#0a66c2','#c97f0c','#d9d2c2']}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},
-      onClick:(_,els)=>{ if(els[0]!=null){ switchToJobs(()=>{ if($worktype)$worktype.value=wtData[els[0].index][0]; }); } }}
+      onClick:(_,els)=>{ if(els[0]!=null){ const v=wtData[els[0].index][0]; switchToJobs(()=>{ selectedWorktypes.clear(); selectedWorktypes.add(v); document.querySelectorAll('#worktypePanel input[type=checkbox]').forEach(cb=>{ const it=cb.closest('[data-value]'); if(it) cb.checked=it.dataset.value===v; }); updateMsBtn($worktypeBtn,selectedWorktypes,'Type'); applyFilters(); }); } }}
   });
 
   // ── Top 20 companies ──
