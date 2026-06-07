@@ -95,7 +95,7 @@ A single static file. Per source it has:
   (`source, title, company, category, city, url, updated, description, …`).
 - **Data bar** — the strip of "Source: N jobs" pills at the top. Each pill is a
   `<span id="{source}StatusText">` plus an entry in the status-map list (`{ id, key, label }`).
-- **Source filter** — `<option value="{source}">` entries in the SOURCES dropdown.
+- **Source filter** — multi-select panel (see §4a). No longer a `<select>` element.
 - **Employer-type map** — assigns each source to `private` / `public` / `academic` /
   `nonprofit` (the 4 filter options). There is **no "Advisory" filter type** — "Advisory"
   is only a textual grouping in the info block. KPMG/Deloitte/EY are `private`.
@@ -105,6 +105,26 @@ A single static file. Per source it has:
   pop-up to show anything.
 
 `LI_RAW = https://raw.githubusercontent.com/Genys30/jobfinder/main/`
+
+### 4a. Multi-select filters
+
+Six filters use a **custom checkbox-based dropdown** (`.ms-wrap` / `.ms-btn` / `.ms-panel`)
+instead of a `<select>`: **Role, Level, Employer Type, Source, Type (worktype), Contract**.
+
+- Filter state is stored in JavaScript `Set` objects: `selectedSegments`, `selectedLevels`,
+  `selectedSectors`, `selectedSources`, `selectedWorktypes`, `selectedPositiontypes`.
+- Empty Set = no filter on that dimension; selecting multiple values = OR logic within that filter.
+- `readFilterCriteria()` returns these Sets in the `criteria` object passed to `jobPassesFilters()`.
+- `js/filters.js` — updated to accept Sets: checks `set.size > 0` before filtering, uses `set.has(value)`.
+- `js/url-state.js` — updated: multi-select keys serialized as comma-separated in URL
+  (e.g. `?segment=rd,data&level=senior`); `MS_KEYS` list drives serialization/deserialization.
+- `updateMsBtn(btn, set, defaultLabel)` — updates button label: default / single value name / "N selected".
+- `initMsPanel(btn, panel, set, clearEl, defaultLabel)` — wires open/close, checkbox changes, clear.
+- Saved searches (`SAVED_KEY = 'jf_saved_searches_v3'`) — store/restore Sets as arrays. Key bumped from v2 (format incompatible).
+- Analytics chart clicks (Role, Level, Worktype donuts) — still work: set the relevant Set to a single value and call `applyFilters()`.
+- `company`, `date`, `sort`, `entropy` remain plain `<select>` elements.
+
+**Adding a new option to a multi-select filter:** add a `<li class="ms-item" data-value="...">` row to the relevant `*Panel` list in `index.html`. No JS changes needed.
 
 ---
 
@@ -160,7 +180,7 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 - Keep the scraper + its `{name}_jobs_*.csv`.
 - `norm{X}` fills its array (e.g. `OSEM_JOBS`) which is merged into the general pool.
-- **Remove** from: data bar status row, source filter `<option>`, status-map list, and any
+- **Remove** from: data bar status row, source filter panel items, status-map list, and any
   `if(activeSrc==='{x}')` branch. `load{X}` keeps only the array-fill (no status writes).
 - **Add** `'{x}':'private'` (or correct type) to the employer-type map.
 - Make sure `norm{X}` passes `description` so the job pop-up works.
@@ -234,6 +254,18 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-07 (session 2 — multi-select filters)
+- **Multi-select filters** implemented in frontend (`index.html`, `js/filters.js`, `js/url-state.js`).
+  Six filters converted from `<select>` to custom checkbox-panel dropdowns (`.ms-wrap` pattern):
+  Role, Level, Employer Type, Source, Type (worktype), Contract.
+- Filter state now stored in `Set` objects (`selectedSegments`, `selectedLevels`, etc.).
+  Multiple selections = OR logic within a filter dimension.
+- `js/filters.js` updated: `jobPassesFilters()` accepts Sets, uses `set.has()`.
+- `js/url-state.js` updated: new `MS_KEYS` list, comma-separated URL params, `setMs`/`getMs` hooks.
+- Saved searches key bumped to `v3` (old v2 saves incompatible — cleared on next visit).
+- Analytics chart click-through (Role/Level/Worktype donuts) adapted to write Sets directly.
+- See §4a for full architectural description.
 
 ### 2026-06-03
 - Restored/added scrapers: TAU, Haifa, BAR, Shaare Zedek (16), Hadassah (51), Ichilov (81),
@@ -342,4 +374,3 @@ To add a new recruiter: `"Company Name": true` in `RECRUITING_COMPANIES` in Code
 
 **Important:** the site loads data from GitHub (not Drive). This dashboard is separate
 from the live site — it reads the full Drive archive independently.
-

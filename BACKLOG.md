@@ -35,6 +35,7 @@ via the regular `comeet_jobs_*` CSV.
 
 ### ~~`first_seen` date preservation for no-date sources~~ ✅ Resolved 2026-06-06/07
 ### ~~Data bar not reflecting active filters (Maccabi/Leumit/Meuhedet/hospitals)~~ ✅ Resolved 2026-06-07
+### ~~Multi-select filters~~ ✅ Resolved 2026-06-07
 
 Sources that don't publish a `date_posted` were writing `TODAY` on every run, causing
 all their jobs to appear in the "Today" filter daily. Fixed by adding a `load_first_seen()`
@@ -49,6 +50,9 @@ the original discovery date for existing jobs; only truly new jobs get today's d
 
 **Not patched** (already have real publication dates):
 - Clalit, Meuhedet (`JobTimeSortAttr`), Ichilov (`activationDate`), BAR (`activationDate`)
+
+Six filters converted to multi-select (checkbox panels): Role, Level, Employer Type,
+Source, Type (worktype), Contract. See ARCHITECTURE.md §4a for details.
 
 ---
 
@@ -157,14 +161,16 @@ Companies frozen:
 - **Breezy:** Ayyeka, Dalet, Descope Technologies, Insights.US, Lynx.MD
 
 ### Role filter expansion in jobfinder (frontend)
-The current role filter in `index.html` uses a limited set of categories. Should be expanded
-to match the 20 categories now used in the analytics dashboard:
+The current Role filter has 13 options. Should be expanded to match the 20 categories
+used in the analytics dashboard:
 
 R&D & Engineering, Data & AI, DevOps & Cloud, Cyber & Security, Embedded & Hardware,
 QA & Automation, Product, Solutions Engineering, Sales, Marketing, HR & Recruiting,
 Finance & Accounting, Legal & Compliance, Operations & Logistics, Management & Executive,
 Support & Customer Success, Design, Medical & Clinical, Academic & Research,
 Defense & Aerospace, FinTech, IT, Technology Consulting.
+
+Note: adding new options to multi-select filters is now simple — just add `<li class="ms-item" data-value="...">` rows to the panel in `index.html`.
 
 ### `workplace_type` normalisation in scrapers
 Currently normalised only in Apps Script (`normaliseWorkplace()`). Should also be
