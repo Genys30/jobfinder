@@ -271,6 +271,19 @@ Newest first. Keep entries short — details go in `BACKLOG.md`.
 - Added standalone `load_first_seen()` to **`fetch_maccabi.py`** (key: URL).
 - Not patched (already have real dates from API): Clalit, Meuhedet, Ichilov, BAR.
 
+### 2026-06-07
+- **Data bar filter-awareness fixed** (`index.html`): Maccabi, Leumit, Meuhedet, Soroka,
+  Beilinson, and all Clalit hospitals were hardcoding `X jobs` bold regardless of active
+  filters. Fixed by adding these sources to `DATABAR_SOURCES` array and removing all
+  hardcoded `innerHTML` writes from their `load*()` functions — `updateDatabar()` now
+  handles them uniformly. When a filter (e.g. Today) is active, data bar shows
+  `filtered / total` for every source.
+- **`first_seen` extended to all remaining local scrapers**: `fetch_tau.py`,
+  `fetch_haifa.py`, `fetch_rambam.py`, `fetch_deloitte.py`, `fetch_ey.py`, `fetch_bis.py`,
+  `fetch_huji_positions.py`, `fetch_joint.py`, `fetch_szmc.py`, `fetch_hadassah.py`,
+  `fetch_gotfriends.py`. Each now reads the previous day's CSV on startup and preserves
+  original discovery dates for recurring jobs. Effect visible from the next bat run.
+
 ### 2026-06-06 (session 3 — Google Sheets Analytics extended)
 - **Charts sheet** added: 5 Google Charts (dept trend last 6 months, Apr vs May bar,
   top 20 companies, workplace pie, top 15 sources by last 30d).

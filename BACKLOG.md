@@ -33,7 +33,8 @@ via the regular `comeet_jobs_*` CSV.
 ### ~~BIS · Joint · Deloitte · EY~~ ✅ Resolved 2026-06-03
 ### ~~Osem-Nestlé — convert from source to company (option B)~~ ✅ Resolved 2026-06-03
 
-### ~~`first_seen` date preservation for no-date sources~~ ✅ Resolved 2026-06-06
+### ~~`first_seen` date preservation for no-date sources~~ ✅ Resolved 2026-06-06/07
+### ~~Data bar not reflecting active filters (Maccabi/Leumit/Meuhedet/hospitals)~~ ✅ Resolved 2026-06-07
 
 Sources that don't publish a `date_posted` were writing `TODAY` on every run, causing
 all their jobs to appear in the "Today" filter daily. Fixed by adding a `load_first_seen()`
@@ -197,4 +198,4 @@ also benefits. Standard values: `remote`, `hybrid`, `onsite`, `full_time`, `part
 
 ---
 
-*Last updated: 2026-06-06*
+*Last updated: 2026-06-07*
