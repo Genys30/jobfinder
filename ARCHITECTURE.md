@@ -250,10 +250,10 @@ doesn't abort the rest.
   update by default at session end (same as it does for `BACKLOG.md`).
 - **Developer tooling — `rtk` (token compression):** A Rust CLI tool that compresses shell
   command output before passing it to LLMs (60–90% token reduction). Installed as a native
-  Windows binary (`rtk.exe`) at `C:\Users\Anna\AppData\Local\Programs\rtk\rtk`. Hooked into
-  Claude Code via `~/.claude/settings.json` (Windows-side). Shell: Git Bash (MSYS2/MinGW64) —
-  WSL is not used and not needed. Hook fires automatically on `git status` and other commands.
-  To verify: run `git status` in Claude Code — output should appear compressed.
+  Windows binary (`rtk.exe`) at `~/bin/rtk.exe` (Git Bash PATH). `~/.claude/settings.json`
+  created with PreToolUse hook. Anna uses Claude.ai (browser), not Claude Code — hook is not
+  active yet. Node.js not installed; Claude Code setup pending. Manual usage in Git Bash:
+  `rtk git status`, `rtk git diff`, `python script.py 2>&1 | rtk pipe`.
   This is a developer tooling note only — `rtk` is not part of JobFinder's data pipeline.
 
 ---
@@ -263,11 +263,11 @@ doesn't abort the rest.
 Newest first. Keep entries short — details go in `BACKLOG.md`.
 
 ### 2026-06-07 (rtk developer tooling)
-- **`rtk` token-compression tool** documented (§10). Native Windows `.exe` installed at
-  `C:\Users\Anna\AppData\Local\Programs\rtk\rtk`, hooked into Claude Code via Windows-side
-  `~/.claude/settings.json`. Shell environment is Git Bash (MINGW64), not WSL — WSL not
-  needed. Hook confirmed working (`git status` output compressed). Developer tooling note
-  only — `rtk` is not part of JobFinder's data pipeline.
+- **`rtk` token-compression tool** installed and documented (§10). `rtk.exe` at `~/bin/rtk.exe`
+  (Git Bash PATH). `~/.claude/settings.json` created with PreToolUse hook. Anna currently uses
+  Claude.ai (browser) — hook not active yet; Claude Code setup pending (Node.js not installed).
+  Manual usage: `rtk git status`, `rtk git diff`, `python script.py 2>&1 | rtk pipe`.
+  Developer tooling note only — `rtk` is not part of JobFinder's data pipeline.
 
 ### 2026-06-07 (session 2 — multi-select filters)
 - **Multi-select filters** implemented in frontend (`index.html`, `js/filters.js`, `js/url-state.js`).
