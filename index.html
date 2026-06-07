@@ -3149,6 +3149,9 @@ const DATABAR_SOURCES = [
   { id:'szStatusText',        key:'szmc',        label:'Shaare Zedek' },
   { id:'hdStatusText',        key:'hadassah',    label:'Hadassah' },
   { id:'clStatusText',        key:'clalit',      label:'Clalit' },
+  { id:'macStatusText',       key:'maccabi',     label:'Maccabi' },
+  { id:'leuStatusText',       key:'leumit',      label:'Leumit' },
+  { id:'meuStatusText',       key:'meuhedet',    label:'Meuhedet' },
   { id:'meirStatusText', key:'meir', label:'Meir' },
   { id:'kaplanStatusText', key:'kaplan', label:'Kaplan' },
   { id:'schneiderStatusText', key:'schneider', label:'Schneider' },
@@ -3975,7 +3978,6 @@ async function loadSoroka() {
     const k = r.url || (r.company + '|' + r.title);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($skStatus) $skStatus.innerHTML = `Soroka: <strong>${SK_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['soroka'] = SK_JOBS.length;
   populateDropdowns();
   applyFilters();
@@ -4087,7 +4089,6 @@ async function loadMaccabi() {
     const k = r.url || (r.company + '|' + r.title + '|' + r.city);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($macStatus) $macStatus.innerHTML = `Maccabi: <strong>${MAC_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['maccabi'] = MAC_JOBS.length;
   populateDropdowns(); applyFilters();
 }
@@ -4135,7 +4136,6 @@ async function loadLeumit() {
     const k = r.url || (r.company + '|' + r.title + '|' + r.city);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($leuStatus) $leuStatus.innerHTML = `Leumit: <strong>${LEU_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['leumit'] = LEU_JOBS.length;
   populateDropdowns(); applyFilters();
 }
@@ -4183,7 +4183,6 @@ async function loadMeuhedet() {
     const k = r.url || (r.company + '|' + r.title + '|' + r.city);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($meuStatus) $meuStatus.innerHTML = `Meuhedet: <strong>${MEU_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['meuhedet'] = MEU_JOBS.length;
   populateDropdowns(); applyFilters();
 }
@@ -4294,9 +4293,6 @@ async function loadClalit() {
   };
   Object.entries(statusMap).forEach(([key,[el,label]])=>{
     const arr=buckets[key];
-    if(el) el.innerHTML=arr.length
-      ? `${label}: <strong>${arr.length.toLocaleString()} jobs</strong>`
-      : `${label}: <span style="color:var(--ink-faint)">no file yet</span>`;
     TOTALS[key]=arr.length;
   });
   populateDropdowns();applyFilters();
@@ -4351,7 +4347,6 @@ async function loadBeilinson() {
     const k = r.url || (r.company + '|' + r.title);
     if (seen.has(k)) return false; seen.add(k); return true;
   });
-  if ($blStatus) $blStatus.innerHTML = `Beilinson: <strong>${BL_JOBS.length.toLocaleString()} jobs</strong>`;
   TOTALS['beilinson'] = BL_JOBS.length;
   populateDropdowns();
   applyFilters();
