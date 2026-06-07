@@ -1,17 +1,21 @@
 /**
- * Sync filter state with URL query string (?q=frontend&city=Tel+Aviv).
+ * Sync filter state with URL query string.
+ * Multi-select filters (segment, level, sector, source, worktype, positiontype)
+ * are stored as comma-separated values: ?segment=rd,data&level=senior
  */
 (function (global) {
-  const FORM_KEYS = ['q', 'company', 'segment', 'level', 'date', 'sector', 'source', 'worktype', 'sort'];
+  // Keys that map to plain <select> or <input> DOM elements
+  const PLAIN_KEYS = ['q', 'company', 'date', 'sort', 'entropy'];
+  // Keys that map to multi-select Sets — values are comma-separated in URL
+  const MS_KEYS = ['segment', 'level', 'sector', 'source', 'worktype', 'positiontype'];
 
   let hooks = {
-    getElement: function (id) {
-      return document.getElementById(id);
-    },
-    getSelectedCities: function () {
-      return new Set();
-    },
+    getElement: function (id) { return document.getElementById(id); },
+    getSelectedCities: function () { return new Set(); },
     setSelectedCities: function () {},
+    // Multi-select hooks — set by index.html init()
+    getMs: function (key) { return new Set(); },
+    setMs: function (key, vals) {},
   };
 
   function init(customHooks) {
@@ -22,18 +26,25 @@
     const sp = new URLSearchParams(location.search);
     if (![...sp.keys()].length) return false;
 
-    FORM_KEYS.forEach(function (key) {
+    // Plain single-value fields
+    PLAIN_KEYS.forEach(function (key) {
       const el = hooks.getElement(key);
-      if (!el) return;
-      if (sp.has(key)) el.value = sp.get(key);
+      if (el && sp.has(key)) el.value = sp.get(key);
     });
 
+    // Multi-select fields
+    MS_KEYS.forEach(function (key) {
+      if (sp.has(key)) {
+        const vals = sp.get(key).split(',').map(v => decodeURIComponent(v.trim())).filter(Boolean);
+        if (vals.length) hooks.setMs(key, vals);
+      }
+    });
+
+    // Cities
     const cities = sp.get('cities');
     if (cities) {
       hooks.setSelectedCities(
-        cities.split(',').map(function (c) {
-          return decodeURIComponent(c.trim());
-        }).filter(Boolean)
+        cities.split(',').map(function (c) { return decodeURIComponent(c.trim()); }).filter(Boolean)
       );
     }
 
@@ -43,16 +54,19 @@
   function replaceFromCriteria(criteria) {
     const sp = new URLSearchParams();
 
-    FORM_KEYS.forEach(function (key) {
+    PLAIN_KEYS.forEach(function (key) {
       const val = criteria[key];
-      if (val) sp.set(key, val);
+      if (val && !(key === 'sort' && val === 'date')) sp.set(key, val);
+    });
+
+    // Multi-select: criteria[key] is already serialized as comma-joined string
+    MS_KEYS.forEach(function (key) {
+      const val = criteria[key];
+      if (val && val.length) sp.set(key, val);
     });
 
     if (criteria.selectedCities && criteria.selectedCities.size) {
-      sp.set(
-        'cities',
-        [...criteria.selectedCities].map(encodeURIComponent).join(',')
-      );
+      sp.set('cities', [...criteria.selectedCities].map(encodeURIComponent).join(','));
     }
 
     const qs = sp.toString();
@@ -60,27 +74,11 @@
     history.replaceState(null, '', url);
   }
 
-  function criteriaFromDom(getters) {
-    const g = getters || {};
-    return {
-      q: (g.q && g.q.value.trim()) || '',
-      company: (g.company && g.company.value) || '',
-      segment: (g.segment && g.segment.value) || '',
-      level: (g.level && g.level.value) || '',
-      date: (g.date && g.date.value) || '',
-      sector: (g.sector && g.sector.value) || '',
-      source: (g.source && g.source.value) || '',
-      worktype: (g.worktype && g.worktype.value) || '',
-      sort: (g.sort && g.sort.value) || '',
-      selectedCities: hooks.getSelectedCities(),
-    };
-  }
-
   global.UrlState = {
     init,
     readFromUrl,
     replaceFromCriteria,
-    criteriaFromDom,
-    FORM_KEYS,
+    PLAIN_KEYS,
+    MS_KEYS,
   };
 })(typeof window !== 'undefined' ? window : global);

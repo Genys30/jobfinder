@@ -1,7 +1,13 @@
 /**
  * Structured filters + text search orchestration.
+ * segFilter, lvlFilter, secFilter, srcFilter, wtFilter, ptFilter
+ * are now Sets (multi-select). Empty Set = no filter on that dimension.
  */
 (function (global) {
+  function _setActive(val) {
+    return val && val.size && val.size > 0;
+  }
+
   function jobPassesFilters(job, criteria, helpers) {
     const h = helpers || {};
 
@@ -12,35 +18,46 @@
 
     if (criteria.company && job.company !== criteria.company) return false;
 
-    if (criteria.segFilter && h.classifySegment) {
-      if (h.classifySegment(job.title) !== criteria.segFilter) return false;
+    // segFilter — Set of segment values (e.g. Set{'rd','data'})
+    if (_setActive(criteria.segFilter) && h.classifySegment) {
+      if (!criteria.segFilter.has(h.classifySegment(job.title))) return false;
     }
 
-    if (criteria.lvlFilter && h.classifyLevel) {
-      if (h.classifyLevel(job.title) !== criteria.lvlFilter) return false;
+    // lvlFilter — Set of level values
+    if (_setActive(criteria.lvlFilter) && h.classifyLevel) {
+      if (!criteria.lvlFilter.has(h.classifyLevel(job.title))) return false;
     }
 
-    if (criteria.secFilter && h.classifyEmployerType) {
-      if (h.classifyEmployerType(job.company, job.title, job.source) !== criteria.secFilter) {
+    // secFilter — Set of employer type values
+    if (_setActive(criteria.secFilter) && h.classifyEmployerType) {
+      if (!criteria.secFilter.has(h.classifyEmployerType(job.company, job.title, job.source))) {
         return false;
       }
     }
 
-    if (criteria.srcFilter && job.source !== criteria.srcFilter) return false;
+    // srcFilter — Set of source values
+    if (_setActive(criteria.srcFilter)) {
+      if (!criteria.srcFilter.has(job.source)) return false;
+    }
 
-    if (criteria.wtFilter) {
+    // wtFilter — Set of work type values
+    if (_setActive(criteria.wtFilter)) {
       const wt = job.workType || '';
-      if (wt !== criteria.wtFilter && !(criteria.wtFilter === 'remote' && job.city === 'מהבית')) {
-        return false;
-      }
+      const matchRemote = criteria.wtFilter.has('remote') && job.city === 'מהבית';
+      if (!criteria.wtFilter.has(wt) && !matchRemote) return false;
     }
 
-    if (criteria.ptFilter) {
+    // ptFilter — Set of position type values
+    if (_setActive(criteria.ptFilter)) {
       const pt = (job.positionType || '').toLowerCase().replace(/-/g, '_');
-      if (criteria.ptFilter === 'full_time') {
+      // full_time is the default — if full_time selected, also include blank positionType
+      if (criteria.ptFilter.has('full_time') && criteria.ptFilter.size === 1) {
         if (pt && pt !== 'full_time') return false;
+      } else if (criteria.ptFilter.has('full_time')) {
+        // multiple selected including full_time: include blank positionType too
+        if (pt && !criteria.ptFilter.has(pt)) return false;
       } else {
-        if (pt !== criteria.ptFilter) return false;
+        if (!criteria.ptFilter.has(pt)) return false;
       }
     }
 
