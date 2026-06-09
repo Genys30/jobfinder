@@ -94,7 +94,7 @@ def map_loc(raw):
     return "Israel"
 
 
-def parse_page(html, cat_en):
+def parse_page(html, cat_en, first_seen):
     soup = BeautifulSoup(html, "html.parser")
     jobs = []
     for h2 in soup.find_all("h2"):
@@ -182,7 +182,7 @@ def run_gotfriends():
                         if detected > total_pages:
                             total_pages = detected
                         break
-                new_jobs = parse_page(r.text, cat_en)
+                new_jobs = parse_page(r.text, cat_en, first_seen)
                 added = 0
                 for j in new_jobs:
                     if j["url"] not in seen_urls:

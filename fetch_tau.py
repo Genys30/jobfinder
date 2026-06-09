@@ -85,7 +85,7 @@ def fetch(url):
         return None
 
 
-def parse_tab(soup, staff_type):
+def parse_tab(soup, staff_type, first_seen):
     """Extract job rows from one quicktab's views-table."""
     jobs = []
     for table in soup.select("table.views-table"):
@@ -151,7 +151,7 @@ def run_tau():
         soup = fetch(url)
         if not soup:
             continue
-        rows = parse_tab(soup, staff_type)
+        rows = parse_tab(soup, staff_type, first_seen)
         new = 0
         for j in rows:
             key = j["url"] or (j["company"] + "|" + j["title"])
