@@ -94,7 +94,7 @@ echo   All dependencies OK.
 echo.
 
 :: ── Step 1: Pull ──────────────────────────────────────────────────────────
-echo [1/8] Pulling latest from GitHub...
+echo [1/24] Pulling latest from GitHub...
 
 :: Back up LinkedIn CSVs before clean (git clean deletes untracked files)
 if not exist "%TEMP%\li_backup" mkdir "%TEMP%\li_backup"
@@ -126,126 +126,141 @@ echo.
 :: GitHub Actions every night. This .bat only handles LinkedIn (collected
 :: manually with the Chrome extension) and the local-only sources below.
 
-echo [2/8] Fetching Telegram @biltiformali...
+echo [2/24] Fetching Telegram @biltiformali...
 %PYTHON_CMD% fetch_telegram_biltiformali.py --days 1
 if errorlevel 1 (
     echo WARNING: Telegram fetch failed - continuing anyway.
 )
 %PYTHON_CMD% -c "import os,glob; from datetime import date,timedelta; cutoff=str(date.today()-timedelta(days=30)); [os.remove(f) for f in glob.glob('jobs_telegram_biltiformali_*.csv') if f[-14:-4] < cutoff]"
 echo.
-echo [3/8] Fetching Rambam jobs (local only)...
+echo [3/24] Fetching Rambam jobs (local only)...
 %PYTHON_CMD% fetch_rambam.py
 if errorlevel 1 (
     echo WARNING: Rambam fetch failed - continuing anyway.
 )
 echo.
-echo [4/8] Fetching BGU jobs (local only)...
+echo [4/24] Fetching BGU jobs (local only)...
 %PYTHON_CMD% fetch_bgu.py
 if errorlevel 1 (
     echo WARNING: BGU fetch failed - continuing anyway.
 )
 echo.
-echo [5/8] Fetching Maccabi jobs (local only)...
+echo [5/24] Fetching Maccabi jobs (local only)...
 %PYTHON_CMD% fetch_maccabi.py
 if errorlevel 1 (
     echo WARNING: Maccabi fetch failed - continuing anyway.
 )
 echo.
-echo [6/9] Fetching MOD jobs (local only)...
+echo [6/24] Fetching MOD jobs (local only)...
 %PYTHON_CMD% fetch_mod_jobs.py
 if errorlevel 1 (
     echo WARNING: MOD fetch failed - continuing anyway.
 )
 echo.
-echo [7/10] Fetching Clalit jobs (local only)...
+echo [7/24] Fetching Clalit jobs (local only)...
 %PYTHON_CMD% fetch_clalit.py
 if errorlevel 1 (
     echo WARNING: Clalit fetch failed - continuing anyway.
 )
 echo.
-echo [8/11] Fetching TAU jobs (local only)...
+echo [8/24] Fetching TAU jobs (local only)...
 %PYTHON_CMD% fetch_tau.py
 if errorlevel 1 (
     echo WARNING: TAU fetch failed - continuing anyway.
 )
 echo.
-echo [9/12] Fetching Haifa jobs (local only)...
+echo [9/24] Fetching Haifa jobs (local only)...
 %PYTHON_CMD% fetch_haifa.py
 if errorlevel 1 (
     echo WARNING: Haifa fetch failed - continuing anyway.
 )
 echo.
-echo [10/17] Fetching Bar-Ilan jobs (local only)...
+echo [10/24] Fetching Bar-Ilan jobs (local only)...
 %PYTHON_CMD% fetch_bar.py
 if errorlevel 1 (
     echo WARNING: Bar-Ilan fetch failed - continuing anyway.
 )
 echo.
-echo [11/17] Fetching Ichilov jobs (local only)...
+echo [11/24] Fetching Ichilov jobs (local only)...
 %PYTHON_CMD% fetch_ichilov.py
 if errorlevel 1 (
     echo WARNING: Ichilov fetch failed - continuing anyway.
 )
 echo.
-echo [12/17] Fetching GotFriends jobs (local only)...
+echo [12/24] Fetching GotFriends jobs (local only)...
 %PYTHON_CMD% fetch_gotfriends.py
 if errorlevel 1 (
     echo WARNING: GotFriends fetch failed - continuing anyway.
 )
 echo.
-echo [13/17] Fetching HUJI positions (local only)...
+echo [13/24] Fetching HUJI positions (local only)...
 %PYTHON_CMD% fetch_huji_positions.py
 if errorlevel 1 (
     echo WARNING: HUJI positions fetch failed - continuing anyway.
 )
 echo.
-echo [14/17] Fetching Shaare Zedek jobs (local only, Playwright)...
+echo [14/24] Fetching Shaare Zedek jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_szmc.py
 if errorlevel 1 (
     echo WARNING: Shaare Zedek fetch failed - continuing anyway.
 )
 echo.
-echo [15/22] Fetching Hadassah jobs (local only, Playwright)...
+echo [15/24] Fetching Hadassah jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_hadassah.py
 if errorlevel 1 (
     echo WARNING: Hadassah fetch failed - continuing anyway.
 )
 echo.
-echo [16/22] Fetching Deloitte jobs (local only, Playwright)...
+echo [16/24] Fetching Deloitte jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_deloitte.py
 if errorlevel 1 (
     echo WARNING: Deloitte fetch failed - continuing anyway.
 )
 echo.
-echo [17/22] Fetching EY jobs (local only, Playwright)...
+echo [17/24] Fetching EY jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_ey.py
 if errorlevel 1 (
     echo WARNING: EY fetch failed - continuing anyway.
 )
 echo.
-echo [18/22] Fetching BIS jobs (local only, Playwright)...
+echo [18/24] Fetching BIS jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_bis.py
 if errorlevel 1 (
     echo WARNING: BIS fetch failed - continuing anyway.
 )
 echo.
-echo [19/22] Fetching Joint jobs (local only, Playwright)...
+echo [19/24] Fetching Joint jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_joint.py
 if errorlevel 1 (
     echo WARNING: Joint fetch failed - continuing anyway.
 )
 echo.
-echo [20/22] Fetching Osem-Nestle jobs (local only, curl_cffi)...
+echo [20/24] Fetching Osem-Nestle jobs (local only, curl_cffi)...
 %PYTHON_CMD% fetch_osem.py
 if errorlevel 1 (
     echo WARNING: Osem fetch failed - continuing anyway.
 )
 echo.
 
-:: ── Step 21: Upload all CSVs to Google Drive (history archive) ────────────
+:: ── Step 21: Teva Pharmaceuticals ─────────────────────────────────────────
+echo [21/24] Fetching Teva jobs (local only)...
+%PYTHON_CMD% fetch_teva.py
+if errorlevel 1 (
+    echo WARNING: Teva fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 22: Source health check ──────────────────────────────────────────
+:: Verifies every source produced a fresh, non-empty CSV with the right
+:: columns. Writes health_report.json (committed below). Never aborts the bat.
+echo [22/24] Running source health check...
+%PYTHON_CMD% check_health.py
+echo.
+
+:: ── Step 23: Upload all CSVs to Google Drive (history archive) ────────────
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [21/22] Uploading CSVs to Google Drive...
+echo [23/24] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -268,8 +283,8 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 8: Commit and push ───────────────────────────────────────────────
-echo [22/22] Committing and pushing CSVs...
-git add -- *.csv
+echo [24/24] Committing and pushing CSVs...
+git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.
 ) || (

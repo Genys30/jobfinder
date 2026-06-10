@@ -149,7 +149,7 @@ def run_huji_positions():
                 break
         jobs.append({
             "title": title, "company": COMPANY, "location": "ירושלים",
-            "date": first_seen.get(url, TODAY), "deadline": parse_deadline(deadline_raw),
+            "date": TODAY, "deadline": parse_deadline(deadline_raw),
             "jobcode": jobcode, "campus": campus, "department": "",
             "workplace_type": "onsite", "description": "", "requirements": "",
             "url": "",
@@ -161,6 +161,7 @@ def run_huji_positions():
         job["description"] = desc
         job["requirements"] = reqs
         job["url"] = url
+        job["date"] = first_seen.get(url, TODAY)
         print(f"   [{i}/{len(jobs)}] {job['title'][:60]}")
         time.sleep(0.4)
 

@@ -9,8 +9,8 @@ Output: rambam_jobs_YYYY-MM-DD.csv
 Usage:  py fetch_rambam.py
 """
 
-import csv, re, sys
-from datetime import date
+import csv, glob, re, sys
+from datetime import date, timedelta
 from pathlib import Path
 
 import requests
@@ -18,6 +18,33 @@ from bs4 import BeautifulSoup
 
 TODAY   = date.today().isoformat()
 OUTFILE = Path(__file__).parent / f"rambam_jobs_{TODAY}.csv"
+
+
+def load_first_seen(pattern, key_field="url"):
+    """Read the previous day's CSV and return {key: first_seen_date} so that
+    recurring jobs keep their original discovery date."""
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    candidates = sorted(glob.glob(pattern))
+    prev_file = None
+    for f in reversed(candidates):
+        if yesterday in f:
+            prev_file = f
+            break
+    if prev_file is None and candidates:
+        prev_file = candidates[-1]
+    if prev_file is None:
+        return {}
+    result = {}
+    try:
+        with open(prev_file, encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                k = row.get(key_field, "").strip()
+                d = row.get("date", "").strip()
+                if k and d:
+                    result[k] = d
+    except Exception:
+        pass
+    return result
 
 PAGES = [
     {
