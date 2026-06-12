@@ -826,6 +826,12 @@ def run_technion():
                 "position_type": detect_position_type(title),
             })
         print(f"   + {len(jobs)}")
+        if len(jobs) == 0:
+            # Site returned 200 but no job cards found — transient issue (slow render,
+            # maintenance page, etc.). Do NOT overwrite a previous good file with an
+            # empty one; just skip the write and let check_health find yesterday's data.
+            print("   ! 0 jobs parsed — skipping write to preserve yesterday's file")
+            return 0
         write_csv(jobs,
                   ["title","company","location","date","url","department","workplace_type","position_type"],
                   f"technion_jobs_{TODAY}.csv")

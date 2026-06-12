@@ -119,7 +119,15 @@ for %%f in ("%TEMP%\li_backup\linkedin_jobs_*.csv") do (
 rd /s /q "%TEMP%\li_backup" >nul 2>&1
 echo.
 
-
+:: ── Clean LinkedIn tracking URLs (runs only if linkedin_jobs_*.csv exists) ─
+if exist "%PROJECT_DIR%\linkedin_jobs_*.csv" (
+    echo Cleaning LinkedIn CSV tracking URLs...
+    %PYTHON_CMD% clean_linkedin_csv.py
+    if errorlevel 1 (
+        echo WARNING: LinkedIn URL cleaning failed - continuing anyway.
+    )
+    echo.
+)
 
 :: ── Step 2: Fetch Telegram ────────────────────────────────────────────────
 :: NOTE: fetch_jobs.py and fetch_gotfriends.py now run automatically in
