@@ -1596,6 +1596,7 @@ function normTelegram(row) {
 // ─── LOAD LINKEDIN ───────────────────────────────────────────────────────────
 async function loadLinkedIn(){
   $liStatus.innerHTML='LinkedIn: <span style="color:var(--ink-faint)">loading…</span>';
+  try{
 
   const filenames=[];
   for(let i=0;i<2;i++){
@@ -1635,6 +1636,11 @@ async function loadLinkedIn(){
   });
   $liStatus.innerHTML='LinkedIn: <strong>'+LI_JOBS.length.toLocaleString()+' jobs</strong>';
   TOTALS['linkedin'] = LI_JOBS.length;
+
+  }catch(e){
+    console.error('[linkedin] load error:', e);
+    $liStatus.innerHTML='LinkedIn: <span style="color:var(--accent-2)">failed to load — check console</span>';
+  }
 }
 // ─── LOAD COMEET ─────────────────────────────────────────────────────────────
 async function loadComeet(){
