@@ -1453,7 +1453,8 @@ function normLinkedIn(row, filename){
     [0] || '';
   // Normalize company name variants
   const COMPANY_NORM = {'kpmg israel':'KPMG','kpmg il':'KPMG'};
-  const companyNorm = COMPANY_NORM[company.toLowerCase()] || company;
+  const _ck = company.toLowerCase();
+  const companyNorm = Object.prototype.hasOwnProperty.call(COMPANY_NORM, _ck) ? COMPANY_NORM[_ck] : company;
   const url = g('url',['link','job url','apply','job_url']);
   if(!title || !companyNorm || !url) return null;  // skip partial rows
 
