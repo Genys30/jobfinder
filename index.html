@@ -1600,7 +1600,7 @@ async function loadLinkedIn(){
   try{
 
   const filenames=[];
-  for(let i=0;i<2;i++){
+  for(let i=0;i<7;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
     const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
     filenames.push('linkedin_jobs_'+y+'-'+m+'-'+day+'.csv');
