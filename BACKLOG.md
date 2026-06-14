@@ -128,10 +128,10 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ---
 
-## 🛠 `run_fetch.bat` step reference (as of 2026-06-04)
+## 🛠 `run_fetch.bat` step reference (as of 2026-06-12)
 
-The manual local runner now has 23 steps:
-1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore)
+The manual local runner now has 24 steps:
+1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
 7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan
 11. Ichilov · 12. GotFriends · 13. HUJI positions
@@ -140,16 +140,57 @@ The manual local runner now has 23 steps:
 20. Osem-Nestlé (curl_cffi) · 21. Teva (req)
 22. `fetch_jobs.py` — ATS sources (Comeet incl. KPMG, Greenhouse, Lever, Ashby)
 23. rclone upload all CSVs → Google Drive
-+ commit + push
+24. health check (`check_health.py`) + commit + push
 
 ---
 
 ## 🟡 Medium Priority
 
+### ~~LinkedIn — file size bloat~~ ✅ Resolved 2026-06-12
+LinkedIn CSV URLs contained tracking parameters (`?eBP=...&refId=...&trackingId=...`)
+making each file ~487 KB (84% of size = URL noise). Added `clean_linkedin_csv.py` which
+strips params and keeps only the canonical `/jobs/view/ID/` URL (46 chars vs 519 avg).
+`run_fetch.bat` now runs the script automatically after LinkedIn restore — no manual step.
+File size: 487 KB → 118 KB. Also added outer try/catch to `loadLinkedIn()` so status
+shows `"failed to load"` instead of frozen `"loading…"` on any error.
+
+### ~~LinkedIn — "no files found" while recent files exist~~ ✅ Resolved 2026-06-14
+`loadLinkedIn()` showed "no files found — upload …" even though `linkedin_jobs_*` files
+from the last several days were present in the repo. Cause: the file-discovery loop was
+`for(let i=0;i<2;i++)` — it only probed **today + yesterday**, despite the comment and
+`ARCHITECTURE.md` claiming a 7-day window. With today's and yesterday's files missing
+(today not yet uploaded, yesterday absent), the newest existing file (`06-12`, 2 days back)
+fell outside the window → empty result. Fix: changed the window to `for(let i=0;i<7;i++)`
+in `loadLinkedIn()` only. Dedup (by `title+company+city`) already collapses the duplicate
+listings across the extra days. Other loaders left at `i<2` — CI sources always have a
+fresh same-day file, so they're unaffected.
+
 ### LinkedIn — manual upload every morning
 Currently scraped manually each morning and uploaded as `linkedin_jobs_YYYY-MM-DD.csv`.
 
 **Action:** Investigate automation options. LinkedIn blocks most scrapers, but tools like Apify or a browser extension could help.
+
+### LinkedIn — `date` column is the scrape date, not the real publish date (known limitation)
+The `date` column in `linkedin_jobs_*.csv` is stamped with the **scrape/run date**, not the
+employer's actual publication date — every row in a given day's file carries that day's date
+(e.g. all rows in `linkedin_jobs_2026-06-12.csv` = `06/12/2026`). `normLinkedIn` maps this
+column to `job.updated`, and the "Posted" filter (`Today` / `3 days` / `7 days`) filters on
+`job.updated`.
+
+**Consequence:** for LinkedIn, "Posted = 3 days" means *seen in a scrape within the last 3
+days*, not *published within the last 3 days*. A job that has been live on LinkedIn for weeks
+still appears under "3 days" if it was scraped recently. Sources with a real API publish date
+(Comeet, Ichilov, Meuhedet, BAR, etc.) are unaffected — they filter by true publication date.
+On dedup (sort by date desc, keep newest), a recurring job keeps the most recent scrape date,
+so long-standing listings refresh their date to the latest file they appear in. The "Today"
+filter is **not** polluted by loading older files: older rows carry older dates and fall below
+the midnight cutoff.
+
+**Action (deferred, needs discussion):** Apply `first_seen`-style logic to LinkedIn — extend
+`clean_linkedin_csv.py` to read the previous day's CSV and preserve the original discovery date
+for recurring jobs, stamping today's date only on genuinely new rows. Mirrors the `first_seen`
+helper already used in the other no-date scrapers (see "first_seen date preservation", resolved
+2026-06-06/07).
 
 ### Workable / Breezy — frozen sources, revisit in ~1 month
 Both sources were frozen (`active: false`) because their APIs return 403 from GitHub Actions.
@@ -204,4 +245,4 @@ also benefits. Standard values: `remote`, `hybrid`, `onsite`, `full_time`, `part
 
 ---
 
-*Last updated: 2026-06-07*
+*Last updated: 2026-06-14*
