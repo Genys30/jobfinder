@@ -6,6 +6,15 @@ Items discovered during the May 2026 refactor session that were intentionally de
 
 ## 🔴 High Priority
 
+### ~~Analytics `Raw` frozen — import checkpoint ordered by filename~~ ✅ Resolved 2026-06-15
+`processBatch` compared Drive files by full name (`f.name > checkpoint`). Filenames begin with
+the source, so `workable_jobs_…` (last alphabetically) became the checkpoint each day and every
+file named before "workable" on later dates was skipped — `Raw` silently froze at 2026-06-04
+while Drive had files through the 15th (Weekly showed Week1=0, Dashboard last30 under-counted).
+Fix: order/compare by `fileKey(name)` = `"YYYY-MM-DD|filename"` (date first). `processBatch`
+self-heals a legacy checkpoint; `migrateCheckpointFormat()` does it manually. `Raw` rebuilt with
+`hardResetRaw()` + repeated `continueImport()` (46,778 rows). See ARCHITECTURE §10/§11.
+
 ### ~~Missing scrapers — KPMG shows "no file yet"~~ ✅ Resolved 2026-06-04
 KPMG routes through Comeet as *Somekh Chaikin* (`"comeet": "somekhchaikin/F3.007"` in
 `companies.json`). The entry was already correct, but Comeet API returns 403 from
@@ -235,6 +244,15 @@ also benefits. Standard values: `remote`, `hybrid`, `onsite`, `full_time`, `part
 
 ---
 
+### TitleTrends — residual title-normalization noise (low)
+`analyzeTitleTrends` groups by normalized title correctly, but the displayed `title`/sample can
+still show artifacts: numeric IDs (`POST0709`, `22771 - SAP MM Software Tester`,
+`Splunk Developer (1006777)`) and company-name-in-title swap rows (`IAI - Israel Aerospace
+Industries`) that `isGarbageRow_` misses when the company field is empty.
+
+**Action:** strip standalone ID tokens/prefixes in `normalizeTitleForTrends_` display path and
+flag "company-looking" titles when company is blank. Cosmetic only — grouping is unaffected.
+
 ## 💡 Ideas (no timeline)
 
 - **Email alerts** — notify when a source fails for 3+ consecutive days
@@ -245,4 +263,4 @@ also benefits. Standard values: `remote`, `hybrid`, `onsite`, `full_time`, `part
 
 ---
 
-*Last updated: 2026-06-14*
+*Last updated: 2026-06-15*

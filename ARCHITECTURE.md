@@ -248,6 +248,13 @@ doesn't abort the rest.
 - **Keep this doc current.** At the end of every session, update `ARCHITECTURE.md` — add a
   Session-log entry (§11) and revise any section the session changed. Claude proposes this
   update by default at session end (same as it does for `BACKLOG.md`).
+- **Import checkpoint must order by DATE, not filename (fixed 2026-06-15).** `processBatch`
+  used to compare files by full name (`f.name > checkpoint`). Filenames start with the source,
+  so `workable_jobs_…06-15` sorted AFTER `bgu_jobs_…06-16` (`w` > `b`) and silently blocked
+  every later import — `Raw` froze at 2026-06-04 while Drive had files through the 15th.
+  Fix: order/compare by `fileKey(name)` = `"YYYY-MM-DD|filename"` (date first, name as
+  tiebreaker). File-level resume precision is preserved. `processBatch` self-heals a legacy
+  name-based checkpoint on first run; `migrateCheckpointFormat()` does it manually.
 - **Developer tooling — `rtk` (token compression):** A Rust CLI tool that compresses shell
   command output before passing it to LLMs (60–90% token reduction). Installed as a native
   Windows binary (`rtk.exe`) at `~/bin/rtk.exe` (Git Bash PATH). `~/.claude/settings.json`
@@ -261,6 +268,23 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-15 — TitleTrends + import checkpoint fix
+- **`analyzeTitleTrends()`** added (new **TitleTrends** sheet): rising / declining / new /
+  removed job **titles**, WEEKLY (7v7) + MONTHLY (30v30), four tables each + a `companies`
+  column (top-10 employers per title). Flow model by first-seen `date`; aggregators
+  (gotfriends, huji_alumni) and recruiter/garbage rows excluded; coverage guard requires a
+  source in BOTH windows (≥5 weekly / ≥20 monthly). Weekly trigger Sun 08:00
+  (`setupTitleTrendsTrigger`). Reuses RoleTrends helpers. See §12.
+- **🔴 Import checkpoint bug fixed** — `processBatch` compared files by name, so
+  `workable_jobs_*` (last alphabetically) froze the checkpoint and blocked all earlier-named
+  files on later dates; `Raw` had stalled at 2026-06-04. Now orders by `fileKey` =
+  `date|name`; self-heal + `migrateCheckpointFormat()` migrate the old checkpoint. `Raw`
+  rebuilt via `hardResetRaw()` → repeated `continueImport()` (46,778 rows through 2026-06-15).
+- **Diagnostics added** to `Code.gs`: `debugDates` fix usage, `diagDateColumn`,
+  `diagCheckpoint`, `hardResetRaw` (one-off `Raw` clear that avoids the
+  "can't delete all non-frozen rows" error).
+- Note: `Raw` stores `date` as Date objects (not strings); `parseDateSafe` handles both.
 
 ### 2026-06-07 (rtk developer tooling)
 - **`rtk` token-compression tool** installed and documented (§10). `rtk.exe` at `~/bin/rtk.exe`
@@ -368,6 +392,8 @@ A private analytics tool reading all historical CSVs from Google Drive via Apps 
 | Dashboard | KPI summary + 4 live QUERY formula tables |
 | Charts | 5 Google Charts (dept trend, Apr vs May, top companies, workplace pie, sources) |
 | Weekly | Last 7 days: WoW %, by dept/source/company, top 50 jobs |
+| RoleTrends | Emerging/declining keywords + brand-new titles (`analyzeRoleTrends`, 20-category level) |
+| TitleTrends | Rising/declining/new/removed job **titles**, weekly + monthly (`analyzeTitleTrends`) |
 
 **Key functions:**
 - `importIncremental()` — daily delta import (new files only)
@@ -385,6 +411,26 @@ Companies sheet excludes: explicit recruiter blacklist (`RECRUITING_COMPANIES`),
 filenames, names that look like job titles (2+ keywords like "engineer"/"developer"),
 names containing recruiting keywords (השמה, staffing, headhunt…), names outside 2–80 chars.
 To add a new recruiter: `"Company Name": true` in `RECRUITING_COMPANIES` in Code.gs.
+
+**Title & role trend analysis (`analyzeRoleTrends`, `analyzeTitleTrends`):**
+Two complementary trend tools, both reading `Raw`:
+- `analyzeRoleTrends()` → **RoleTrends** sheet — keyword/category-level (emerging vs declining
+  share, brand-new titles). v4: source-aware (sources need 30+ postings in both periods),
+  Hebrew gender-suffix normalization.
+- `analyzeTitleTrends()` → **TitleTrends** sheet — concrete job **titles**, two blocks
+  (WEEKLY 7d-vs-7d, MONTHLY 30d-vs-30d), four tables each: RISING / DECLINING / NEW / REMOVED,
+  plus a `companies` column (top-10 employers per title). **Flow model by first-seen date**:
+  counts are NEW postings whose first-seen `date` falls in each window, so "REMOVED" means
+  "no new postings this window", not "gone from the live site". Aggregators (`gotfriends`,
+  `huji_alumni`) and recruiter/garbage rows excluded; only sources present in BOTH windows
+  (≥5 weekly / ≥20 monthly) take part, so a newly-added or dropped scraper can't fake
+  NEW/REMOVED. Weekly trigger: Sunday 08:00 via `setupTitleTrendsTrigger()`. Reuses
+  `normalizeTitleForTrends_`, `shouldExcludeCompany`, `isGarbageRow_`, `parseDateSafe`.
+
+**⚠ Freshness gate:** `analyzeTitleTrends`, `Weekly` and `Dashboard` are only meaningful when
+`Raw` is current. `Raw` is fed from the **Drive archive** (not the repo) by `importIncremental`,
+so if Drive uploads or the import lag behind, the recent window goes empty/under-counted.
+Check `Max date seen in Raw` (e.g. via `debugDates`) before trusting recent trends.
 
 **Important:** the site loads data from GitHub (not Drive). This dashboard is separate
 from the live site — it reads the full Drive archive independently.
