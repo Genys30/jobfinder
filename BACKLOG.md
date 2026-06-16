@@ -253,7 +253,14 @@ Industries`) that `isGarbageRow_` misses when the company field is empty.
 **Action:** strip standalone ID tokens/prefixes in `normalizeTitleForTrends_` display path and
 flag "company-looking" titles when company is blank. Cosmetic only — grouping is unaffected.
 
+**Note (2026-06-16):** `buildLinkedInPost`'s `cleanTitleForPost_` already does this cosmetically
+for the LinkedIn draft (strips `- 236606`, `(copy)`, emoji/ID tails). The core fix in
+`normalizeTitleForTrends_` — so grouping itself collapses these variants — is still open.
+
 ## 💡 Ideas (no timeline)
+
+- **Auto-draft LinkedIn post on schedule** — chain `buildLinkedInPost()` onto the Sunday 08:00
+  `analyzeTitleTrends` trigger so the weekly `LinkedInPost` draft is ready without a manual run.
 
 - **Email alerts** — notify when a source fails for 3+ consecutive days
 - **Company health check** — weekly script that pings each ATS token and flags dead ones
@@ -263,4 +270,4 @@ flag "company-looking" titles when company is blank. Cosmetic only — grouping 
 
 ---
 
-*Last updated: 2026-06-15*
+*Last updated: 2026-06-16*

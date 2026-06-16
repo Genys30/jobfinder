@@ -269,6 +269,17 @@ doesn't abort the rest.
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
 
+### 2026-06-16 — LinkedIn weekly post (template + auto-draft)
+- **`linkedin_weekly_template.md`** — reusable bilingual (HE+EN) weekly post template with
+  `{{…}}` placeholders, a filled example, a fill guide (which TitleTrends cell feeds which
+  field), and editorial rules. Insights-focused, lively tone. (Lives in outputs, not the repo.)
+- **`buildLinkedInPost()`** added — auto-drafts the post from WEEKLY TitleTrends into a
+  `LinkedInPost` sheet. Companies named only for RISING/NEW; DECLINING role-only. New cosmetic
+  helpers `cleanTitleForPost_` / `dominantCompany_` (post display only — do not change Raw or
+  the TitleTrends grouping). See §12.
+- Confirmed first TitleTrends day-over-day run on fresh data (to 2026-06-16) after the import
+  checkpoint fix — weekly window non-empty, monthly no longer under-counted.
+
 ### 2026-06-15 — TitleTrends + import checkpoint fix
 - **`analyzeTitleTrends()`** added (new **TitleTrends** sheet): rising / declining / new /
   removed job **titles**, WEEKLY (7v7) + MONTHLY (30v30), four tables each + a `companies`
@@ -401,6 +412,7 @@ A private analytics tool reading all historical CSVs from Google Drive via Apps 
 - `reclassifyRaw()` / `continueReclassify()` — re-run title classification on all Raw rows
 - `buildCharts()`, `buildWeekly()` — rebuild individual sheets manually
 - `debugOther()` — show top titles in "Other" category (helps improve classifier)
+- `buildLinkedInPost()` — auto-drafts a bilingual (HE+EN) weekly LinkedIn insights post from TitleTrends into a `LinkedInPost` sheet (see below)
 
 **Title classification (`classifyTitle` + `DEPT_MAP`):**
 Maps job title → one of 20+ standard categories using keyword matching (EN + HE) and
@@ -431,6 +443,17 @@ Two complementary trend tools, both reading `Raw`:
 `Raw` is current. `Raw` is fed from the **Drive archive** (not the repo) by `importIncremental`,
 so if Drive uploads or the import lag behind, the recent window goes empty/under-counted.
 Check `Max date seen in Raw` (e.g. via `debugDates`) before trusting recent trends.
+
+**LinkedIn weekly post (`buildLinkedInPost`):**
+Auto-fills a bilingual (Hebrew + English) market-insights post from the WEEKLY TitleTrends
+data and writes it to a `LinkedInPost` sheet (Hebrew in A4, English in A6 — copy the cell).
+Picks top-3 RISING (preferring titles confirmed in BOTH weekly and monthly), top-2 DECLINING,
+top-2 NEW; falls back to monthly on a thin week. **Editorial rules:** companies are named only
+for RISING/NEW (positive "who's hiring"); DECLINING is role-only (a drop is often one employer
+winding down — don't name them). Cosmetic helpers `cleanTitleForPost_` (strips `- 236606`,
+`(copy)`, emoji/ID tails — display only, does not touch Raw) and `dominantCompany_` (top employer
+from the companies string). Run after `analyzeTitleTrends`. The reusable manual template +
+fill guide lives in `linkedin_weekly_template.md` (outputs, not in repo).
 
 **Important:** the site loads data from GitHub (not Drive). This dashboard is separate
 from the live site — it reads the full Drive archive independently.
