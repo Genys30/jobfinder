@@ -119,17 +119,19 @@ def clean_title(t):
 
 
 def normalize_url(href):
-    """Canonical, stable URL for first_seen/dedup. CIVI promo links keep only
-    the numeric id (drop &src=); internal SCE detail pages are made absolute and
-    stripped of any query/fragment."""
+    """Clickable, stable URL.
+    • CIVI promo links are kept INTACT — the &src= campaign id is REQUIRED
+      (stripping it makes CIVI return a 404). Only a #fragment is dropped.
+    • Internal SCE links are made absolute and de-duplicated of any redundant
+      leading domain (the site emits hrefs like '/www.sce.ac.il/...')."""
     href = (href or "").strip()
-    m = re.search(r'/promo/id=(\d+)', href)
-    if m:
-        return f"https://app.civi.co.il/promo/id={m.group(1)}"
+    if 'civi.co.il/promo' in href:
+        return href.split('#')[0]
     href = href.split('#')[0].split('?')[0].rstrip('/')
-    if href.startswith('/'):
-        href = "https://www.sce.ac.il" + href
-    return href
+    # strip a leading (possibly doubled) sce.ac.il domain, then rebuild absolute
+    href = re.sub(r'^/?(?:https?:/+)?(?:www\.)?sce\.ac\.il', '', href, flags=re.I)
+    href = href.lstrip('/')
+    return ("https://www.sce.ac.il/" + href) if href else "https://www.sce.ac.il"
 
 
 def detect_city(title):
