@@ -69,6 +69,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Bar-Ilan (BAR) | `fetch_bar.py` | `bar_jobs_*` | API | local | RedMatch/TopMatch API, BIU GUID `D8D6FFC7-31E2-46C1-94B4-985C99B9A913` |
 | Afeka College | `fetch_afeka.py` | `afeka_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), NOT the Afeka Jobs student portal. Umbraco CMS, server-rendered Bootstrap accordion `div.accordion-item` (title in `.accordion-header button`, body in `.accordion-collapse`). Both tabs (admin staff / academic faculty) in static HTML. No per-job URL → `first_seen` keyed by **title** (BGU pattern). Frontend dedup by `title+url`. Job-marker filter drops the events accordion. |
 | SCE (Sami Shamoon) | `fetch_sce.py` | `sce_jobs_*` | PW | local | Engineering college's **own** positions (employer-type `academic`). Three HR "wanted" sub-pages (admin / academic / research). **WAF JS-challenge**: plain requests AND curl_cffi both 403 → **Playwright** (one shared context, warm-up on the hub solves the challenge once). Server-rendered (no JS rendering needed) but the challenge requires a real browser. **Mixed link shapes**: admin jobs → external **CIVI** ATS (`app.civi.co.il/promo/id=N&src=M` — keep `src`, it's required or CIVI 404s); academic/research → internal SCE detail pages (`/wanted/{section}/{slug}`). Real per-job URLs → `first_seen`/dedup by **url**. Site emits doubled-domain hrefs (`/www.sce.ac.il/...`) — normalized. v1: no descriptions. |
+| Braude (ORT) | `fetch_braude.py` | `braude_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), Karmiel. WordPress, server-rendered, **no WAF** → req+BeautifulSoup (like Afeka). Foundation accordion: `li.accordion-item` → `a.accordion-title` (title) + `div.accordion-content` (description, **inline & rich** — pop-up works). One page, two sections משרות מנהליות / משרות אקדמיות → `department` by nearest preceding section heading (title-keyword fallback). No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup by `title+url`. Job-marker filter guards non-job accordions. |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -189,17 +190,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (26 steps)
+## 8. `run_fetch.bat` — the local nightly runner (27 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)**
-13. Ichilov · 14. GotFriends · 15. HUJI positions
-16. Shaare Zedek (PW) · 17. Hadassah (PW)
-18. Deloitte (PW) · 19. EY (PW) · 20. BIS (PW) · 21. Joint (PW)
-22. Osem-Nestlé (curl_cffi) · 23. Teva Pharmaceuticals (req)
-24. `check_health.py` (health report) · 25. rclone upload all CSVs → Google Drive
-26. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude**
+14. Ichilov · 15. GotFriends · 16. HUJI positions
+17. Shaare Zedek (PW) · 18. Hadassah (PW)
+19. Deloitte (PW) · 20. EY (PW) · 21. BIS (PW) · 22. Joint (PW)
+23. Osem-Nestlé (curl_cffi) · 24. Teva Pharmaceuticals (req)
+25. `check_health.py` (health report) · 26. rclone upload all CSVs → Google Drive
+27. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -274,6 +275,25 @@ doesn't abort the rest.
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
 
+### 2026-06-21 — Braude College added (engineering-colleges expansion, source #3)
+- **New source `braude`** (employer-type `academic`) — ORT Braude College of Engineering's
+  **own** open positions (`fetch_braude.py` → `braude_jobs_*.csv`), Karmiel. 17 jobs
+  (9 admin + 8 academic). WordPress, server-rendered, **no WAF** → req+BeautifulSoup (the
+  easiest of the three colleges). Foundation accordion: `li.accordion-item` →
+  `a.accordion-title` (title) + `div.accordion-content` (description).
+- **Descriptions are inline & rich** (unlike SCE) → the job pop-up works. One page, two
+  sections (משרות מנהליות / משרות אקדמיות); `department` is set by the nearest preceding
+  section heading via `li.find_previous(SECTION_RX)`, with a title-keyword fallback
+  (מרצה/חבר סגל/מתרגל → academic). Job-marker filter guards any non-job accordions.
+- **No per-job URL** (titles link to `#`, apply by email) → `first_seen` keyed by **title**
+  (Afeka/BGU pattern); url = page URL; frontend dedup by `title+url`. Worked first try.
+- **Frontend (`index.html`):** `normBraude`/`loadBraude` (Afeka template, dedup `title+url`),
+  data-bar pill, source filter item, `DATABAR_SOURCES`, `'braude':'academic'`, `--bd` colour,
+  all 4 pools + `activeSrc`.
+- **`run_fetch.bat` fix:** the live bat was still missing the **SCE** step (its bat update was
+  never deployed — only SCE's scraper + frontend went out). This session inserted **both**
+  SCE (step 12, PW) and Braude (step 13, req) after Afeka → **27 steps**.
+
 ### 2026-06-21 — SCE College added (engineering-colleges expansion, source #2)
 - **New source `sce`** (employer-type `academic`) — SCE / Sami Shamoon College of Engineering's
   **own** open positions (`fetch_sce.py` → `sce_jobs_*.csv`). 20 jobs (9 admin + 8 academic +
@@ -298,7 +318,7 @@ Newest first. Keep entries short — details go in `BACKLOG.md`.
   detail page; both un-fetched, like Deloitte).
 - **Frontend (`index.html`):** `normSCE`/`loadSCE` (Afeka/BAR template, dedup by url), data-bar
   pill, source filter item, `DATABAR_SOURCES` entry, `'sce':'academic'`, `--sce` colour, added
-  to all 4 job pools + `activeSrc`. **`run_fetch.bat`:** SCE inserted as **step 12/26** (PW,
+  to all 4 job pools + `activeSrc`. **`run_fetch.bat`:** SCE inserted as **step 12/27** (PW,
   after Afeka); later steps renumbered.
 
 ### 2026-06-21 — Afeka College added (engineering-colleges expansion, source #1)
