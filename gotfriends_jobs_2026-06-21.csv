@@ -1,4 +1,9 @@
 ﻿title,company,location,date,url,department,workplace_type
+R&D Lead בחברה מצליחה בתחום ה-AD Tech,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/software/head-of-development-team/154204/,Software Development,Remote
+Senior Frontend Developer בחברת Cyber Offensive ייחודית,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/software/frontend-developer/154214/,Software Development,onsite
+Mobile Engineer בחברת סטארט־אפ,GotFriends,Jerusalem,2026-06-21,https://www.gotfriends.co.il/jobslobby/software/mobile-programmer/154217/,Software Development,Hybrid
+Staff Engineer בחברת סטארט-אפ בתחום Generative AI,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/software/python-developer/154218/,Software Development,Hybrid
+Backend Engineer בחברת סטארט-אפ בתחום ה-Big Data Location Analytics,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/software/backend-developer/154197/,Software Development,Hybrid
 Founding Engineer בחברת סטארט-אפ טכנולוגית בתחום ה-AI Infrastructure,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/backend-developer/154186/,Software Development,Hybrid
 Senior Low Level Engineer בחברת סטארט-אפ בתחום ה-Cyber,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/cplusplus-programmer/154180/,Software Development,Hybrid
 Full Stack Engineer בחברת סטארט-אפ בתחום ה-Identity Security,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/full-stack-developer/154190/,Software Development,Hybrid
@@ -393,11 +398,6 @@ Senior Frontend Engineer בחברת סטארט-אפ,GotFriends,Tel Aviv,2026-06-
 Full Stack Team Lead בחברת סטארט-אפ בתחום ה-Cybersecurity,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/head-of-development-team/152521/,Software Development,onsite
 Senior Full Stack Engineer בחברת סטארט-אפ בתחום ה-Software Supply Chain ו-AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/full-stack-developer/152515/,Software Development,Hybrid
 Software Team Lead בחברת Big Data,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/head-of-development-team/152517/,Software Development,Hybrid
-Senior Software Developer בסטארט-אפ בתחום ה-Identity ו-AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/backend-developer/152492/,Software Development,Hybrid
-Staff Backend Engineer בחברת טכנולוגית,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/backend-developer/152500/,Software Development,Hybrid
-R&D Manager- AI Solutions בחברת הייטק בתחום הסייבר,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/head-of-development-team/152476/,Software Development,onsite
-Senior Python Developer בחברת סטארט-אפ,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/python-developer/152473/,Software Development,Hybrid
-Senior Software Engineer בחברת סטארט-אפ העוסקת בתחום של Data ועולמות ה-AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/software/python-developer/152471/,Software Development,Hybrid
 AI Software Engineer לסטארט-אפ AI חדש ומעניין,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/ai/ai-engineer/154198/,AI & ML,onsite
 Solution Architect בחברת סטארט-אפ בתחום ה-Cyber,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/ai/solution-architect/154166/,AI & ML,Hybrid
 AI Engineer בחברת סטארט-אפ בתחום ה-AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/ai/ai-engineer/154136/,AI & ML,Hybrid
@@ -589,6 +589,7 @@ Algorithm Engineer למעבדת חדשנות בעולם ה -big data,GotFriends,
 Algorithm Engineer לחברת סטארטאפ בחיפה,GotFriends,Haifa,2026-06-19,https://www.gotfriends.co.il/jobslobby/ai/ai-engineer/108470/,AI & ML,onsite
 Tech Lead NLP,GotFriends,Sharon,2026-06-19,https://www.gotfriends.co.il/jobslobby/ai/llm-engineer/tech-lead-nlp/,AI & ML,onsite
 דרוש/ה אלגוריתמאי/ת בתחום ה NLP,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/ai/llm-engineer/דרושה-אלגוריתמאית-בתחום-ה-nlp/,AI & ML,onsite
+Founding Engineer בחברת סטארט-אפ טכנולוגית בתחום ה-AI Infrastructure,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/datasecurity/information-security-specialist/154192/,Cyber & Security,Hybrid
 Founding Vulnerability Researcher בחברת סטארט-אפ ב-Stealth בתחום ה-Cyber,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/security-researchers/154201/,Cyber & Security,onsite
 Security Researcher בסטארט-אפ סייבר חדשני,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/security-researchers/154170/,Cyber & Security,Hybrid
 Head of Research בחברת סייבר בתחום אבטחת הענן,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/security-research-team-leader/154140/,Cyber & Security,Hybrid
@@ -988,7 +989,7 @@ Application Security Engineer בחברת Startup העוסקת בתחום הMedic
 לחברה רווחית ויציבה בתחום הסייבר בהרצליה דרוש/ה Security Speciallist,GotFriends,Sharon,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/security-analyst/לחברה-רווחית-ויציבה-בתחום-הסייבר-בהרצליה-דרושה-security-speciallist/,Cyber & Security,onsite
 Cyber Security Expert לחברה רווחית בתחום הפינטק בהרצליה,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/cyber-position/122285/,Cyber & Security,onsite
 Senior Decoder לחברה מובילה עולמית - ממוקמת בפתח תקווה,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/reverse-engineer/senior-decoder-לחברה-מובילה-עולמית-ממוקמת-בפתח-תקווה/,Cyber & Security,onsite
-"Chief Information Security Officer (CISO) לחברה מעולה, מבוססת ומוכרת בתל אביב",GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/datasecurity/ciso/120476/,Cyber & Security,onsite
+Data Scientist בחברת רווחית בתחום הספורט,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/algorithm/data-scientist/154210/,Algorithms & Data Science,onsite
 Senior Data Scientist בחברה בתחום ה-Industrial AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/data-scientist/154167/,Algorithms & Data Science,Hybrid
 Algorithm Engineer בחברה בתחום ה-HPC וה-AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/algorithm-engineer/154104/,Algorithms & Data Science,Hybrid
 Machine Learning Engineer בחברה בתחום ה-Industrial AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/machine-learning/154083/,Algorithms & Data Science,Hybrid
@@ -1388,7 +1389,6 @@ Data Scientist בחברת סטארט-אפ בתחום הניטור וניהול �
 Algo Team Lead בחברת סטארט-אפ,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/head-of-algorithms-team/143053/,Algorithms & Data Science,Hybrid
 Algorithm/Software Developer בחברת סטארט-אפ,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/algorithm-engineer/142932/,Algorithms & Data Science,onsite
 Computer Vision Researcher בחברת הייטק מובילה בתחום ה-IoT,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/computer-vision/143031/,Algorithms & Data Science,Hybrid
-Algorithm Developer בחברת סטארט-אפ בתחום AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/algorithm/algorithm-engineer/143010/,Algorithms & Data Science,Hybrid
 Automation and Performance Team Leader בחברת סטארט-אפ בתחום ה-Security,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/qa/head-of-qa-team/154148/,QA & Automation,Hybrid
 QA Automation Engineer בחברת סטארט-אפ העוסקת בתחום של אבטחת ענן,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/qa/automation-developer/154057/,QA & Automation,Hybrid
 QA Automation Tech Lead בחברת סטארט-אפ בתחום הבינה המלאכותית,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/qa/head-of-qa-team/154066/,QA & Automation,Hybrid
@@ -2429,6 +2429,8 @@ Data Product Manager בחברת סטארט-אפ בתחום ה-Data,GotFriends,Te
 Lead Product Manager חברת Consumer-Tech,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/projects/product-manager/142564/,Product Management,Hybrid
 Head of Upstream Product management בחברת סטארט-אפ בתחום ה-Medical,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/projects/product-manager/142513/,Product Management,onsite
 Product Manger בחברת SU בתחום החלל,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/projects/product-manager/142511/,Product Management,Remote
+IT Lab Operations בחברת סטארט-אפ ב-Stealth,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/system/it-manager/154205/,DevOps & System,Hybrid
+DevOps Engineer בחברת Gaming,GotFriends,Tel Aviv,2026-06-21,https://www.gotfriends.co.il/jobslobby/system/devops-positions/154207/,DevOps & System,Hybrid
 DevOps Engineer (Observability & Cloud Focus) בחברת סייבר,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/devops-positions/154183/,DevOps & System,Hybrid
 DevOps & Platform Engineering Team Lead בחברה מצליחה בתחום הראייה הממוחשבת ו-Deep Learning,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/head-of-devops-team/154174/,DevOps & System,Hybrid
 DevOps Engineer בחברה בתחום ה-Industrial AI,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/devops-positions/154126/,DevOps & System,Hybrid
@@ -2827,8 +2829,6 @@ Senior DevOps Engineer בחברת סטארט-אפ בתחום ה-Software Supply 
 "DevOps Engineer בחברה בתחום של AI, Cloud, IOT ורכבים",GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/devops-positions/144698/,DevOps & System,Remote
 DevOps Engineer בחברה טכנולוגית,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/devops-positions/144599/,DevOps & System,onsite
 IT Engineer בחברת סטארט-אפ מולטידיספלינרית,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/it-manager/144746/,DevOps & System,Remote
-DevOps Engineer בחברת Cyber הגנתי,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/devops-positions/144737/,DevOps & System,Hybrid
-IT Team Lead בחברת סטארט-אפ,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/system/it-manager/144687/,DevOps & System,onsite
 Head of Data & Analytics בחברת גלובלית,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/bibig_data/data-analyst/154176/,BI & Big Data,Hybrid
 Senior Product Analyst בחברת סטארט-אפ בתחום ה-Data,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/bibig_data/product-analyst/153750/,BI & Big Data,Hybrid
 Data Solutions Team Lead בחברת סטארט-אפ בתחום ה-Fintech,GotFriends,Tel Aviv,2026-06-19,https://www.gotfriends.co.il/jobslobby/bibig_data/data-analyst/153651/,BI & Big Data,Hybrid
