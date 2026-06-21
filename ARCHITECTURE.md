@@ -67,6 +67,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | TAU | `fetch_tau.py` | `tau_jobs_*` | — | local | |
 | Haifa Univ | `fetch_haifa.py` | `haifa_jobs_*` | — | local | |
 | Bar-Ilan (BAR) | `fetch_bar.py` | `bar_jobs_*` | API | local | RedMatch/TopMatch API, BIU GUID `D8D6FFC7-31E2-46C1-94B4-985C99B9A913` |
+| Afeka College | `fetch_afeka.py` | `afeka_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), NOT the Afeka Jobs student portal. Umbraco CMS, server-rendered Bootstrap accordion `div.accordion-item` (title in `.accordion-header button`, body in `.accordion-collapse`). Both tabs (admin staff / academic faculty) in static HTML. No per-job URL → `first_seen` keyed by **title** (BGU pattern). Frontend dedup by `title+url`. Job-marker filter drops the events accordion. |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -187,18 +188,21 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (23 steps)
+## 8. `run_fetch.bat` — the local nightly runner (25 steps)
 
-1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore)
+1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan
-11. Ichilov · 12. GotFriends · 13. HUJI positions
-14. Shaare Zedek (PW) · 15. Hadassah (PW)
-16. Deloitte (PW) · 17. EY (PW) · 18. BIS (PW) · 19. Joint (PW)
-20. Osem-Nestlé (curl_cffi) · 21. Teva Pharmaceuticals (req)
-22. `fetch_jobs.py` — ATS sources (Comeet incl. KPMG, Greenhouse, Lever, Ashby) + local sources
-23. rclone upload all CSVs → Google Drive
-+ commit + push
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka**
+12. Ichilov · 13. GotFriends · 14. HUJI positions
+15. Shaare Zedek (PW) · 16. Hadassah (PW)
+17. Deloitte (PW) · 18. EY (PW) · 19. BIS (PW) · 20. Joint (PW)
+21. Osem-Nestlé (curl_cffi) · 22. Teva Pharmaceuticals (req)
+23. `check_health.py` (health report) · 24. rclone upload all CSVs → Google Drive
+25. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+
+**Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
+`fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
+**GitHub Actions** CI (see §2), so they're not re-run locally.
 
 Each fetch step uses `if errorlevel 1 ( WARNING … continuing anyway )` so one failure
 doesn't abort the rest.
@@ -268,6 +272,26 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-21 — Afeka College added (engineering-colleges expansion, source #1)
+- **New source `afeka`** (employer-type `academic`) — Afeka Tel Aviv Academic College of
+  Engineering's **own** open positions (`fetch_afeka.py` → `afeka_jobs_*.csv`). Scrapes the
+  college's "Working at Afeka" page (`/about-afeka/general-information/jobs/`), **not** the
+  Afeka Jobs student/alumni portal. Umbraco CMS, server-rendered Bootstrap accordion →
+  req+BeautifulSoup (no Playwright). 11 jobs (9 admin staff + 2 academic faculty).
+- **Patterns:** `first_seen` keyed by **title** (all jobs share one page URL, like BGU);
+  job-marker filter (`תיאור התפקיד`/`דרישות`/`להגשת קורות חיים`/Requirements/Send CV) drops the
+  events accordion; `detect_department` classifies admin vs academic **by title only**
+  (description mentions "סגל אקדמי" in context and would mis-flag a lab technician); 0-row guard.
+- **Frontend (`index.html`):** `normAfeka`/`loadAfeka` (BAR template), data-bar pill, source
+  filter item, `DATABAR_SOURCES` entry, `'afeka':'academic'`, `--af` colour, added to all 4
+  job pools + `activeSrc` branch. **Dedup by `title+url`** (not `url`) — the 2 academic jobs
+  share the page URL, so url-only dedup would collapse one.
+- **`run_fetch.bat`:** Afeka inserted as **step 11/25** (local-only, after Bar-Ilan); all
+  later steps renumbered. ATS apply links (`campaign.adamtotal.co.il`) become each admin job's
+  `url`; academic jobs (email-only) fall back to the page URL.
+- **Template-first:** Afeka is the proven template for the remaining engineering colleges
+  (SCE, Braude, HIT, Azrieli) — see `BACKLOG.md`.
 
 ### 2026-06-16 — LinkedIn weekly post (template + auto-draft)
 - **`linkedin_weekly_template.md`** — reusable bilingual (HE+EN) weekly post template with

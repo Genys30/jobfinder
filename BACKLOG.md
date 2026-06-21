@@ -6,6 +6,26 @@ Items discovered during the May 2026 refactor session that were intentionally de
 
 ## 🔴 High Priority
 
+### Israeli engineering-colleges expansion (template-first)
+Adding each engineering college's **own** open positions (employer-type `academic`), mirroring
+the university sources. Afeka is the proven end-to-end template; the rest replicate its pattern.
+
+- **Afeka** ✅ Resolved 2026-06-21 — `fetch_afeka.py` → `afeka_jobs_*.csv` (11 jobs: 9 admin +
+  2 academic faculty). req+BS4 on the Umbraco "Working at Afeka" page (Bootstrap accordion
+  `div.accordion-item`); local-only (step 11/25 in `run_fetch.bat`). `first_seen` by **title**
+  (shared page URL, BGU pattern), job-marker filter drops the events accordion,
+  `detect_department` classifies admin/academic **by title only**. Frontend dedup by `title+url`
+  (academic jobs share the page URL). Full wiring in `index.html`. See ARCHITECTURE §3/§8/§11.
+- **SCE (Shamoon)** ⏳ next — recon pending (URL, platform req/API/PW, CI-vs-local).
+- **Braude** ⏳ queued
+- **HIT (Holon)** ⏳ queued
+- **Azrieli College** ⏳ queued
+
+Per-college flow: audit career page → spec → confirm → `fetch_{college}.py` → verify rows →
+frontend wiring → `run_fetch.bat` step → prod check. Check for shared platforms first
+(HunterHRMS like HUJI/Shaare Zedek, RedMatch/TopMatch like BAR/Ichilov) — those need only a new
+GUID/subdomain, not a fresh parser.
+
 ### ~~Analytics `Raw` frozen — import checkpoint ordered by filename~~ ✅ Resolved 2026-06-15
 `processBatch` compared Drive files by full name (`f.name > checkpoint`). Filenames begin with
 the source, so `workable_jobs_…` (last alphabetically) became the checkpoint each day and every
@@ -137,19 +157,22 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ---
 
-## 🛠 `run_fetch.bat` step reference (as of 2026-06-12)
+## 🛠 `run_fetch.bat` step reference (as of 2026-06-21)
 
-The manual local runner now has 24 steps:
+The manual local runner now has 25 steps:
 1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan
-11. Ichilov · 12. GotFriends · 13. HUJI positions
-14. Shaare Zedek (PW) · 15. Hadassah (PW)
-16. Deloitte (PW) · 17. EY (PW) · 18. BIS (PW) · 19. Joint (PW)
-20. Osem-Nestlé (curl_cffi) · 21. Teva (req)
-22. `fetch_jobs.py` — ATS sources (Comeet incl. KPMG, Greenhouse, Lever, Ashby)
-23. rclone upload all CSVs → Google Drive
-24. health check (`check_health.py`) + commit + push
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka**
+12. Ichilov · 13. GotFriends · 14. HUJI positions
+15. Shaare Zedek (PW) · 16. Hadassah (PW)
+17. Deloitte (PW) · 18. EY (PW) · 19. BIS (PW) · 20. Joint (PW)
+21. Osem-Nestlé (curl_cffi) · 22. Teva (req)
+23. health check (`check_health.py`)
+24. rclone upload all CSVs → Google Drive
+25. commit + push
+
+Note: `fetch_jobs.py` (ATS sources) and `fetch_gotfriends.py` run in **GitHub Actions CI**, not
+in the bat.
 
 ---
 
@@ -270,4 +293,4 @@ for the LinkedIn draft (strips `- 236606`, `(copy)`, emoji/ID tails). The core f
 
 ---
 
-*Last updated: 2026-06-16*
+*Last updated: 2026-06-21*
