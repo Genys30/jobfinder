@@ -68,6 +68,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Haifa Univ | `fetch_haifa.py` | `haifa_jobs_*` | — | local | |
 | Bar-Ilan (BAR) | `fetch_bar.py` | `bar_jobs_*` | API | local | RedMatch/TopMatch API, BIU GUID `D8D6FFC7-31E2-46C1-94B4-985C99B9A913` |
 | Afeka College | `fetch_afeka.py` | `afeka_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), NOT the Afeka Jobs student portal. Umbraco CMS, server-rendered Bootstrap accordion `div.accordion-item` (title in `.accordion-header button`, body in `.accordion-collapse`). Both tabs (admin staff / academic faculty) in static HTML. No per-job URL → `first_seen` keyed by **title** (BGU pattern). Frontend dedup by `title+url`. Job-marker filter drops the events accordion. |
+| SCE (Sami Shamoon) | `fetch_sce.py` | `sce_jobs_*` | PW | local | Engineering college's **own** positions (employer-type `academic`). Three HR "wanted" sub-pages (admin / academic / research). **WAF JS-challenge**: plain requests AND curl_cffi both 403 → **Playwright** (one shared context, warm-up on the hub solves the challenge once). Server-rendered (no JS rendering needed) but the challenge requires a real browser. **Mixed link shapes**: admin jobs → external **CIVI** ATS (`app.civi.co.il/promo/id=N&src=M` — keep `src`, it's required or CIVI 404s); academic/research → internal SCE detail pages (`/wanted/{section}/{slug}`). Real per-job URLs → `first_seen`/dedup by **url**. Site emits doubled-domain hrefs (`/www.sce.ac.il/...`) — normalized. v1: no descriptions. |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -188,17 +189,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (25 steps)
+## 8. `run_fetch.bat` — the local nightly runner (26 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka**
-12. Ichilov · 13. GotFriends · 14. HUJI positions
-15. Shaare Zedek (PW) · 16. Hadassah (PW)
-17. Deloitte (PW) · 18. EY (PW) · 19. BIS (PW) · 20. Joint (PW)
-21. Osem-Nestlé (curl_cffi) · 22. Teva Pharmaceuticals (req)
-23. `check_health.py` (health report) · 24. rclone upload all CSVs → Google Drive
-25. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)**
+13. Ichilov · 14. GotFriends · 15. HUJI positions
+16. Shaare Zedek (PW) · 17. Hadassah (PW)
+18. Deloitte (PW) · 19. EY (PW) · 20. BIS (PW) · 21. Joint (PW)
+22. Osem-Nestlé (curl_cffi) · 23. Teva Pharmaceuticals (req)
+24. `check_health.py` (health report) · 25. rclone upload all CSVs → Google Drive
+26. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -272,6 +273,33 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-21 — SCE College added (engineering-colleges expansion, source #2)
+- **New source `sce`** (employer-type `academic`) — SCE / Sami Shamoon College of Engineering's
+  **own** open positions (`fetch_sce.py` → `sce_jobs_*.csv`). 20 jobs (9 admin + 8 academic +
+  3 research) across the three HR "wanted" sub-pages (admin / academic / post-doc-researches).
+- **WAF JS-challenge** — plain requests AND curl_cffi `chrome110` both returned 403 (the
+  challenge cookie is JS-set). Escalated to **Playwright**: one shared browser context warms up
+  on the hub (`/wanted`), the challenge clears once, then the 3 sub-pages reuse the cookie. The
+  HTML itself is server-rendered (no clicking/JS-render needed) — Playwright is only there to
+  pass the challenge. Uses `sync_playwright().start()/.stop()` (not `with`) to avoid re-indenting.
+- **Mixed link shapes** (key lesson): admin jobs link to the external **CIVI** ATS
+  (`app.civi.co.il/promo/id=N&src=M`); academic/research link to **internal** SCE detail pages
+  (`/wanted/{section}/{slug}`). The job-link selector matches CIVI promo links OR any child of
+  the current sub-page path. The initial CIVI-only selector silently missed all 11 academic +
+  research jobs (they showed as 0).
+- **URL gotchas:** (1) the CIVI `&src=` param is **required** — stripping it 404s, so the full
+  CIVI URL is kept (only `#fragment` dropped); (2) the site emits doubled-domain internal hrefs
+  (`/www.sce.ac.il/...`) → `normalize_url` strips a redundant leading domain and rebuilds.
+  Real per-job URLs → `first_seen`/dedup by **url** (unlike Afeka's title key).
+- **Title cleanup:** link labels are doubled and sometimes carry a `| sitename` suffix
+  (title-attr vs visible text) → `clean_title` drops the `|` suffix, then collapses the smallest
+  repeated word-prefix. v1: **no descriptions** (admin = CIVI detail page, academic = internal
+  detail page; both un-fetched, like Deloitte).
+- **Frontend (`index.html`):** `normSCE`/`loadSCE` (Afeka/BAR template, dedup by url), data-bar
+  pill, source filter item, `DATABAR_SOURCES` entry, `'sce':'academic'`, `--sce` colour, added
+  to all 4 job pools + `activeSrc`. **`run_fetch.bat`:** SCE inserted as **step 12/26** (PW,
+  after Afeka); later steps renumbered.
 
 ### 2026-06-21 — Afeka College added (engineering-colleges expansion, source #1)
 - **New source `afeka`** (employer-type `academic`) — Afeka Tel Aviv Academic College of
