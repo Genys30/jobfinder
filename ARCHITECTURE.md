@@ -70,6 +70,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Afeka College | `fetch_afeka.py` | `afeka_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), NOT the Afeka Jobs student portal. Umbraco CMS, server-rendered Bootstrap accordion `div.accordion-item` (title in `.accordion-header button`, body in `.accordion-collapse`). Both tabs (admin staff / academic faculty) in static HTML. No per-job URL → `first_seen` keyed by **title** (BGU pattern). Frontend dedup by `title+url`. Job-marker filter drops the events accordion. |
 | SCE (Sami Shamoon) | `fetch_sce.py` | `sce_jobs_*` | PW | local | Engineering college's **own** positions (employer-type `academic`). Three HR "wanted" sub-pages (admin / academic / research). **WAF JS-challenge**: plain requests AND curl_cffi both 403 → **Playwright** (one shared context, warm-up on the hub solves the challenge once). Server-rendered (no JS rendering needed) but the challenge requires a real browser. **Mixed link shapes**: admin jobs → external **CIVI** ATS (`app.civi.co.il/promo/id=N&src=M` — keep `src`, it's required or CIVI 404s); academic/research → internal SCE detail pages (`/wanted/{section}/{slug}`). Real per-job URLs → `first_seen`/dedup by **url**. Site emits doubled-domain hrefs (`/www.sce.ac.il/...`) — normalized. v1: no descriptions. |
 | Braude (ORT) | `fetch_braude.py` | `braude_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), Karmiel. WordPress, server-rendered, **no WAF** → req+BeautifulSoup (like Afeka). Foundation accordion: `li.accordion-item` → `a.accordion-title` (title) + `div.accordion-content` (description, **inline & rich** — pop-up works). One page, two sections משרות מנהליות / משרות אקדמיות → `department` by nearest preceding section heading (title-keyword fallback). No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup by `title+url`. Job-marker filter guards non-job accordions. |
+| HIT (Holon) | `fetch_hit.py` | `hit_jobs_*` | cffi | local | Engineering institute's **own** positions (employer-type `academic`), Holon. WordPress, server-rendered, but behind a **Sucuri/SPD gateway** that 302-loops plain requests to `//abuse.spd.co.il` → **curl_cffi** `chrome110` (like Osem; warm-up on home page + retries). Bootstrap accordion in **two tabs**: `div#JOB_accordion0` → admin, `div#JOB_accordion1` → academic; each job `div.accordion-item` → `div.accordion_title` (title) + `div.accordion-body` (description, **inline & rich** — pop-up works). `department` by tab id. **Per-job dedup by `#collapseN`**: jobs have no real URL, and two distinct postdocs can share the title "משרת פוסטדוק | Postdoctoral Position" → each item's unique `#collapseN` id is appended to the page URL as a fragment so they stay separate (`first_seen`/dedup by url; frontend dedup `title+url`). `clean_title` strips the "למכון טכנולוגי חולון" prefix. |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -190,17 +191,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (27 steps)
+## 8. `run_fetch.bat` — the local nightly runner (28 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude**
-14. Ichilov · 15. GotFriends · 16. HUJI positions
-17. Shaare Zedek (PW) · 18. Hadassah (PW)
-19. Deloitte (PW) · 20. EY (PW) · 21. BIS (PW) · 22. Joint (PW)
-23. Osem-Nestlé (curl_cffi) · 24. Teva Pharmaceuticals (req)
-25. `check_health.py` (health report) · 26. rclone upload all CSVs → Google Drive
-27. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)**
+15. Ichilov · 16. GotFriends · 17. HUJI positions
+18. Shaare Zedek (PW) · 19. Hadassah (PW)
+20. Deloitte (PW) · 21. EY (PW) · 22. BIS (PW) · 23. Joint (PW)
+24. Osem-Nestlé (curl_cffi) · 25. Teva Pharmaceuticals (req)
+26. `check_health.py` (health report) · 27. rclone upload all CSVs → Google Drive
+28. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -248,6 +249,13 @@ doesn't abort the rest.
 - **Verify CSV contents** via `curl` on the raw GitHub URL (`tail`) — the script's
   terminal summary doesn't prove the columns were written.
 - **Syntax-check** scrapers after edits: `python3 -c "import ast; ast.parse(open('f.py').read())"`.
+- **Every new `norm{Source}` MUST pass `positionType: g('position_type')`.** If omitted, the
+  frontend reads `undefined` and silently defaults the job to **full-time** — so maternity-cover
+  / part-time jobs show the wrong badge and the Contract filter misses them. (Hit bar/afeka/sce/
+  braude/bis at once on 2026-06-22.) Scrapers must also emit only the values the Contract filter
+  knows: `full_time` (or '') / `maternity_cover` / `part_time` / `freelance` / `internship` —
+  any other value (e.g. `postdoc`, `temporary`, `external_lecturer`) renders a blank badge and
+  isn't filterable, so map those to '' (full-time) instead.
 - A scraper tested with a single-company call (e.g. `run_comeet([{...}], {})`) will
   **overwrite that source's CSV with only that company** — don't commit such a partial CSV;
   the full nightly run regenerates it.
@@ -274,6 +282,32 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-22 — HIT College added (engineering-colleges expansion, source #4)
+- **New source `hit`** (employer-type `academic`) — HIT / Holon Institute of Technology's
+  **own** open positions (`fetch_hit.py` → `hit_jobs_*.csv`), Holon. 15 jobs (2 admin +
+  13 academic). WordPress, server-rendered, **but behind a Sucuri/SPD gateway**: plain
+  requests 302-loop to `//abuse.spd.co.il` (sets ZNPCQ/HITHTTPSSRVID cookies) → **curl_cffi**
+  `chrome110` (like Osem). `fetch_html()` warms up on the home page (lets the gateway set
+  cookies on the session), then fetches `/jobs/` with retries (timeout/5xx).
+- **Two-tab Bootstrap accordion:** `div#JOB_accordion0` (admin) / `div#JOB_accordion1`
+  (academic); each job `div.accordion-item` → `div.accordion_title` + `div.accordion-body`
+  (inline & rich → pop-up works). `department` by tab id.
+- **Duplicate-title gotcha (key lesson):** two distinct postdocs both titled "משרת פוסטדוק |
+  Postdoctoral Position" (different labs) — a title-only or page-URL-only key collapsed one
+  (14 instead of 15). Fix: each accordion item carries a unique `#collapseN` id
+  (`data-bs-target`/`.accordion-collapse[id]`, post-id based, stable). Appended to the page
+  URL as a fragment → unique per-job url; `first_seen`/dedup by **url**; frontend dedup
+  `title+url`. Side effect (accepted): the `#collapseN` link lands on the page (HIT doesn't
+  auto-open the accordion/tab by hash) — same UX as Afeka/Braude, but data is complete.
+- **internship false-match fixed:** the broad `intern(ship)?` regex matched "INTERNational"
+  / "internal" in descriptions (4 fake internships) → word-boundary `\bintern\b` + dropped the
+  broad Hebrew "התמחות". position_type only emits frontend-known values
+  (maternity_cover/part_time/freelance/internship; postdoc/visiting → '' = full_time).
+- **Frontend (`index.html`):** `normHIT`/`loadHIT` (Braude template, dedup `title+url`),
+  data-bar pill, source filter item, `DATABAR_SOURCES`, `'hit':'academic'`, `--hit` colour,
+  all 4 pools + `activeSrc`. **`run_fetch.bat`:** HIT inserted as **step 14/28** (cffi, after
+  Braude); later steps renumbered.
 
 ### 2026-06-21 — Braude College added (engineering-colleges expansion, source #3)
 - **New source `braude`** (employer-type `academic`) — ORT Braude College of Engineering's
