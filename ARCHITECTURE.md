@@ -71,6 +71,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | SCE (Sami Shamoon) | `fetch_sce.py` | `sce_jobs_*` | PW | local | Engineering college's **own** positions (employer-type `academic`). Three HR "wanted" sub-pages (admin / academic / research). **WAF JS-challenge**: plain requests AND curl_cffi both 403 → **Playwright** (one shared context, warm-up on the hub solves the challenge once). Server-rendered (no JS rendering needed) but the challenge requires a real browser. **Mixed link shapes**: admin jobs → external **CIVI** ATS (`app.civi.co.il/promo/id=N&src=M` — keep `src`, it's required or CIVI 404s); academic/research → internal SCE detail pages (`/wanted/{section}/{slug}`). Real per-job URLs → `first_seen`/dedup by **url**. Site emits doubled-domain hrefs (`/www.sce.ac.il/...`) — normalized. v1: no descriptions. |
 | Braude (ORT) | `fetch_braude.py` | `braude_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), Karmiel. WordPress, server-rendered, **no WAF** → req+BeautifulSoup (like Afeka). Foundation accordion: `li.accordion-item` → `a.accordion-title` (title) + `div.accordion-content` (description, **inline & rich** — pop-up works). One page, two sections משרות מנהליות / משרות אקדמיות → `department` by nearest preceding section heading (title-keyword fallback). No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup by `title+url`. Job-marker filter guards non-job accordions. |
 | HIT (Holon) | `fetch_hit.py` | `hit_jobs_*` | cffi | local | Engineering institute's **own** positions (employer-type `academic`), Holon. WordPress, server-rendered, but behind a **Sucuri/SPD gateway** that 302-loops plain requests to `//abuse.spd.co.il` → **curl_cffi** `chrome110` (like Osem; warm-up on home page + retries). Bootstrap accordion in **two tabs**: `div#JOB_accordion0` → admin, `div#JOB_accordion1` → academic; each job `div.accordion-item` → `div.accordion_title` (title) + `div.accordion-body` (description, **inline & rich** — pop-up works). `department` by tab id. **Per-job dedup by `#collapseN`**: jobs have no real URL, and two distinct postdocs can share the title "משרת פוסטדוק | Postdoctoral Position" → each item's unique `#collapseN` id is appended to the page URL as a fragment so they stay separate (`first_seen`/dedup by url; frontend dedup `title+url`). `clean_title` strips the "למכון טכנולוגי חולון" prefix. |
+| Azrieli (JCE) | `fetch_azrieli.py` | `azrieli_jobs_*` | cffi | local | Azrieli College of Engineering Jerusalem (JCE)'s **own** positions (employer-type `academic`), Jerusalem. WordPress (theme `roots-mipo`), server-rendered, but plain requests get a **403 block page** → **curl_cffi** `chrome110` (like Osem/HIT; warm-up on home + retries). Custom accordion in **two sections**: `div#academic-staff` → academic, `div#administrative-staff` → admin; each job `div.unit` → `div.unit_name > h3` (title) + `div.unit_content` (description, **inline & rich** — pop-up works). `department` by section id. No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup `title+url`. URL is "possitions" (sic). |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -191,17 +192,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (28 steps)
+## 8. `run_fetch.bat` — the local nightly runner (29 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)**
-15. Ichilov · 16. GotFriends · 17. HUJI positions
-18. Shaare Zedek (PW) · 19. Hadassah (PW)
-20. Deloitte (PW) · 21. EY (PW) · 22. BIS (PW) · 23. Joint (PW)
-24. Osem-Nestlé (curl_cffi) · 25. Teva Pharmaceuticals (req)
-26. `check_health.py` (health report) · 27. rclone upload all CSVs → Google Drive
-28. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)**
+16. Ichilov · 17. GotFriends · 18. HUJI positions
+19. Shaare Zedek (PW) · 20. Hadassah (PW)
+21. Deloitte (PW) · 22. EY (PW) · 23. BIS (PW) · 24. Joint (PW)
+25. Osem-Nestlé (curl_cffi) · 26. Teva Pharmaceuticals (req)
+27. `check_health.py` (health report) · 28. rclone upload all CSVs → Google Drive
+29. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -282,6 +283,24 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-22 — Azrieli College added (engineering-colleges expansion, source #5 — branch complete 5/5)
+- **New source `azrieli`** (employer-type `academic`) — Azrieli College of Engineering
+  Jerusalem (JCE)'s **own** open positions (`fetch_azrieli.py` → `azrieli_jobs_*.csv`),
+  Jerusalem. 10 jobs (5 academic + 5 admin). WordPress (theme `roots-mipo`), server-rendered.
+- **WAF 403** on plain requests (~5 KB block page) → **curl_cffi** `chrome110` (200, ~182 KB),
+  same as HIT/Osem (warm-up on home + retries). No redirect-loop like HIT — a direct 403.
+- **Two-section custom accordion:** `div#academic-staff` (academic) / `div#administrative-staff`
+  (admin); each job `div.unit` → `div.unit_name > h3` (title) + `div.unit_content` (description,
+  inline & rich → pop-up works). `department` by section id (HIT pattern). No per-job URL
+  (apply by email) → `first_seen` by **title**, frontend dedup `title+url` (Braude pattern).
+  Worked first try (10 jobs, descriptions 171–1000 chars, no dups).
+- **Frontend (`index.html`):** `normAzrieli`/`loadAzrieli` (Braude template + `positionType`),
+  data-bar pill, source filter item, `DATABAR_SOURCES`, `'azrieli':'academic'`, `--az` colour,
+  all 4 pools + `activeSrc`. **`run_fetch.bat`:** Azrieli inserted as **step 15/29** (cffi,
+  after HIT); later steps renumbered.
+- **Engineering-colleges branch COMPLETE (5/5):** Afeka (req) · SCE (PW) · Braude (req) ·
+  HIT (cffi) · Azrieli (cffi). Five own-positions academic sources added end-to-end this run.
 
 ### 2026-06-22 — HIT College added (engineering-colleges expansion, source #4)
 - **New source `hit`** (employer-type `academic`) — HIT / Holon Institute of Technology's

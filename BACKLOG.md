@@ -36,7 +36,15 @@ the university sources. Afeka is the proven end-to-end template; the rest replic
   "משרת פוסטדוק | Postdoctoral Position" → unique `#collapseN` id appended to page URL as
   fragment to keep them separate (dedup/first_seen by **url**). internship regex tightened to
   word boundaries (was matching "INTERNational"). See ARCHITECTURE §3/§8/§11.
-- **Azrieli College** ⏳ next (last engineering college) — recon pending (URL, platform, WAF check).
+- **Azrieli College** ✅ Resolved 2026-06-22 — `fetch_azrieli.py` → `azrieli_jobs_*.csv` (10 jobs:
+  5 academic + 5 admin), Jerusalem. **curl_cffi** `chrome110` (plain requests 403; warm-up +
+  retries, like HIT/Osem); local-only (step 15/29). WordPress `roots-mipo` custom accordion,
+  two sections (`#academic-staff` / `#administrative-staff` → `department` by id), descriptions
+  inline (pop-up works). No per-job URL → `first_seen` by **title**, dedup `title+url`. Worked
+  first try. See ARCHITECTURE §3/§8/§11.
+
+**✅ Engineering-colleges branch COMPLETE (5/5):** Afeka (req) · SCE (PW) · Braude (req) ·
+HIT (cffi) · Azrieli (cffi). All five colleges' own academic/admin positions added end-to-end.
 
 Per-college flow: audit career page → spec → confirm → `fetch_{college}.py` → verify rows →
 frontend wiring → `run_fetch.bat` step → prod check. Check for shared platforms first
@@ -176,17 +184,17 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ## 🛠 `run_fetch.bat` step reference (as of 2026-06-22)
 
-The manual local runner now has 28 steps:
+The manual local runner now has 29 steps:
 1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)**
-15. Ichilov · 16. GotFriends · 17. HUJI positions
-18. Shaare Zedek (PW) · 19. Hadassah (PW)
-20. Deloitte (PW) · 21. EY (PW) · 22. BIS (PW) · 23. Joint (PW)
-24. Osem-Nestlé (curl_cffi) · 25. Teva (req)
-26. health check (`check_health.py`)
-27. rclone upload all CSVs → Google Drive
-28. commit + push
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)**
+16. Ichilov · 17. GotFriends · 18. HUJI positions
+19. Shaare Zedek (PW) · 20. Hadassah (PW)
+21. Deloitte (PW) · 22. EY (PW) · 23. BIS (PW) · 24. Joint (PW)
+25. Osem-Nestlé (curl_cffi) · 26. Teva (req)
+27. health check (`check_health.py`)
+28. rclone upload all CSVs → Google Drive
+29. commit + push
 27. commit + push
 
 Note: `fetch_jobs.py` (ATS sources) and `fetch_gotfriends.py` run in **GitHub Actions CI**, not
