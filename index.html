@@ -45,6 +45,7 @@
   --sce:#a83254;--sce-pale:rgba(168,50,84,0.07);
   --bd:#2e7d4f;--bd-pale:rgba(46,125,79,0.07);
   --hit:#1c6fb0;--hit-pale:rgba(28,111,176,0.07);
+  --az:#7d3fa8;--az-pale:rgba(125,63,168,0.07);
   --bis:#2e7b8c;--bis-pale:rgba(46,123,140,0.07);
   --gf:#2563eb;--gf-pale:rgba(37,99,235,0.07);
   --ic:#c0392b;--ic-pale:rgba(192,57,43,0.07);
@@ -651,6 +652,8 @@
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--hit)"></span><span id="hitStatusText">HIT: loading…</span></div>
   <span class="databar-sep">·</span>
+  <div class="datasrc"><span class="src-dot" style="background:var(--az)"></span><span id="azrieliStatusText">Azrieli: loading…</span></div>
+  <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--bis)"></span><span id="bisStatusText">BIS: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--gf)"></span><span id="gfStatusText">GotFriends: loading…</span></div>
@@ -808,6 +811,7 @@
         <li class="ms-item" data-value="sce"><input type="checkbox" id="src_sce"><label class="ms-item-label" for="src_sce">SCE &#x1F393;</label></li>
         <li class="ms-item" data-value="braude"><input type="checkbox" id="src_braude"><label class="ms-item-label" for="src_braude">Braude &#x1F393;</label></li>
         <li class="ms-item" data-value="hit"><input type="checkbox" id="src_hit"><label class="ms-item-label" for="src_hit">HIT &#x1F393;</label></li>
+        <li class="ms-item" data-value="azrieli"><input type="checkbox" id="src_azrieli"><label class="ms-item-label" for="src_azrieli">Azrieli &#x1F393;</label></li>
         <li class="ms-item" data-value="bis"><input type="checkbox" id="src_bis"><label class="ms-item-label" for="src_bis">BIS</label></li>
         <li class="ms-item" data-value="gf"><input type="checkbox" id="src_gf"><label class="ms-item-label" for="src_gf">GotFriends</label></li>
         <li class="ms-item" data-value="ichilov"><input type="checkbox" id="src_ichilov"><label class="ms-item-label" for="src_ichilov">Ichilov &#x1F3E5;</label></li>
@@ -1260,6 +1264,7 @@ let AFEKA_JOBS = []; // Afeka College of Engineering positions
 let SCE_JOBS = [];   // SCE (Sami Shamoon) College of Engineering positions
 let BRAUDE_JOBS = []; // ORT Braude College of Engineering positions
 let HIT_JOBS = []; // HIT (Holon Institute of Technology) positions
+let AZRIELI_JOBS = []; // Azrieli College of Engineering Jerusalem (JCE) positions
 let BIS_JOBS = [];   // BIS (אגודת סטודנטים בר-אילן)
 let GF_JOBS  = [];   // GotFriends
 let IC_JOBS  = [];   // Ichilov (TopMatch)
@@ -1356,6 +1361,7 @@ const $afekaStatus = document.getElementById('afekaStatusText');
 const $sceStatus = document.getElementById('sceStatusText');
 const $braudeStatus = document.getElementById('braudeStatusText');
 const $hitStatus = document.getElementById('hitStatusText');
+const $azrieliStatus = document.getElementById('azrieliStatusText');
 const $bisStatus = document.getElementById('bisStatusText');
 const $gfStatus  = document.getElementById('gfStatusText');
 const $icStatus  = document.getElementById('icStatusText');
@@ -2655,6 +2661,45 @@ async function loadHIT() {
   TOTALS['hit'] = HIT_JOBS.length;
 }
 
+// ─── LOAD AZRIELI (מכללת עזריאלי להנדסה ירושלים / JCE) ───────────────────────
+function normAzrieli(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const title = g('title').split('\n')[0].trim();
+  if (!title) return null;
+  const fnDate = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  return {
+    source: 'azrieli', fnArea: 'azrieli', title,
+    company: g('company') || 'מכללת עזריאלי להנדסה ירושלים',
+    category: classifySegment(title), size: '', level: classifyLevel(title),
+    city: g('location') || 'ירושלים',
+    url: g('url'), updated: g('date') || fnDate,
+    deadline: g('deadline') || '', department: g('department'),
+    description: g('description'), requirements: g('requirements'), positionType: g('position_type'), workType: 'onsite'
+  };
+}
+async function loadAzrieli() {
+  if ($azrieliStatus) $azrieliStatus.innerHTML = 'Azrieli: <span style="color:var(--ink-faint)">loading…</span>';
+  const rows = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    const fname = `azrieli_jobs_${y}-${m}-${day}.csv`;
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) continue;
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase() });
+      parsed.data.forEach(row => { const n = normAzrieli(row, fname); if (n) rows.push(n); });
+      break;
+    } catch(e) {}
+  }
+  if (!rows.length) { if ($azrieliStatus) $azrieliStatus.innerHTML = 'Azrieli: <span style="color:var(--ink-faint)">no file yet</span>'; return; }
+  const seen = new Set();
+  // dedup by title+url: jobs share one page URL (apply by email), so url alone would collide
+  AZRIELI_JOBS = rows.filter(r => { const k = r.title+'|'+(r.url||''); if(seen.has(k))return false; seen.add(k); return true; });
+  if ($azrieliStatus) $azrieliStatus.innerHTML = `Azrieli: <strong>${AZRIELI_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['azrieli'] = AZRIELI_JOBS.length;
+}
+
 
 
 // ─── LOAD BIS (אגודת סטודנטים בר-אילן) ──────────────────────────────────────
@@ -2702,7 +2747,7 @@ function getPoolInner(){
     const seen = new Set();
     const seenTitleCo = new Set();
     // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
+    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
       const k = r.url;
       const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
       if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -2736,6 +2781,7 @@ function getPoolInner(){
   if(activeSrc==='sce')   return SCE_JOBS;
   if(activeSrc==='braude') return BRAUDE_JOBS;
   if(activeSrc==='hit') return HIT_JOBS;
+  if(activeSrc==='azrieli') return AZRIELI_JOBS;
   if(activeSrc==='bis')   return BIS_JOBS;
   if(activeSrc==='gf')    return GF_JOBS;
   if(activeSrc==='ichilov') return IC_JOBS;
@@ -2761,7 +2807,7 @@ function getPoolInner(){
   // fallback: full merged pool
   const seen = new Set();
   const seenTitleCo = new Set();
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3455,7 +3501,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'joint':'nonprofit',
   'Biltiformali-Telegram':'nonprofit',
   'mod':'public',
-  'bar':'academic','afeka':'academic','sce':'academic','braude':'academic','hit':'academic','bis':'public',
+  'bar':'academic','afeka':'academic','sce':'academic','braude':'academic','hit':'academic','azrieli':'academic','bis':'public',
   'ichilov':'public','ic':'public','rambam':'public','rb':'public',
   'beilinson':'public','bl':'public',
   'soroka':'public','sk':'public',
@@ -3526,6 +3572,7 @@ const DATABAR_SOURCES = [
   { id:'sceStatusText',       key:'sce',         label:'SCE' },
   { id:'braudeStatusText',    key:'braude',      label:'Braude' },
   { id:'hitStatusText',       key:'hit',         label:'HIT' },
+  { id:'azrieliStatusText',   key:'azrieli',     label:'Azrieli' },
   { id:'bisStatusText',       key:'bis',         label:'BIS' },
   { id:'gfStatusText',        key:'gf',          label:'GotFriends' },
   { id:'icStatusText',        key:'ichilov',     label:'Ichilov' },
@@ -5084,6 +5131,7 @@ render();
     loadSCE(),
     loadBraude(),
     loadHIT(),
+    loadAzrieli(),
     loadBIS(),
     loadGotFriends(),
     loadIchilov(),
@@ -5172,7 +5220,7 @@ async function renderAnalytics(){
   const panel = document.getElementById('analyticsPanel');
   if(!panel || panel.style.display==='none') return;
 
-  const pool = [...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...TG_JOBS];
+  const pool = [...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...TG_JOBS];
   const seen=new Set();
   const jobs=pool.filter(r=>{ const k=r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
   if(!jobs.length) return;
@@ -5412,7 +5460,7 @@ function shareJob(btn) {
 }
 
 function toggleTrack(id){
-  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
+  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
   var r=pool.find(function(j){ return (j.url||j.title+j.company)===id; });
   var apps=getApps();
   if(isTracked(id)){
