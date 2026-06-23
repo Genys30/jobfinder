@@ -72,6 +72,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Braude (ORT) | `fetch_braude.py` | `braude_jobs_*` | req | local | Engineering college's **own** positions (employer-type `academic`), Karmiel. WordPress, server-rendered, **no WAF** → req+BeautifulSoup (like Afeka). Foundation accordion: `li.accordion-item` → `a.accordion-title` (title) + `div.accordion-content` (description, **inline & rich** — pop-up works). One page, two sections משרות מנהליות / משרות אקדמיות → `department` by nearest preceding section heading (title-keyword fallback). No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup by `title+url`. Job-marker filter guards non-job accordions. |
 | HIT (Holon) | `fetch_hit.py` | `hit_jobs_*` | cffi | local | Engineering institute's **own** positions (employer-type `academic`), Holon. WordPress, server-rendered, but behind a **Sucuri/SPD gateway** that 302-loops plain requests to `//abuse.spd.co.il` → **curl_cffi** `chrome110` (like Osem; warm-up on home page + retries). Bootstrap accordion in **two tabs**: `div#JOB_accordion0` → admin, `div#JOB_accordion1` → academic; each job `div.accordion-item` → `div.accordion_title` (title) + `div.accordion-body` (description, **inline & rich** — pop-up works). `department` by tab id. **Per-job dedup by `#collapseN`**: jobs have no real URL, and two distinct postdocs can share the title "משרת פוסטדוק | Postdoctoral Position" → each item's unique `#collapseN` id is appended to the page URL as a fragment so they stay separate (`first_seen`/dedup by url; frontend dedup `title+url`). `clean_title` strips the "למכון טכנולוגי חולון" prefix. |
 | Azrieli (JCE) | `fetch_azrieli.py` | `azrieli_jobs_*` | cffi | local | Azrieli College of Engineering Jerusalem (JCE)'s **own** positions (employer-type `academic`), Jerusalem. WordPress (theme `roots-mipo`), server-rendered, but plain requests get a **403 block page** → **curl_cffi** `chrome110` (like Osem/HIT; warm-up on home + retries). Custom accordion in **two sections**: `div#academic-staff` → academic, `div#administrative-staff` → admin; each job `div.unit` → `div.unit_name > h3` (title) + `div.unit_content` (description, **inline & rich** — pop-up works). `department` by section id. No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup `title+url`. URL is "possitions" (sic). |
+| Shenkar | `fetch_shenkar.py` | `shenkar_jobs_*` | req | local | Shenkar College of Engineering & Design's **own** positions (employer-type `academic`), Ramat Gan — the 6th engineering/tech college. WordPress (WPML), **no WAF** → req+BS4. **Structurally different**: NOT an accordion — a flat list of links, each pointing to an **external Google Docs/Drive** doc with the full text. Job links identified by href (`docs.google.com`/`drive.google.com`) + a title marker (דרוש/קול קורא/מרצה). **No inline descriptions** (body lives in the external doc; v1 leaves `description` empty — pop-up is blank). Links ARE real per-job URLs → `first_seen`/dedup by **url** (like SCE). All postings are faculty roles → `department=academic_faculty`. `clean_title` strips a trailing posting-date and fixes "דרוש/ ה" → "דרוש/ה". Small list (~6), may include older postings the college still lists. |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -192,17 +193,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (29 steps)
+## 8. `run_fetch.bat` — the local nightly runner (30 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)**
-16. Ichilov · 17. GotFriends · 18. HUJI positions
-19. Shaare Zedek (PW) · 20. Hadassah (PW)
-21. Deloitte (PW) · 22. EY (PW) · 23. BIS (PW) · 24. Joint (PW)
-25. Osem-Nestlé (curl_cffi) · 26. Teva Pharmaceuticals (req)
-27. `check_health.py` (health report) · 28. rclone upload all CSVs → Google Drive
-29. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar**
+17. Ichilov · 18. GotFriends · 19. HUJI positions
+20. Shaare Zedek (PW) · 21. Hadassah (PW)
+22. Deloitte (PW) · 23. EY (PW) · 24. BIS (PW) · 25. Joint (PW)
+26. Osem-Nestlé (curl_cffi) · 27. Teva Pharmaceuticals (req)
+28. `check_health.py` (health report) · 29. rclone upload all CSVs → Google Drive
+30. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -283,6 +284,27 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-23 — Shenkar College added (engineering-colleges expansion, source #6 — branch complete 6/6)
+- **New source `shenkar`** (employer-type `academic`) — Shenkar College of Engineering &
+  Design's **own** open positions (`fetch_shenkar.py` → `shenkar_jobs_*.csv`), Ramat Gan.
+  6 jobs (all academic faculty). WordPress (WPML), **no WAF** → req+BS4.
+- **Different structure (key lesson):** unlike the 5 accordion colleges, Shenkar's page is a
+  flat list of **links to external Google Docs/Drive** documents — no inline job text on the
+  page. Job links are identified by href (`docs.google.com`/`drive.google.com`) + a title
+  marker. **No descriptions** (v1 leaves `description` empty — the body is in the external doc;
+  pop-up is blank, accepted). The links ARE real per-job URLs → `first_seen`/dedup by **url**.
+- `clean_title` strips a trailing posting-date `(10.04.2025)` and fixes the site's slash-wrap
+  "דרוש/ ה" → "דרוש/ה". Small list (~6), includes some older postings still on the page.
+- **Frontend (`index.html`):** `normShenkar`/`loadShenkar` (SCE template — dedup by **url** —
+  + `positionType`), data-bar pill, source filter, `DATABAR_SOURCES`, `'shenkar':'academic'`,
+  `--sh` colour, all 4 pools + `activeSrc`. **`run_fetch.bat`:** the live bat was missing the
+  **Azrieli** step (its bat update wasn't pushed) → this session inserted **both** Azrieli
+  (step 15, cffi) and Shenkar (step 16, req) → **30 steps**.
+- **Engineering/tech-colleges branch COMPLETE (6/6):** Afeka (req) · SCE (PW) · Braude (req) ·
+  HIT (cffi) · Azrieli (cffi) · Shenkar (req). All six engineering/technology colleges' own
+  positions are now sources. Next academic tier (if pursued): general colleges with eng/CS
+  faculties (Ruppin, Tel-Hai, Emek Yezreel, Sapir) — lower relevance density, separate decision.
 
 ### 2026-06-22 — Azrieli College added (engineering-colleges expansion, source #5 — branch complete 5/5)
 - **New source `azrieli`** (employer-type `academic`) — Azrieli College of Engineering
