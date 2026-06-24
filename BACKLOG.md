@@ -53,17 +53,20 @@ the university sources. Afeka is the proven end-to-end template; the rest replic
 **✅ Engineering/tech-colleges branch COMPLETE (6/6):** Afeka (req) · SCE (PW) · Braude (req) ·
 HIT (cffi) · Azrieli (cffi) · Shenkar (req). All six engineering/technology colleges done.
 
-**General-colleges branch (scope = academic + admin) — 2/4 done:**
+**General-colleges branch (scope = academic + admin) — 3/4 done:**
 - **Sapir** ✅ Resolved 2026-06-24 — `fetch_sapir.py` → `sapir_jobs_*.csv` (~21 jobs, mostly
   admin), Sderot. CIVI ATS feed (`app.civi.co.il/promos/id=NLY65YEJTW&src=13586`), scraped
   directly; dedup by per-job promo **url**. **Pagination via `&p=N`** (`?rows=` ignored).
-  Frontend uses `--spr` colour (`--sp` was taken by Direct). Step 17/32. See ARCHITECTURE §3/§8/§11.
+  Frontend uses `--spr` colour (`--sp` was taken by Direct). Step 17/33. See ARCHITECTURE §3/§8/§11.
 - **Emek Yezreel** ✅ Resolved 2026-06-24 — `fetch_yvc.py` → `yvc_jobs_*.csv` (~5 jobs, academic
   course positions), Yezreel Valley. req+BS4 (no WAF), `section.q-and-a` accordion. **Source key
   `yvc`** (not `emek` — `EMEK_JOBS` = HaEmek hospital). Duplicate toggle titles enriched with the
-  course name (HIT-style); dedup by enriched title. Step 18/32. See ARCHITECTURE §3/§8/§11.
-- **Tel-Hai** ⏳ queued — `telhai.ac.il/jobs` + `/jobs-2` (req, no WAF; academic page may be a
-  generic "send CV" page rather than a list — check on recon).
+  course name (HIT-style); dedup by enriched title. Step 18/33. See ARCHITECTURE §3/§8/§11.
+- **Tel-Hai** ✅ Resolved 2026-06-24 — `fetch_telhai.py` → `telhai_jobs_*.csv` (~27 jobs: 7
+  academic + 20 admin), Galilee. **Drupal Views table** (`/jobs` academic, `/jobs-2` admin —
+  department by page), req+BS4 (no WAF). Real `/position/NNNN` URLs → dedup by **url**.
+  **External-only filter** (internal/פנימית rows skipped — Anna's choice). `position_type`
+  from the scope cell. Step 19/33. See ARCHITECTURE §3/§8/§11.
 - **Ruppin** ⏳ LAST, separate go/no-go — `ruppin.ac.il/.../academic-staff-required` is behind
   **Imperva (status 247)**: req AND curl_cffi both blocked → needs Playwright. Low relevance
   (mostly maintenance/secretary/marketing). Weigh PW cost vs. yield before committing.
@@ -206,17 +209,17 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ## 🛠 `run_fetch.bat` step reference (as of 2026-06-22)
 
-The manual local runner now has 32 steps:
+The manual local runner now has 33 steps:
 1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)**
-19. Ichilov · 20. GotFriends · 21. HUJI positions
-22. Shaare Zedek (PW) · 23. Hadassah (PW)
-24. Deloitte (PW) · 25. EY (PW) · 26. BIS (PW) · 27. Joint (PW)
-28. Osem-Nestlé (curl_cffi) · 29. Teva (req)
-30. health check (`check_health.py`)
-31. rclone upload all CSVs → Google Drive
-32. commit + push
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai**
+20. Ichilov · 21. GotFriends · 22. HUJI positions
+23. Shaare Zedek (PW) · 24. Hadassah (PW)
+25. Deloitte (PW) · 26. EY (PW) · 27. BIS (PW) · 28. Joint (PW)
+29. Osem-Nestlé (curl_cffi) · 30. Teva (req)
+31. health check (`check_health.py`)
+32. rclone upload all CSVs → Google Drive
+33. commit + push
 27. commit + push
 
 Note: `fetch_jobs.py` (ATS sources) and `fetch_gotfriends.py` run in **GitHub Actions CI**, not

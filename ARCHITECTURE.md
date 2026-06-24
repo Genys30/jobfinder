@@ -75,6 +75,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Shenkar | `fetch_shenkar.py` | `shenkar_jobs_*` | req | local | Shenkar College of Engineering & Design's **own** positions (employer-type `academic`), Ramat Gan — the 6th engineering/tech college. WordPress (WPML), **no WAF** → req+BS4. **Structurally different**: NOT an accordion — a flat list of links, each pointing to an **external Google Docs/Drive** doc with the full text. Job links identified by href (`docs.google.com`/`drive.google.com`) + a title marker (דרוש/קול קורא/מרצה). **No inline descriptions** (body lives in the external doc; v1 leaves `description` empty — pop-up is blank). Links ARE real per-job URLs → `first_seen`/dedup by **url** (like SCE). All postings are faculty roles → `department=academic_faculty`. `clean_title` strips a trailing posting-date and fixes "דרוש/ ה" → "דרוש/ה". Small list (~6), may include older postings the college still lists. |
 | Sapir | `fetch_sapir.py` | `sapir_jobs_*` | req→cffi | local | Sapir Academic College's **own** positions (employer-type `academic`), Sderot — **1st general (non-engineering) college**. Page `sapir.ac.il/hr/wanted` redirects to a **CIVI ATS feed** (`app.civi.co.il/promos/id=NLY65YEJTW&src=13586`), scraped directly. Each job is a `div.thumb-content` card → `.title` + `.descr` (description **inline & rich** → pop-up works); the job id is in the `openPromo(event,<ID>,13586,1)` onclick → per-job URL `app.civi.co.il/promo/id=<ID>&src=13586` (real per-job URL → `first_seen`/dedup by **url**, like SCE). **Pagination:** CIVI uses `&p=N` (20/page; `?rows=` is ignored) — loop pages until one yields no new cards. `department` inferred from title keywords (חבר סגל/מרצה/מנחה/רקטור/דיקן → academic, else admin) since the feed has no section split. Scope = academic **+ admin** (Anna's choice for general colleges). ~21 jobs, mostly admin. |
 | Emek Yezreel (YVC) | `fetch_yvc.py` | `yvc_jobs_*` | req | local | Max Stern Yezreel Valley College's **own** positions (employer-type `academic`), Yezreel Valley — 2nd general college. WordPress (theme `emek`), **no WAF** → req+BS4. **Source key is `yvc` (not `emek`)** because `EMEK_JOBS` already exists for HaEmek Medical Center (the Afula hospital) — avoids the collision. Single accordion: `section.q-and-a` → `div.question-item` → `a.question-link span` (toggle) + `div.answer` (body). **Duplicate-title gotcha (like HIT):** toggle text repeats; the distinguishing course name is in the body's first `<p>` ("…לקורס: COURSE") → the title is **enriched with the course name** to make it unique (the `#questionN` anchor is sequential/unstable, so not used as a key). No per-job URL (apply by email) → `first_seen`/dedup by enriched **title** (Afeka/Braude pattern). `department` by keyword. ~5 jobs, all academic course positions. |
+| Tel-Hai | `fetch_telhai.py` | `telhai_jobs_*` | req | local | Tel-Hai Academic College's **own** positions (employer-type `academic`), Galilee — 3rd general college. **Drupal** (Olivero theme, Views), server-rendered, **no WAF** → req+BS4 (web_fetch is bot-blocked, but plain requests works from an Israeli IP). **Two pages, department by page**: `/jobs` → academic_faculty, `/jobs-2` → admin_staff. Each is a Views **table**: `tr` → `td.views-field-title a[href^="/position/"]` (real per-job URL), plus metadata cells (`field-job-scope`, `field-availability`, `field-exteral-internal` [sic], `field-submission-deadline`). **External-only filter** (Anna's choice): rows where the exteral-internal cell says פנימית (internal) are skipped — internal postings aren't useful in a public feed. `position_type` derived from the scope cell (חצי משרה → part_time, חל"ד → maternity_cover). Real per-job URLs → `first_seen`/dedup by **url**. v1 does not fetch the `/position/` detail pages — description is built from the row's metadata. ~27 jobs (7 academic + 20 admin). |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -195,17 +196,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (32 steps)
+## 8. `run_fetch.bat` — the local nightly runner (33 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)**
-19. Ichilov · 20. GotFriends · 21. HUJI positions
-22. Shaare Zedek (PW) · 23. Hadassah (PW)
-24. Deloitte (PW) · 25. EY (PW) · 26. BIS (PW) · 27. Joint (PW)
-28. Osem-Nestlé (curl_cffi) · 29. Teva Pharmaceuticals (req)
-30. `check_health.py` (health report) · 31. rclone upload all CSVs → Google Drive
-32. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai**
+20. Ichilov · 21. GotFriends · 22. HUJI positions
+23. Shaare Zedek (PW) · 24. Hadassah (PW)
+25. Deloitte (PW) · 26. EY (PW) · 27. BIS (PW) · 28. Joint (PW)
+29. Osem-Nestlé (curl_cffi) · 30. Teva Pharmaceuticals (req)
+31. `check_health.py` (health report) · 32. rclone upload all CSVs → Google Drive
+33. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -286,6 +287,34 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-24 — Tel-Hai College added (general-colleges expansion, source #3 of 4)
+- **New source `telhai`** (employer-type `academic`) — Tel-Hai Academic College's **own** open
+  positions (`fetch_telhai.py` → `telhai_jobs_*.csv`), Galilee. ~27 jobs (7 academic + 20 admin).
+  **Drupal** (Olivero theme, Views), server-rendered, **no WAF** → req+BS4. (`web_fetch` is
+  bot-blocked on this site, but plain `requests` works fine from an Israeli IP — recon was done
+  via a probe script run by Anna rather than direct fetch.)
+- **Two separate pages, department by page** (cleaner than keyword-guessing): `/jobs` →
+  academic_faculty, `/jobs-2` → admin_staff. Each renders a Views **table** — `tr` →
+  `td.views-field-title a[href^="/position/"]` (real per-job URL) plus metadata cells: job
+  code, scope (`field-job-scope`), availability, **exteral-internal** [sic — site's own typo]
+  flag, submission deadline.
+- **External-only filter (Anna's explicit choice):** rows flagged פנימית (internal) are
+  skipped during scrape — internal-only postings aren't useful in a public job feed. `0`
+  internal rows were present on this run, but the filter stays in for future runs.
+  `position_type` is derived from the scope cell (חצי משרה → part_time, חל"ד → maternity_cover).
+- Real per-job `/position/NNNN` URLs → `first_seen`/dedup by **url** (SCE/Sapir pattern). Several
+  jobs share an identical title ("קול קורא לגיוס חבר/ת סגל...") across different faculty
+  clusters — each has a distinct `/position/` id, so they correctly stay separate. v1 does
+  **not** fetch the `/position/` detail pages (would add 25-30 requests/night) — `description`
+  is built from the row's own metadata cells instead.
+- **Frontend (`index.html`):** `normTelhai`/`loadTelhai` (SCE/Sapir template — dedup by **url**
+  — + `positionType`), data-bar pill, source filter, `DATABAR_SOURCES`, `'telhai':'academic'`,
+  `--th` colour, all 4 pools + `activeSrc`. **`run_fetch.bat`:** Tel-Hai inserted as **step
+  19/33** (req, after Emek Yezreel).
+- **General-colleges branch: 3/4 done** (Sapir, YVC, Tel-Hai). Only **Ruppin** remains — behind
+  Imperva (status 247), needs Playwright; separate go/no-go given its low relevance (mostly
+  maintenance/secretary/marketing postings).
 
 ### 2026-06-24 — Emek Yezreel / YVC College added (general-colleges expansion, source #2 of 4)
 - **New source `yvc`** (employer-type `academic`) — Max Stern Yezreel Valley College's **own**
