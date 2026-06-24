@@ -73,6 +73,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | HIT (Holon) | `fetch_hit.py` | `hit_jobs_*` | cffi | local | Engineering institute's **own** positions (employer-type `academic`), Holon. WordPress, server-rendered, but behind a **Sucuri/SPD gateway** that 302-loops plain requests to `//abuse.spd.co.il` → **curl_cffi** `chrome110` (like Osem; warm-up on home page + retries). Bootstrap accordion in **two tabs**: `div#JOB_accordion0` → admin, `div#JOB_accordion1` → academic; each job `div.accordion-item` → `div.accordion_title` (title) + `div.accordion-body` (description, **inline & rich** — pop-up works). `department` by tab id. **Per-job dedup by `#collapseN`**: jobs have no real URL, and two distinct postdocs can share the title "משרת פוסטדוק | Postdoctoral Position" → each item's unique `#collapseN` id is appended to the page URL as a fragment so they stay separate (`first_seen`/dedup by url; frontend dedup `title+url`). `clean_title` strips the "למכון טכנולוגי חולון" prefix. |
 | Azrieli (JCE) | `fetch_azrieli.py` | `azrieli_jobs_*` | cffi | local | Azrieli College of Engineering Jerusalem (JCE)'s **own** positions (employer-type `academic`), Jerusalem. WordPress (theme `roots-mipo`), server-rendered, but plain requests get a **403 block page** → **curl_cffi** `chrome110` (like Osem/HIT; warm-up on home + retries). Custom accordion in **two sections**: `div#academic-staff` → academic, `div#administrative-staff` → admin; each job `div.unit` → `div.unit_name > h3` (title) + `div.unit_content` (description, **inline & rich** — pop-up works). `department` by section id. No per-job URL (apply by email) → `first_seen` by **title** (Afeka/BGU pattern), frontend dedup `title+url`. URL is "possitions" (sic). |
 | Shenkar | `fetch_shenkar.py` | `shenkar_jobs_*` | req | local | Shenkar College of Engineering & Design's **own** positions (employer-type `academic`), Ramat Gan — the 6th engineering/tech college. WordPress (WPML), **no WAF** → req+BS4. **Structurally different**: NOT an accordion — a flat list of links, each pointing to an **external Google Docs/Drive** doc with the full text. Job links identified by href (`docs.google.com`/`drive.google.com`) + a title marker (דרוש/קול קורא/מרצה). **No inline descriptions** (body lives in the external doc; v1 leaves `description` empty — pop-up is blank). Links ARE real per-job URLs → `first_seen`/dedup by **url** (like SCE). All postings are faculty roles → `department=academic_faculty`. `clean_title` strips a trailing posting-date and fixes "דרוש/ ה" → "דרוש/ה". Small list (~6), may include older postings the college still lists. |
+| Sapir | `fetch_sapir.py` | `sapir_jobs_*` | req→cffi | local | Sapir Academic College's **own** positions (employer-type `academic`), Sderot — **1st general (non-engineering) college**. Page `sapir.ac.il/hr/wanted` redirects to a **CIVI ATS feed** (`app.civi.co.il/promos/id=NLY65YEJTW&src=13586`), scraped directly. Each job is a `div.thumb-content` card → `.title` + `.descr` (description **inline & rich** → pop-up works); the job id is in the `openPromo(event,<ID>,13586,1)` onclick → per-job URL `app.civi.co.il/promo/id=<ID>&src=13586` (real per-job URL → `first_seen`/dedup by **url**, like SCE). **Pagination:** CIVI uses `&p=N` (20/page; `?rows=` is ignored) — loop pages until one yields no new cards. `department` inferred from title keywords (חבר סגל/מרצה/מנחה/רקטור/דיקן → academic, else admin) since the feed has no section split. Scope = academic **+ admin** (Anna's choice for general colleges). ~21 jobs, mostly admin. |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -193,17 +194,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (30 steps)
+## 8. `run_fetch.bat` — the local nightly runner (31 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar**
-17. Ichilov · 18. GotFriends · 19. HUJI positions
-20. Shaare Zedek (PW) · 21. Hadassah (PW)
-22. Deloitte (PW) · 23. EY (PW) · 24. BIS (PW) · 25. Joint (PW)
-26. Osem-Nestlé (curl_cffi) · 27. Teva Pharmaceuticals (req)
-28. `check_health.py` (health report) · 29. rclone upload all CSVs → Google Drive
-30. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)**
+18. Ichilov · 19. GotFriends · 20. HUJI positions
+21. Shaare Zedek (PW) · 22. Hadassah (PW)
+23. Deloitte (PW) · 24. EY (PW) · 25. BIS (PW) · 26. Joint (PW)
+27. Osem-Nestlé (curl_cffi) · 28. Teva Pharmaceuticals (req)
+29. `check_health.py` (health report) · 30. rclone upload all CSVs → Google Drive
+31. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -284,6 +285,28 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-24 — Sapir College added (general-colleges expansion, source #1 of 4)
+- **New source `sapir`** (employer-type `academic`) — Sapir Academic College's **own** open
+  positions (`fetch_sapir.py` → `sapir_jobs_*.csv`), Sderot. First **general** (non-engineering)
+  college. ~21 jobs (scope = academic **+ admin**, Anna's choice). `'sapir':'academic'` in the
+  employer-type map (it's an academic institution).
+- **CIVI ATS feed:** `sapir.ac.il/hr/wanted` redirects to `app.civi.co.il/promos/id=NLY65YEJTW
+  &src=13586`, scraped directly (req → curl_cffi fallback). Each job = `div.thumb-content` →
+  `.title` + `.descr` (inline rich → pop-up works). Job id from the `openPromo(event,<ID>,13586,1)`
+  onclick → per-job URL `app.civi.co.il/promo/id=<ID>&src=13586` (real per-job URL → dedup by
+  **url**, SCE pattern).
+- **Pagination (key lesson):** CIVI ignores `?rows=N` but honours **`&p=N`** (20 jobs/page).
+  Probed by counting distinct `openPromo` ids per param: only `p=2` returned new ids. Scraper
+  loops `&p=1,2,…` until a page yields no new cards. (Got 20 on p1 + remainder on p2.)
+- `department` inferred from title keywords (חבר סגל/מרצה/מנחה/רקטור/דיקן → academic, else admin),
+  since the CIVI feed has no academic/admin section split. Mostly admin (general college).
+- **Frontend (`index.html`):** `normSapir`/`loadSapir` (SCE template — dedup by **url** —
+  + `positionType`), data-bar pill, source filter, `DATABAR_SOURCES`, `'sapir':'academic'`,
+  all 4 pools + `activeSrc`. **Colour-var collision caught:** `--sp` was already taken by the
+  existing **Direct** source → Sapir uses **`--spr`** instead (verified Direct's pill/badges
+  intact). **`run_fetch.bat`:** Sapir inserted as **step 17/31** (CIVI, after Shenkar).
+- **General-colleges branch: 1/4 done** (Sapir). Next: Emek Yezreel → Tel-Hai → Ruppin (Imperva/PW, last).
 
 ### 2026-06-23 — Shenkar College added (engineering-colleges expansion, source #6 — branch complete 6/6)
 - **New source `shenkar`** (employer-type `academic`) — Shenkar College of Engineering &
