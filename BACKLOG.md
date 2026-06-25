@@ -53,7 +53,7 @@ the university sources. Afeka is the proven end-to-end template; the rest replic
 **✅ Engineering/tech-colleges branch COMPLETE (6/6):** Afeka (req) · SCE (PW) · Braude (req) ·
 HIT (cffi) · Azrieli (cffi) · Shenkar (req). All six engineering/technology colleges done.
 
-**General-colleges branch (scope = academic + admin) — 3/4 done:**
+**General-colleges branch (scope = academic + admin) — ✅ COMPLETE (4/4):**
 - **Sapir** ✅ Resolved 2026-06-24 — `fetch_sapir.py` → `sapir_jobs_*.csv` (~21 jobs, mostly
   admin), Sderot. CIVI ATS feed (`app.civi.co.il/promos/id=NLY65YEJTW&src=13586`), scraped
   directly; dedup by per-job promo **url**. **Pagination via `&p=N`** (`?rows=` ignored).
@@ -67,9 +67,17 @@ HIT (cffi) · Azrieli (cffi) · Shenkar (req). All six engineering/technology co
   department by page), req+BS4 (no WAF). Real `/position/NNNN` URLs → dedup by **url**.
   **External-only filter** (internal/פנימית rows skipped — Anna's choice). `position_type`
   from the scope cell. Step 19/33. See ARCHITECTURE §3/§8/§11.
-- **Ruppin** ⏳ LAST, separate go/no-go — `ruppin.ac.il/.../academic-staff-required` is behind
-  **Imperva (status 247)**: req AND curl_cffi both blocked → needs Playwright. Low relevance
-  (mostly maintenance/secretary/marketing). Weigh PW cost vs. yield before committing.
+- **Ruppin** ✅ Resolved 2026-06-25 — `fetch_ruppin.py` → `ruppin_jobs_*.csv` (17 jobs: 9 academic
+  + 8 admin, 1 maternity_cover), Emek Hefer; 4th & final general college. Behind **Imperva (status
+  247)** → **non-headless Playwright** (`headless=False`); LOCAL-ONLY. Two pages, department by page
+  (`/administration/academic-staff-required/` → academic, `/administration/administrative-staff-required/`
+  → admin). `div.card` → `.card-header`/`.card-body`. **Mixed apply:** academic = email (no per-job
+  URL → `url`=page, inline desc), admin = per-job **PDF** link (`url`=PDF, desc empty); frontend dedup
+  uniformly by **title+url**. `clean_title` strips zero-width/bidi (academic is title-keyed). Colour
+  `--rp`. Step 20/34. See ARCHITECTURE §3/§8/§11.
+
+**✅ General-colleges branch COMPLETE (4/4):** Sapir (CIVI) · Emek Yezreel/YVC (req) · Tel-Hai
+(Drupal/req) · Ruppin (PW). With the engineering branch (6/6), all 10 Israeli colleges are sources.
 
 Per-college flow: audit career page → spec → confirm → `fetch_{college}.py` → verify rows →
 frontend wiring → `run_fetch.bat` step → prod check. Check for shared platforms first
@@ -207,20 +215,19 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ---
 
-## 🛠 `run_fetch.bat` step reference (as of 2026-06-22)
+## 🛠 `run_fetch.bat` step reference (as of 2026-06-25)
 
-The manual local runner now has 33 steps:
+The manual local runner now has 34 steps:
 1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai**
-20. Ichilov · 21. GotFriends · 22. HUJI positions
-23. Shaare Zedek (PW) · 24. Hadassah (PW)
-25. Deloitte (PW) · 26. EY (PW) · 27. BIS (PW) · 28. Joint (PW)
-29. Osem-Nestlé (curl_cffi) · 30. Teva (req)
-31. health check (`check_health.py`)
-32. rclone upload all CSVs → Google Drive
-33. commit + push
-27. commit + push
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai** · **20. Ruppin (PW)**
+21. Ichilov · 22. GotFriends · 23. HUJI positions
+24. Shaare Zedek (PW) · 25. Hadassah (PW)
+26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
+30. Osem-Nestlé (curl_cffi) · 31. Teva (req)
+32. health check (`check_health.py`)
+33. rclone upload all CSVs → Google Drive
+34. commit + push
 
 Note: `fetch_jobs.py` (ATS sources) and `fetch_gotfriends.py` run in **GitHub Actions CI**, not
 in the bat.
@@ -344,4 +351,4 @@ for the LinkedIn draft (strips `- 236606`, `(copy)`, emoji/ID tails). The core f
 
 ---
 
-*Last updated: 2026-06-22*
+*Last updated: 2026-06-25*

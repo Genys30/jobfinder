@@ -76,6 +76,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Sapir | `fetch_sapir.py` | `sapir_jobs_*` | req→cffi | local | Sapir Academic College's **own** positions (employer-type `academic`), Sderot — **1st general (non-engineering) college**. Page `sapir.ac.il/hr/wanted` redirects to a **CIVI ATS feed** (`app.civi.co.il/promos/id=NLY65YEJTW&src=13586`), scraped directly. Each job is a `div.thumb-content` card → `.title` + `.descr` (description **inline & rich** → pop-up works); the job id is in the `openPromo(event,<ID>,13586,1)` onclick → per-job URL `app.civi.co.il/promo/id=<ID>&src=13586` (real per-job URL → `first_seen`/dedup by **url**, like SCE). **Pagination:** CIVI uses `&p=N` (20/page; `?rows=` is ignored) — loop pages until one yields no new cards. `department` inferred from title keywords (חבר סגל/מרצה/מנחה/רקטור/דיקן → academic, else admin) since the feed has no section split. Scope = academic **+ admin** (Anna's choice for general colleges). ~21 jobs, mostly admin. |
 | Emek Yezreel (YVC) | `fetch_yvc.py` | `yvc_jobs_*` | req | local | Max Stern Yezreel Valley College's **own** positions (employer-type `academic`), Yezreel Valley — 2nd general college. WordPress (theme `emek`), **no WAF** → req+BS4. **Source key is `yvc` (not `emek`)** because `EMEK_JOBS` already exists for HaEmek Medical Center (the Afula hospital) — avoids the collision. Single accordion: `section.q-and-a` → `div.question-item` → `a.question-link span` (toggle) + `div.answer` (body). **Duplicate-title gotcha (like HIT):** toggle text repeats; the distinguishing course name is in the body's first `<p>` ("…לקורס: COURSE") → the title is **enriched with the course name** to make it unique (the `#questionN` anchor is sequential/unstable, so not used as a key). No per-job URL (apply by email) → `first_seen`/dedup by enriched **title** (Afeka/Braude pattern). `department` by keyword. ~5 jobs, all academic course positions. |
 | Tel-Hai | `fetch_telhai.py` | `telhai_jobs_*` | req | local | Tel-Hai Academic College's **own** positions (employer-type `academic`), Galilee — 3rd general college. **Drupal** (Olivero theme, Views), server-rendered, **no WAF** → req+BS4 (web_fetch is bot-blocked, but plain requests works from an Israeli IP). **Two pages, department by page**: `/jobs` → academic_faculty, `/jobs-2` → admin_staff. Each is a Views **table**: `tr` → `td.views-field-title a[href^="/position/"]` (real per-job URL), plus metadata cells (`field-job-scope`, `field-availability`, `field-exteral-internal` [sic], `field-submission-deadline`). **External-only filter** (Anna's choice): rows where the exteral-internal cell says פנימית (internal) are skipped — internal postings aren't useful in a public feed. `position_type` derived from the scope cell (חצי משרה → part_time, חל"ד → maternity_cover). Real per-job URLs → `first_seen`/dedup by **url**. v1 does not fetch the `/position/` detail pages — description is built from the row's metadata. ~27 jobs (7 academic + 20 admin). |
+| Ruppin | `fetch_ruppin.py` | `ruppin_jobs_*` | PW | local | Ruppin Academic Center's **own** positions (employer-type `academic`), Emek Hefer — **4th & final general college**. Behind an **Imperva WAF (status 247)** — plain requests AND curl_cffi both blocked → **non-headless Playwright** (`headless=False` + `--disable-blink-features=AutomationControlled`); LOCAL-ONLY (cannot run in CI). **Two pages, department by page**: `/administration/academic-staff-required/` → academic_faculty, `/administration/administrative-staff-required/` → admin_staff. Each job is a `div.card` → `.card-header` (title) + `.card-body` (body). **Mixed apply shapes**: academic → apply by **email**, no per-job URL (`url` = page URL, inline description from the card body); admin → per-job **PDF** (מכרז) link (`url` = PDF, description empty). Frontend dedups **uniformly by title+url** (admin urls differ; academic share the page url but titles differ — no mixed-key code needed). `clean_title` strips zero-width + bidi (RLM/LRM) marks because academic is **title-keyed**. `position_type` = `maternity_cover` if title has חל"ד, else ''. External-only filter (`פנימית` skipped) — no-op now, stub for future. ~17 jobs (9 academic + 8 admin). |
 | Ichilov / TASMC | `fetch_ichilov.py` | `topmatch_jobs_*` | API | local | RedMatch/TopMatch API, GUID `3FC41CB2-A7A8-454A-BC2B-0EDC1A919656`. **Note filename is `topmatch_jobs_*`** (read by `normIchilov`). |
 | GotFriends | `fetch_gotfriends.py` | `gotfriends_jobs_*` | req | local | `/jobslobby/{cat}/?page=N&total=`, 10 categories, `<h2>` links depth≥4. ~3200 jobs |
 | HUJI positions | `fetch_huji_positions.py` | `huji_positions_*` | req | local | HunterHRMS `huji.hunterhrms.com`, `.job-wrap`+`label.job-title[for=jobcode]` |
@@ -196,17 +197,17 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (33 steps)
+## 8. `run_fetch.bat` — the local nightly runner (34 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
-7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai**
-20. Ichilov · 21. GotFriends · 22. HUJI positions
-23. Shaare Zedek (PW) · 24. Hadassah (PW)
-25. Deloitte (PW) · 26. EY (PW) · 27. BIS (PW) · 28. Joint (PW)
-29. Osem-Nestlé (curl_cffi) · 30. Teva Pharmaceuticals (req)
-31. `check_health.py` (health report) · 32. rclone upload all CSVs → Google Drive
-33. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai** · **20. Ruppin (PW)**
+21. Ichilov · 22. GotFriends · 23. HUJI positions
+24. Shaare Zedek (PW) · 25. Hadassah (PW)
+26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
+30. Osem-Nestlé (curl_cffi) · 31. Teva Pharmaceuticals (req)
+32. `check_health.py` (health report) · 33. rclone upload all CSVs → Google Drive
+34. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -287,6 +288,31 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-25 — Ruppin College added (general-colleges expansion, source #4 of 4 — branch COMPLETE)
+- **New source `ruppin`** (employer-type `academic`) — Ruppin Academic Center's **own** open
+  positions (`fetch_ruppin.py` → `ruppin_jobs_*.csv`), Emek Hefer. 17 jobs (9 academic + 8 admin,
+  1 maternity_cover). The **4th & final** general college — general-colleges branch now COMPLETE.
+- **Imperva WAF (status 247)** — plain requests AND curl_cffi both blocked → **non-headless
+  Playwright** (`headless=False` + `--disable-blink-features=AutomationControlled`). LOCAL-ONLY
+  (cannot run in CI). `fetch_ruppin.py` built on the proven recon selectors (`div.card` →
+  `.card-header`/`.card-body`).
+- **Two pages, department by page** (Tel-Hai pattern): `/administration/academic-staff-required/`
+  → academic_faculty, `/administration/administrative-staff-required/` → admin_staff.
+- **Mixed apply shapes** (key design point): academic = apply by **email**, no per-job URL →
+  `url` = page URL, inline description from the card body; admin = per-job **PDF** (מכרז) link →
+  `url` = PDF, description empty. Frontend dedups **uniformly by title+url** (admin urls differ;
+  academic share the page url but titles differ — so title+url is safe for both, no mixed-key code).
+- **`clean_title` gotcha:** academic titles carried zero-width + bidi marks; since academic is
+  **title-keyed**, those are stripped so a drifting invisible char can't make a job look "new"
+  each run. `position_type` = `maternity_cover` if title has חל"ד, else '' (only whitelisted
+  values). External-only filter (`פנימית` skipped) — 0 internal now, stub for future.
+- **Frontend (`index.html`):** `normRuppin`/`loadRuppin` (YVC template — dedup title+url,
+  + `positionType`), data-bar pill, source filter, `DATABAR_SOURCES`/status-map, `'ruppin':'academic'`,
+  `--rp` colour (#7b4fa0), all 4 pools + `activeSrc`. **`run_fetch.bat`:** Ruppin inserted as
+  **step 20/34** (PW non-headless, after Tel-Hai); later steps renumbered.
+- **General-colleges branch COMPLETE (4/4):** Sapir (CIVI) · Emek Yezreel/YVC (req) · Tel-Hai
+  (Drupal/req) · Ruppin (PW). With the engineering branch (6/6), **all 10 colleges are now sources.**
 
 ### 2026-06-24 — Tel-Hai College added (general-colleges expansion, source #3 of 4)
 - **New source `telhai`** (employer-type `academic`) — Tel-Hai Academic College's **own** open
