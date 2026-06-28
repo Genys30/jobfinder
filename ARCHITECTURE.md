@@ -91,6 +91,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Joint (JDC) | `fetch_joint.py` | `joint_jobs_*` | PW | local | `thejoint.org.il/en/career/`, `a[href*='juid']`, detail pages |
 | Osem-Nestlé | `fetch_osem.py` | `osem_jobs_*` | cffi | local | **A company, not a source** (see §7). Akamai WAF → curl_cffi `chrome110`. List pages + detail pages (`div.description_single` + JSON-LD `JobPosting`) |
 | KPMG | (`run_comeet` via `companies.json`) | `comeet_jobs_*` | API | CI | Routes through **Comeet** as *Somekh Chaikin*: `"comeet": "somekhchaikin/F3.007"` in companies.json. ~52 jobs. No standalone scraper. |
+| NAMER (נמ"ר) | `fetch_namer.py` | `namer_jobs_*` | API | local | **National local-authority tenders** (מכרזי כוח אדם, רשויות מקומיות) — Ministry of Interior's central system. employer-type **`public`**. One feed → hundreds of authorities (~580 open). Angular SPA backed by an Azure **APIM gateway** (anonymous, public key): `GET …/namer-anonymous/v1/api/ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>` + header `Ocp-Apim-Subscription-Key`. **`basePage` filters MUST be `null`, not `[]`** (empty arrays NRE the server); `page:{Number,SumItem}` paginates (0-based, stop on empty page). Key is re-derived from the site bundle at runtime (32-hex), with a hardcoded fallback. Real publish date (`ptichatMichrazDate`) → no first_seen. Per-job url `namerz.moin.gov.il/showexternal/{misparAsmachta}/{oid}`; **dedup by `misparAsmachta`** (oid is not unique alone). Open only (`kodStatus=0`/`פתוח`, skip `sibatBitul`/`sibatDchiya`). Title: `shemTafkid`, but ~27% are literally **"אחר"** → for those a per-michraz **detail fetch** (`Michraz/GetSiteMichraz/{asmachta}/{oid}`, GET, singular "Michraz") supplies the real role name **`teurMichraz`** (throttled+cached, 'אחר' rows only); on failure falls back to `tchumMiktzoi`→`shemYechida`. Description still from list metadata (no full-description fetch yet). |
 
 ---
 
@@ -197,7 +198,7 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (34 steps)
+## 8. `run_fetch.bat` — the local nightly runner (35 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
@@ -205,9 +206,9 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 21. Ichilov · 22. GotFriends · 23. HUJI positions
 24. Shaare Zedek (PW) · 25. Hadassah (PW)
 26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
-30. Osem-Nestlé (curl_cffi) · 31. Teva Pharmaceuticals (req)
-32. `check_health.py` (health report) · 33. rclone upload all CSVs → Google Drive
-34. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+30. Osem-Nestlé (curl_cffi) · 31. Teva Pharmaceuticals (req) · **32. NAMER (req, APIM)**
+33. `check_health.py` (health report) · 34. rclone upload all CSVs → Google Drive
+35. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -288,6 +289,46 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-28 — NAMER added (municipalities expansion, track A — national local-authority feed)
+- **New source `namer`** (employer-type **`public`**) — the Ministry of Interior's national
+  system for local-authority personnel tenders (מכרזי כוח אדם, רשויות מקומיות / עיריות /
+  מועצות), `fetch_namer.py` → `namer_jobs_*.csv`. **One feed → hundreds of authorities**
+  (~580 open on first run, incl. חיפה, פתח תקווה). First step of the municipalities plan
+  (recon picked "one shared portal" over per-city scrapers).
+- **API (recon, 6 probe rounds):** the site (`namerz.moin.gov.il/namer`) is an Angular SPA
+  backed by an Azure **APIM gateway** — `https://ministryofinteriorapim.azure-api.net/
+  namer-anonymous/v1/api/ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>`, **anonymous**
+  with a public `Ocp-Apim-Subscription-Key` (product `namer-anonymous`). Same-origin `/api`
+  is just the SPA shell — the real API is the APIM host.
+- **`basePage` gotcha (the long pole):** the list call takes a single query param `basePage` =
+  JSON of a filter object. Filters MUST be **`null`, not `[]`** (empty arrays NRE the server);
+  `page:{Number,SumItem}` is required (missing it → Int32 error). Full shape:
+  `{page:{Number,SumItem},search:{attName:""},sort:[{attName:"SgiratMichrazDate",desc:false}],
+  statusimFilter:null,…,rashuyotFilter:null,showAllMichrazimInRashut:false}`. Pagination by
+  `page.Number` (0-based), stop on empty page. The exact shape + the key were captured from the
+  live request via a Playwright network-capture probe after JSON-guessing failed.
+- **Scraper:** key re-derived from the JS bundle at runtime (32-hex regex) with a hardcoded
+  fallback; real publish date (`ptichatMichrazDate`) → **no first_seen**; per-job url
+  `namerz.moin.gov.il/showexternal/{misparAsmachta}/{oid}` (the `/michraz/` guess was wrong;
+  the blob SAS link is the time-limited PDF, not used); **dedup by `misparAsmachta`** (oid is
+  not unique alone); open only (`kodStatus=0`/`פתוח`, skip cancelled/postponed). v1 no detail
+  fetch → description from list metadata (תפקיד/רשות/מחוז/תחום/דירוג/השכלה/dates).
+- **Title fix (variant C, same day):** `shemTafkid` is "אחר" in **164/597** rows (useless as a
+  title). `fetch_detail_title` pulls **`teurMichraz`** (the real role name, absent from the list)
+  from the detail endpoint **`Michraz/GetSiteMichraz/{asmachta}/{oid}`** — the working path was
+  found by capturing the live request (`ManageMichrazim/…` and `Michrazim/…` both 404; it's
+  singular **"Michraz"**, GET, asmachta+oid in path). Throttled 0.3s + cached, fired only for
+  'אחר'/blank rows; B-fallback (`tchumMiktzoi`→`shemYechida`) on any failure so it never reverts
+  to "אחר"; `_clean_teur` drops a trailing "הארכה". Prod: **164/164** got `teurMichraz`.
+- **Frontend (`index.html`):** `normNamer`/`loadNamer` (Tel-Hai template — dedup by url, +
+  `positionType`), data-bar pill, source filter, `DATABAR_SOURCES`, `'namer':'public'`, `--nm`
+  colour (#0f766e), all 4 pools + `activeSrc`. **`run_fetch.bat`:** NAMER inserted as **step
+  32/35** (req, last fetch step before health check); health/drive/commit → 33/34/35.
+- **Backlog:** ~~`title=אחר` fallback~~ → **done same day (variant C, detail `teurMichraz`)**;
+  full descriptions via `Michraz/GetSiteMichraz/{asmachta}/{oid}` (endpoint now wired);
+  try moving NAMER to CI (APIM is Azure, not a gov server — datacenter IP may pass); **track B**
+  = Hunter-platform cities (Tel-Aviv confirmed on `telaviv-int.hunterhrms.com`).
 
 ### 2026-06-25 — Ruppin College added (general-colleges expansion, source #4 of 4 — branch COMPLETE)
 - **New source `ruppin`** (employer-type `academic`) — Ruppin Academic Center's **own** open

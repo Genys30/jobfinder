@@ -84,6 +84,47 @@ frontend wiring → `run_fetch.bat` step → prod check. Check for shared platfo
 (HunterHRMS like HUJI/Shaare Zedek, RedMatch/TopMatch like BAR/Ichilov) — those need only a new
 GUID/subdomain, not a fresh parser.
 
+### Municipalities expansion (רשויות מקומיות / עיריות) — ✅ track A Resolved 2026-06-28
+Strategy chosen after recon: **one shared portal → many authorities** (over per-city scrapers).
+
+- **NAMER (track A)** ✅ Resolved 2026-06-28 — `fetch_namer.py` → `namer_jobs_*.csv` (~580 open
+  tenders nationwide, incl. חיפה / פתח תקווה), employer-type `public`. The Ministry of Interior's
+  national מכרזי כוח אדם system (`namerz.moin.gov.il`), an Angular SPA over an Azure **APIM
+  gateway** (anonymous public key, product `namer-anonymous`). Endpoint
+  `ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>` — **filters MUST be `null` (not `[]`)**,
+  `page:{Number,SumItem}` required, 0-based paging, stop on empty page. Key re-derived from the JS
+  bundle at runtime (32-hex) with a hardcoded fallback. Dedup by **`misparAsmachta`**; url
+  `…/showexternal/{asmachta}/{oid}`; real publish date `ptichatMichrazDate` → no first_seen;
+  open-only (`kodStatus=0`/`פתוח`, skip cancelled/postponed). v1 no detail fetch. Step **32/35**.
+  Recon took 6 probe rounds (basePage shape + key finally captured live via Playwright network
+  capture). See ARCHITECTURE §3/§8/§11.
+
+**Track B (big cities on shared platforms) — open.** Large municipalities run their own systems,
+several on platforms we already parse. **Tel-Aviv confirmed on HunterHRMS**
+(`telaviv-int.hunterhrms.com`, "תל קריירה") — a new subdomain, not a new parser (like HUJI /
+Shaare Zedek). **Action:** check Jerusalem / Haifa / Be'er Sheva / Petah-Tikva / Rishon platforms
+and add the HunterHRMS (or RedMatch/CIVI) ones cheaply.
+
+**NAMER follow-ups:**
+- **~~`title = אחר`~~** ✅ Resolved 2026-06-28 — ~27% of rows (164/597) have `shemTafkid`
+  literally "אחר" (Other), useless as a title. Fixed via **variant C**: `fetch_detail_title()`
+  fetches the per-michraz detail (`Michraz/GetSiteMichraz/{asmachta}/{oid}` — singular "Michraz",
+  GET, asmachta+oid in path) and uses **`teurMichraz`** (the real role name, e.g.
+  "כלכלן/ית לאגף וטרינריה" — absent from the list response). Throttled (0.3s) + cached per
+  `(asm,oid)`, fired **only** for 'אחר'/blank rows; on ANY failure (404 / empty / non-JSON) it
+  falls back to `tchumMiktzoi` → `shemYechida` (variant B), so a title is always set and never
+  reverts to "אחר". `_clean_teur` strips a trailing "הארכה" (=extension, an admin note).
+  First prod run: **164/164 got `teurMichraz`** (100%). Other title tails (e.g. "מכרז חוזר")
+  left for a future pass if they show up.
+- **Full descriptions** via `Michraz/GetSiteMichraz/{misparAsmachta}/{oid}` — v1 builds the
+  description from list metadata only. **Note:** this detail endpoint is now wired (used for the
+  'אחר' title fix above); a full-description pass could reuse it but would extend the per-row
+  fetch to **all** ~580 rows (currently only ~164 'אחר' rows are fetched). Add if entropy/keyword
+  search needs it.
+- **Try NAMER in GitHub Actions CI** — plain JSON over `requests`, host is Azure APIM (not a gov
+  server), so the datacenter-IP block that stops other `.il` sources may not apply. Would offload
+  it from the local bat.
+
 ### ~~Analytics `Raw` frozen — import checkpoint ordered by filename~~ ✅ Resolved 2026-06-15
 `processBatch` compared Drive files by full name (`f.name > checkpoint`). Filenames begin with
 the source, so `workable_jobs_…` (last alphabetically) became the checkpoint each day and every
@@ -215,19 +256,19 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ---
 
-## 🛠 `run_fetch.bat` step reference (as of 2026-06-25)
+## 🛠 `run_fetch.bat` step reference (as of 2026-06-28)
 
-The manual local runner now has 34 steps:
+The manual local runner now has 35 steps:
 1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
 7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai** · **20. Ruppin (PW)**
 21. Ichilov · 22. GotFriends · 23. HUJI positions
 24. Shaare Zedek (PW) · 25. Hadassah (PW)
 26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
-30. Osem-Nestlé (curl_cffi) · 31. Teva (req)
-32. health check (`check_health.py`)
-33. rclone upload all CSVs → Google Drive
-34. commit + push
+30. Osem-Nestlé (curl_cffi) · 31. Teva (req) · **32. NAMER (req, APIM)**
+33. health check (`check_health.py`)
+34. rclone upload all CSVs → Google Drive
+35. commit + push
 
 Note: `fetch_jobs.py` (ATS sources) and `fetch_gotfriends.py` run in **GitHub Actions CI**, not
 in the bat.
@@ -351,4 +392,4 @@ for the LinkedIn draft (strips `- 236606`, `(copy)`, emoji/ID tails). The core f
 
 ---
 
-*Last updated: 2026-06-25*
+*Last updated: 2026-06-28*
