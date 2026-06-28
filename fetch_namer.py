@@ -37,10 +37,15 @@ import os
 import re
 import csv
 import json
+import time
 import datetime
 
 APIM = "https://ministryofinteriorapim.azure-api.net/namer-anonymous/v1/api/"
 LIST_EP = APIM + "ManageMichrazim/GetAllSiteMichrazim/"
+# Per-michraz detail (verified live). The list lacks teurMichraz (the real role
+# name), so 'אחר' rows fetch it here. Note: singular "Michraz" path (NOT
+# "ManageMichrazim"). GET, asmachta+oid in the path.
+DETAIL_EP = APIM + "Michraz/GetSiteMichraz/{asmachta}/{oid}"
 SHELL = "https://namerz.moin.gov.il/namer"
 ROOT = "https://namerz.moin.gov.il/"
 CARD_URL = "https://namerz.moin.gov.il/showexternal/{asmachta}/{oid}"  # SPA detail route (verified live)
@@ -51,6 +56,8 @@ FALLBACK_KEY = "401ef4da029a417f9f8da5ad6abad2d0"
 
 PAGE_SIZE = 100
 MAX_PAGES = 60          # safety cap (60*100 = 6000, well above ~600 live)
+DETAIL_THROTTLE = 0.3   # seconds between detail calls (only fires on 'אחר' rows)
+DETAIL_TIMEOUT = 20     # per detail request
 TODAY = datetime.date.today().isoformat()
 OUT_CSV = "namer_jobs_%s.csv" % TODAY
 
@@ -178,7 +185,49 @@ def _pos_type(title, derug):
     return ""
 
 
-def map_row(m):
+def _clean_teur(s):
+    """Clean teurMichraz for use as a title: trim, then drop a trailing
+    'הארכה' (=extension — an admin note on the tender, not part of the role),
+    with an optional leading dash/space. Narrow on purpose; other tails (e.g.
+    'מכרז חוזר') are left for a future pass if they show up — see BACKLOG."""
+    s = (s or "").strip()
+    s = re.sub(r"[\s\-\u2013]*הארכה\s*$", "", s).strip()
+    return s
+
+
+_detail_cache = {}                       # (asm, oid) -> cleaned title
+_detail_stats = {"fetched": 0, "ok": 0}  # for the run summary
+
+
+def fetch_detail_title(asm, oid, key):
+    """Variant C: fetch teurMichraz from the per-michraz detail endpoint for an
+    'אחר'/blank row. Returns a cleaned title, or '' on ANY failure (the caller
+    then falls back to tchumMiktzoi/shemYechida, so a title is always set and
+    never reverts to 'אחר'). Throttled; cached per (asm, oid)."""
+    if asm is None or oid is None or not key:
+        return ""
+    ck = (asm, oid)
+    if ck in _detail_cache:
+        return _detail_cache[ck]
+    time.sleep(DETAIL_THROTTLE)
+    _detail_stats["fetched"] += 1
+    title = ""
+    url = DETAIL_EP.format(asmachta=asm, oid=oid)
+    st, txt = http_get(url, key=key, timeout=DETAIL_TIMEOUT)
+    if st == 200:
+        try:
+            j = json.loads(txt)
+            if isinstance(j, dict) and j.get("success") is True:
+                title = _clean_teur((j.get("value") or {}).get("teurMichraz"))
+        except Exception:
+            title = ""
+    if title:
+        _detail_stats["ok"] += 1
+    _detail_cache[ck] = title
+    return title
+
+
+def map_row(m, key=None):
     """Map one michraz dict -> CSV row dict, or None to skip."""
     if not isinstance(m, dict):
         return None
@@ -188,22 +237,24 @@ def map_row(m):
     if m.get("sibatBitul") or m.get("sibatDchiya"):
         return None
 
-    title = (m.get("shemTafkid") or "").strip()
-    # `shemTafkid` is literally "אחר" (Other) in ~27% of rows — useless as a
-    # title. Fall back to the professional field (always present), then the
-    # unit. The real job description (e.g. "כלכלן/ית לאגף וטרינריה") lives only
-    # on the detail page, NOT in the list, so a sharper title would need a
-    # per-row detail fetch — deferred (see BACKLOG "Full descriptions").
-    if not title or title == "אחר":
-        title = (m.get("tchumMiktzoi") or "").strip() \
-            or (m.get("shemYechida") or "").strip()
-    if not title:
-        return None
     asm = m.get("misparAsmachta")
     oid = m.get("oid")
     if asm is None:
         return None
 
+    title = (m.get("shemTafkid") or "").strip()
+    # `shemTafkid` is literally "אחר" (Other) in ~27% of rows — useless as a
+    # title. Variant C: the real role name (teurMichraz, e.g.
+    # "כלכלן/ית לאגף וטרינריה") is NOT in the list, only on the detail page, so
+    # for these 'אחר'/blank rows we fetch the detail and use teurMichraz. On any
+    # failure we fall back to the professional field, then the unit (variant B),
+    # so a title is always set and never reverts to "אחר".
+    if not title or title == "אחר":
+        title = fetch_detail_title(asm, oid, key) \
+            or (m.get("tchumMiktzoi") or "").strip() \
+            or (m.get("shemYechida") or "").strip()
+    if not title:
+        return None
     rashut = (m.get("shemRashut") or "").strip()
     machoz = (m.get("shemMachoz") or "").strip()
     tchum = (m.get("tchumMiktzoi") or "").strip()
@@ -277,7 +328,7 @@ def main():
             total = page.get("totalItems")
         kept = 0
         for m in items:
-            r = map_row(m)
+            r = map_row(m, key)
             if r:
                 rows[m.get("misparAsmachta")] = r
                 kept += 1
@@ -292,6 +343,8 @@ def main():
 
     out = list(rows.values())
     print("[namer] %d unique open michrazim" % len(out))
+    print("[namer] detail fetches for 'אחר' rows: %d attempted, %d got teurMichraz"
+          % (_detail_stats["fetched"], _detail_stats["ok"]))
 
     if not out:
         # 0-jobs guard: do not overwrite with an empty file (health check then
