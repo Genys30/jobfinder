@@ -189,6 +189,14 @@ def map_row(m):
         return None
 
     title = (m.get("shemTafkid") or "").strip()
+    # `shemTafkid` is literally "אחר" (Other) in ~27% of rows — useless as a
+    # title. Fall back to the professional field (always present), then the
+    # unit. The real job description (e.g. "כלכלן/ית לאגף וטרינריה") lives only
+    # on the detail page, NOT in the list, so a sharper title would need a
+    # per-row detail fetch — deferred (see BACKLOG "Full descriptions").
+    if not title or title == "אחר":
+        title = (m.get("tchumMiktzoi") or "").strip() \
+            or (m.get("shemYechida") or "").strip()
     if not title:
         return None
     asm = m.get("misparAsmachta")
