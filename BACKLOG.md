@@ -125,6 +125,15 @@ and add the HunterHRMS (or RedMatch/CIVI) ones cheaply.
   server), so the datacenter-IP block that stops other `.il` sources may not apply. Would offload
   it from the local bat.
 
+### ~~`.gitignore` hygiene — probe/recon/wire scripts + stray duplicate~~ ✅ Resolved 2026-06-29
+Added an ignore block for per-session one-offs (`probe_*.py`, `*_probe*.py`, `*_recon.py`,
+`wire_*.py`, `diag_*.py`) and recon dumps (`*.namerbak`, `*_live.html`, `*_live.bat`,
+`namer_probe_out/`) — verified **not** to touch `fetch_*.py` / `index.html` / `run_fetch.bat`.
+Also removed a stray tracked **`gitignore`** (no dot, a duplicate-typo of the real one). Commit
+`0f4adc9`. **Lesson:** commit `.gitignore`/doc edits **before** running `run_fetch.bat` — its
+opening `git reset --hard HEAD` silently discards un-committed working-tree edits (it ate the
+first attempt at this fix).
+
 ### ~~Analytics `Raw` frozen — import checkpoint ordered by filename~~ ✅ Resolved 2026-06-15
 `processBatch` compared Drive files by full name (`f.name > checkpoint`). Filenames begin with
 the source, so `workable_jobs_…` (last alphabetically) became the checkpoint each day and every

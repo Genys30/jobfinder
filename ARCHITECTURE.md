@@ -290,6 +290,18 @@ doesn't abort the rest.
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
 
+### 2026-06-29 — `.gitignore` hygiene (probe/recon/wire ignores; stray duplicate removed)
+- Appended a **recon/probe/wire ignore block** so per-session one-off scripts and recon dumps
+  never get committed: `probe_*.py`, `*_probe*.py`, `*_recon.py`, `wire_*.py`, `diag_*.py`, plus
+  output backups `*.namerbak`, `*_live.html`, `*_live.bat`, `namer_probe_out/`. Verified the globs
+  catch the probe/wire clutter but **not** production files (`fetch_*.py`, `index.html`,
+  `run_fetch.bat` — `*_live.bat` ≠ `run_fetch.bat`, `*_live.html` ≠ `index.html`).
+- Removed a stray tracked **`gitignore`** (no leading dot) — a duplicate-typo of `.gitignore`
+  that had been committed by mistake.
+- Commit `0f4adc9` (2 files, +13/−27). **Reminder:** the first attempt at this fix was wiped
+  earlier by `run_fetch.bat`'s opening `git reset --hard HEAD` — commit `.gitignore`/doc edits
+  **before** running the bat.
+
 ### 2026-06-28 — NAMER added (municipalities expansion, track A — national local-authority feed)
 - **New source `namer`** (employer-type **`public`**) — the Ministry of Interior's national
   system for local-authority personnel tenders (מכרזי כוח אדם, רשויות מקומיות / עיריות /
