@@ -40,3 +40,16 @@ patch_*.py
 check_*.py 
 seen_telegram_biltiformali.txt 
 rclone.exe 
+
+# Recon / probe / wiring one-off scripts (per-session, never committed)
+probe_*.py
+*_probe*.py
+*_recon.py
+wire_*.py
+diag_*.py
+
+# Recon output dumps & backups
+*.namerbak
+*_live.html
+*_live.bat
+namer_probe_out/
