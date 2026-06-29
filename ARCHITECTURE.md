@@ -91,7 +91,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Joint (JDC) | `fetch_joint.py` | `joint_jobs_*` | PW | local | `thejoint.org.il/en/career/`, `a[href*='juid']`, detail pages |
 | Osem-Nestlé | `fetch_osem.py` | `osem_jobs_*` | cffi | local | **A company, not a source** (see §7). Akamai WAF → curl_cffi `chrome110`. List pages + detail pages (`div.description_single` + JSON-LD `JobPosting`) |
 | KPMG | (`run_comeet` via `companies.json`) | `comeet_jobs_*` | API | CI | Routes through **Comeet** as *Somekh Chaikin*: `"comeet": "somekhchaikin/F3.007"` in companies.json. ~52 jobs. No standalone scraper. |
-| NAMER (נמ"ר) | `fetch_namer.py` | `namer_jobs_*` | API | local | **National local-authority tenders** (מכרזי כוח אדם, רשויות מקומיות) — Ministry of Interior's central system. employer-type **`public`**. One feed → hundreds of authorities (~580 open). Angular SPA backed by an Azure **APIM gateway** (anonymous, public key): `GET …/namer-anonymous/v1/api/ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>` + header `Ocp-Apim-Subscription-Key`. **`basePage` filters MUST be `null`, not `[]`** (empty arrays NRE the server); `page:{Number,SumItem}` paginates (0-based, stop on empty page). Key is re-derived from the site bundle at runtime (32-hex), with a hardcoded fallback. Real publish date (`ptichatMichrazDate`) → no first_seen. Per-job url `namerz.moin.gov.il/showexternal/{misparAsmachta}/{oid}`; **dedup by `misparAsmachta`** (oid is not unique alone). Open only (`kodStatus=0`/`פתוח`, skip `sibatBitul`/`sibatDchiya`). Title: `shemTafkid`, but ~27% are literally **"אחר"** → for those a per-michraz **detail fetch** (`Michraz/GetSiteMichraz/{asmachta}/{oid}`, GET, singular "Michraz") supplies the real role name **`teurMichraz`** (throttled+cached, 'אחר' rows only); on failure falls back to `tchumMiktzoi`→`shemYechida`. Description still from list metadata (no full-description fetch yet). |
+| NAMER (נמ"ר) | `fetch_namer.py` | `namer_jobs_*` | API | local | **National local-authority tenders** (מכרזי כוח אדם, רשויות מקומיות) — Ministry of Interior's central system. employer-type **`public`**. One feed → hundreds of authorities (~580 open). Angular SPA backed by an Azure **APIM gateway** (anonymous, public key): `GET …/namer-anonymous/v1/api/ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>` + header `Ocp-Apim-Subscription-Key`. **`basePage` filters MUST be `null`, not `[]`** (empty arrays NRE the server); `page:{Number,SumItem}` paginates (0-based, stop on empty page). Key is re-derived from the site bundle at runtime (32-hex), with a hardcoded fallback. Real publish date (`ptichatMichrazDate`) → no first_seen. Per-job url `namerz.moin.gov.il/showexternal/{misparAsmachta}/{oid}`; **dedup by `misparAsmachta`** (oid is not unique alone). Open only (`kodStatus=0`/`פתוח`, skip `sibatBitul`/`sibatDchiya`). Title: `shemTafkid`, but ~27% are literally **"אחר"** → for those a per-michraz **detail fetch** (`Michraz/GetSiteMichraz/{asmachta}/{oid}`, GET, singular "Michraz") supplies **`teurMichraz`** = the job-description field (תאור משרה). `teurMichraz` is **not** a clean role name — it ranges from a bare title to a 5000-char wall — so `_title_from_teur()` extracts a concise role from it (first line; pull text after `לתפקיד`/`דרוש/ה`; cut body markers like `ייעוד התפקיד`/`דרוג ודרגה`; html-unescape; cap 90 chars). On empty/`אחר` result it falls back to `tchumMiktzoi`→`shemYechida` (variant B), so a title is always set and never reverts to "אחר". The full unescaped `teurMichraz` also becomes the **description** for these 'אחר' rows (free — the fetch already happens); other rows still get the list-metadata description. Throttled+cached, 'אחר' rows only. |
 
 ---
 
@@ -289,6 +289,23 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-29 — NAMER `אחר` titles fixed properly + descriptions for those rows
+- **Root cause found via recon (probe_namer_detail.py):** the 06-28 variant-C fix was built on
+  a wrong assumption — `teurMichraz` is **not** a clean role name, it's the **job-description**
+  field (תאור משרה), ranging from a bare title to a 5000-char wall. The 06-28 CSV still had
+  **163/595** titles literally "אחר" (the variant-C edit never ran that night — likely eaten by
+  `run_fetch.bat`'s opening `git reset --hard HEAD`; the "164/164" log was a manual run).
+- **Fix:** `_clean_teur` → **`_title_from_teur()`** — html-unescape, take first non-empty line,
+  pull the role after `לתפקיד`/`דרוש/ה`, cut trailing body markers (`ייעוד התפקיד`,
+  `תיאור התפקיד`, `דרוג ודרגה`, `כפיפות`, `היקף המשרה`, `עיריי…`, `המועצה…`, `מבקש…`, …),
+  collapse whitespace, cap 90 chars. Empty/`אחר` result → variant-B fallback as before.
+- **`fetch_detail_title` → `fetch_detail()`** now returns `(title, description)`; the full
+  unescaped `teurMichraz` fills `description` for 'אחר' rows (free — fetch already happens),
+  partially closing the "full descriptions" backlog. Other rows keep the list-metadata desc.
+- **Prod run (2026-06-29):** 581 michrazim; detail fetches **156/161** got a role title (5 →
+  variant B). Verified CSV: **title=="אחר" → 0**, **empty description → 0**. Commit `84f3cf2`.
+  **Reminder:** commit `fetch_namer.py` **before** running the bat (`git reset --hard HEAD`).
 
 ### 2026-06-29 — `.gitignore` hygiene (probe/recon/wire ignores; stray duplicate removed)
 - Appended a **recon/probe/wire ignore block** so per-session one-off scripts and recon dumps

@@ -106,21 +106,23 @@ Shaare Zedek). **Action:** check Jerusalem / Haifa / Be'er Sheva / Petah-Tikva /
 and add the HunterHRMS (or RedMatch/CIVI) ones cheaply.
 
 **NAMER follow-ups:**
-- **~~`title = אחר`~~** ✅ Resolved 2026-06-28 — ~27% of rows (164/597) have `shemTafkid`
-  literally "אחר" (Other), useless as a title. Fixed via **variant C**: `fetch_detail_title()`
-  fetches the per-michraz detail (`Michraz/GetSiteMichraz/{asmachta}/{oid}` — singular "Michraz",
-  GET, asmachta+oid in path) and uses **`teurMichraz`** (the real role name, e.g.
-  "כלכלן/ית לאגף וטרינריה" — absent from the list response). Throttled (0.3s) + cached per
-  `(asm,oid)`, fired **only** for 'אחר'/blank rows; on ANY failure (404 / empty / non-JSON) it
-  falls back to `tchumMiktzoi` → `shemYechida` (variant B), so a title is always set and never
-  reverts to "אחר". `_clean_teur` strips a trailing "הארכה" (=extension, an admin note).
-  First prod run: **164/164 got `teurMichraz`** (100%). Other title tails (e.g. "מכרז חוזר")
-  left for a future pass if they show up.
-- **Full descriptions** via `Michraz/GetSiteMichraz/{misparAsmachta}/{oid}` — v1 builds the
-  description from list metadata only. **Note:** this detail endpoint is now wired (used for the
-  'אחר' title fix above); a full-description pass could reuse it but would extend the per-row
-  fetch to **all** ~580 rows (currently only ~164 'אחר' rows are fetched). Add if entropy/keyword
-  search needs it.
+- **~~`title = אחר`~~** ✅ Resolved 2026-06-28, **properly fixed 2026-06-29** — ~27% of rows
+  have `shemTafkid` literally "אחר" (Other), useless as a title. The 06-28 variant C fetched
+  **`teurMichraz`** from the detail endpoint (`Michraz/GetSiteMichraz/{asmachta}/{oid}` —
+  singular "Michraz", GET) but **wrongly assumed it's a clean role name**; recon
+  (`probe_namer_detail.py`) showed `teurMichraz` is the **job-description** field (תאור משרה) —
+  anything from a bare title to a 5000-char wall — and the 06-28 CSV still leaked 163 "אחר"
+  titles (the edit never ran that night → `git reset --hard` in the bat). **2026-06-29 fix:**
+  `_title_from_teur()` extracts a concise role from `teurMichraz` (first line; text after
+  `לתפקיד`/`דרוש/ה`; cut body markers `ייעוד התפקיד`/`דרוג ודרגה`/…; html-unescape; cap 90);
+  empty/`אחר` → variant-B fallback (`tchumMiktzoi`→`shemYechida`). Prod: 156/161 got a role
+  title, **title=="אחר" → 0**. Commit `84f3cf2`. Other tails (e.g. "מכרז חוזר") left for later.
+- **~~Full descriptions~~ (partial)** ✅ for 'אחר' rows 2026-06-29 — `fetch_detail()` now also
+  returns the full unescaped `teurMichraz` and writes it to `description` for the ~160 'אחר'
+  rows we already fetch (verified: **empty description → 0** on those). **Still open:** the other
+  ~420 rows still use the list-metadata description (`Michraz/GetSiteMichraz/{asmachta}/{oid}`
+  would extend the per-row fetch to **all** ~580 rows). Add a full pass if entropy/keyword search
+  needs it.
 - **Try NAMER in GitHub Actions CI** — plain JSON over `requests`, host is Azure APIM (not a gov
   server), so the datacenter-IP block that stops other `.il` sources may not apply. Would offload
   it from the local bat.
@@ -401,4 +403,4 @@ for the LinkedIn draft (strips `- 236606`, `(copy)`, emoji/ID tails). The core f
 
 ---
 
-*Last updated: 2026-06-28*
+*Last updated: 2026-06-29*
