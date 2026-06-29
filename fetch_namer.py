@@ -36,6 +36,7 @@ Azure (not a gov server), so a CI move may be possible later (see BACKLOG).
 import os
 import re
 import csv
+import html
 import json
 import time
 import datetime
@@ -185,46 +186,86 @@ def _pos_type(title, derug):
     return ""
 
 
-def _clean_teur(s):
-    """Clean teurMichraz for use as a title: trim, then drop a trailing
-    'הארכה' (=extension — an admin note on the tender, not part of the role),
-    with an optional leading dash/space. Narrow on purpose; other tails (e.g.
-    'מכרז חוזר') are left for a future pass if they show up — see BACKLOG."""
-    s = (s or "").strip()
-    s = re.sub(r"[\s\-\u2013]*הארכה\s*$", "", s).strip()
-    return s
+# Section markers that begin the *body* of a tender — anything from here on is
+# boilerplate, not part of the role name. Used to trim the extracted title.
+_STOP_RX = (r"\s*(?:ייעוד התפקיד|תיאור התפקיד|תאור התפקיד|תאור המשרה|תיאור המשרה|"
+            r"דרוג ודרגה|דרוג ודרג|כפיפות|היקף המשרה|תנאי סף|דרישות התפקיד|"
+            r"עיריי[תה]|המועצה (?:המקומית|האזורית)|מבקש[התי]|כללי)\b")
 
 
-_detail_cache = {}                       # (asm, oid) -> cleaned title
+def _title_from_teur(teur):
+    """Derive a concise role title from teurMichraz (the job description).
+
+    teurMichraz is inconsistent: sometimes it is already just the role
+    ("מדריכ/ת פרויקט מחוברים"), sometimes a "מכרז … לתפקיד ROLE …" preamble, and
+    sometimes a multi-line wall of text. Strategy: unescape entities, take the
+    first non-empty line, pull the role out of a preamble (after לתפקיד / דרוש/ה),
+    cut trailing boilerplate, collapse whitespace, cap at 90 chars. Returns ''
+    if nothing usable (or the result is still 'אחר') so the caller falls back to
+    variant B (tchumMiktzoi -> shemYechida)."""
+    s = html.unescape(teur or "").replace("\r", "\n")
+    first = next((ln.strip() for ln in s.split("\n") if ln.strip()), "")
+    if not first:
+        return ""
+    role = first
+    m = re.search(r"לתפקיד\s+(.+)", first)                  # "...לתפקיד ROLE..."
+    if not m:
+        m = re.search(r"דרוש(?:/ה|ים|ות|ה)?\s+(.+)", first)  # "...דרוש/ה ROLE..."
+    if m:
+        role = m.group(1)
+    role = re.split(_STOP_RX, role)[0]                       # drop the body
+    role = re.sub(r"[\s\-\u2013]*הארכה\s*$", "", role)       # drop trailing extension note
+    role = re.sub(r"\s+", " ", role).strip(" .,-")
+    if role == "אחר":
+        return ""
+    if len(role) > 90:
+        role = role[:90].rsplit(" ", 1)[0] + "…"
+    return role
+
+
+def _clean_desc(teur):
+    """Full teurMichraz as a single-paragraph description: unescape entities,
+    collapse all whitespace/newlines to single spaces."""
+    s = html.unescape(teur or "")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+_detail_cache = {}                       # (asm, oid) -> (title, description)
 _detail_stats = {"fetched": 0, "ok": 0}  # for the run summary
 
 
-def fetch_detail_title(asm, oid, key):
-    """Variant C: fetch teurMichraz from the per-michraz detail endpoint for an
-    'אחר'/blank row. Returns a cleaned title, or '' on ANY failure (the caller
-    then falls back to tchumMiktzoi/shemYechida, so a title is always set and
-    never reverts to 'אחר'). Throttled; cached per (asm, oid)."""
+def fetch_detail(asm, oid, key):
+    """Variant C: fetch the per-michraz detail for an 'אחר'/blank row and return
+    (title, description):
+      title       = role name extracted from teurMichraz ('' on ANY failure, so
+                    the caller falls back to variant B and never keeps 'אחר').
+      description = full unescaped teurMichraz ('' if absent) — richer than the
+                    list metadata, so it replaces the metadata description for
+                    these rows (free: the fetch already happens for the title).
+    Throttled; cached per (asm, oid)."""
     if asm is None or oid is None or not key:
-        return ""
+        return "", ""
     ck = (asm, oid)
     if ck in _detail_cache:
         return _detail_cache[ck]
     time.sleep(DETAIL_THROTTLE)
     _detail_stats["fetched"] += 1
-    title = ""
+    title, desc = "", ""
     url = DETAIL_EP.format(asmachta=asm, oid=oid)
     st, txt = http_get(url, key=key, timeout=DETAIL_TIMEOUT)
     if st == 200:
         try:
             j = json.loads(txt)
             if isinstance(j, dict) and j.get("success") is True:
-                title = _clean_teur((j.get("value") or {}).get("teurMichraz"))
+                teur = (j.get("value") or {}).get("teurMichraz")
+                title = _title_from_teur(teur)
+                desc = _clean_desc(teur)
         except Exception:
-            title = ""
+            title, desc = "", ""
     if title:
         _detail_stats["ok"] += 1
-    _detail_cache[ck] = title
-    return title
+    _detail_cache[ck] = (title, desc)
+    return title, desc
 
 
 def map_row(m, key=None):
@@ -243,14 +284,17 @@ def map_row(m, key=None):
         return None
 
     title = (m.get("shemTafkid") or "").strip()
+    detail_desc = ""
     # `shemTafkid` is literally "אחר" (Other) in ~27% of rows — useless as a
-    # title. Variant C: the real role name (teurMichraz, e.g.
-    # "כלכלן/ית לאגף וטרינריה") is NOT in the list, only on the detail page, so
-    # for these 'אחר'/blank rows we fetch the detail and use teurMichraz. On any
-    # failure we fall back to the professional field, then the unit (variant B),
-    # so a title is always set and never reverts to "אחר".
+    # title. Variant C: the real role lives in teurMichraz (the job description),
+    # which is NOT in the list, only on the detail page. For these 'אחר'/blank
+    # rows we fetch the detail, extract a clean role title from teurMichraz, and
+    # also reuse the full teurMichraz as the description. On any failure we fall
+    # back to the professional field, then the unit (variant B), so a title is
+    # always set and never reverts to "אחר".
     if not title or title == "אחר":
-        title = fetch_detail_title(asm, oid, key) \
+        dt_title, detail_desc = fetch_detail(asm, oid, key)
+        title = dt_title \
             or (m.get("tchumMiktzoi") or "").strip() \
             or (m.get("shemYechida") or "").strip()
     if not title:
@@ -291,6 +335,10 @@ def map_row(m, key=None):
     if mispar:
         desc_parts.append("מספר מכרז: %s" % mispar)
     description = " · ".join(desc_parts)
+    # For 'אחר' rows we already fetched the full job description (teurMichraz) —
+    # prefer it over the list metadata blob.
+    if detail_desc:
+        description = detail_desc
 
     department = tchum or yechida
     requirements = "; ".join(hascala)
@@ -343,7 +391,7 @@ def main():
 
     out = list(rows.values())
     print("[namer] %d unique open michrazim" % len(out))
-    print("[namer] detail fetches for 'אחר' rows: %d attempted, %d got teurMichraz"
+    print("[namer] detail fetches for 'אחר' rows: %d attempted, %d got a role title"
           % (_detail_stats["fetched"], _detail_stats["ok"]))
 
     if not out:
