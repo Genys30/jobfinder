@@ -84,6 +84,20 @@ frontend wiring → `run_fetch.bat` step → prod check. Check for shared platfo
 (HunterHRMS like HUJI/Shaare Zedek, RedMatch/TopMatch like BAR/Ichilov) — those need only a new
 GUID/subdomain, not a fresh parser.
 
+### Banks expansion — track A Resolved 2026-06-30
+Adding Israeli banks' own career pages as sources (employer-type `private`).
+
+- **Bank Hapoalim** ✅ Resolved 2026-06-30 — `fetch_hapoalim.py` → `hapoalim_jobs_*.csv`.
+  Drupal 10.2 behind Imperva/Incapsula WAF → **curl_cffi** chrome impersonation (LOCAL-ONLY).
+  Lobby + landing enumeration + pager auto-follow; detail fetch per node for description +
+  department (חטיבה). `position_type` by title. dedup by node URL (`first_seen` style). Step 33/36.
+- **HOOP (poalim.hoop.co.il)** — **rejected**. WP Job Manager portal; all visible listings
+  marked `applications-closed` → no open vacancies, source not viable. Parser banked for future
+  (jmfe fields, data-post-id dedup) in case the portal revives or another employer on HOOP opens.
+
+**Track B (other banks):** Bank Leumi, Discount, Mizrahi-Tefahot, First International — each has
+its own careers page. Drupal/WAF patterns may vary; evaluate on demand.
+
 ### Municipalities expansion (רשויות מקומיות / עיריות) — ✅ track A Resolved 2026-06-28
 Strategy chosen after recon: **one shared portal → many authorities** (over per-city scrapers).
 
@@ -267,19 +281,19 @@ Defense & Aerospace, FinTech, IT, Technology Consulting, Other.
 
 ---
 
-## 🛠 `run_fetch.bat` step reference (as of 2026-06-28)
+## 🛠 `run_fetch.bat` step reference (as of 2026-06-30)
 
-The manual local runner now has 35 steps:
+The manual local runner now has 36 steps:
 1. git pull --rebase (with `git reset --hard` + LinkedIn CSV backup/restore + auto URL-clean via `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
 7. Clalit · 8. TAU · 9. Haifa · 10. Bar-Ilan · **11. Afeka** · **12. SCE (PW)** · **13. Braude** · **14. HIT (cffi)** · **15. Azrieli (cffi)** · **16. Shenkar** · **17. Sapir (CIVI)** · **18. Emek Yezreel (YVC)** · **19. Tel-Hai** · **20. Ruppin (PW)**
 21. Ichilov · 22. GotFriends · 23. HUJI positions
 24. Shaare Zedek (PW) · 25. Hadassah (PW)
 26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
-30. Osem-Nestlé (curl_cffi) · 31. Teva (req) · **32. NAMER (req, APIM)**
-33. health check (`check_health.py`)
-34. rclone upload all CSVs → Google Drive
-35. commit + push
+30. Osem-Nestlé (curl_cffi) · 31. Teva (req) · **32. NAMER (req, APIM)** · **33. Bank Hapoalim (cffi)**
+34. health check (`check_health.py`)
+35. rclone upload all CSVs → Google Drive
+36. commit + push
 
 Note: `fetch_jobs.py` (ATS sources) and `fetch_gotfriends.py` run in **GitHub Actions CI**, not
 in the bat.
@@ -403,4 +417,4 @@ for the LinkedIn draft (strips `- 236606`, `(copy)`, emoji/ID tails). The core f
 
 ---
 
-*Last updated: 2026-06-29*
+*Last updated: 2026-06-30*

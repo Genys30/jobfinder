@@ -52,6 +52,7 @@
   --th:#b03a3a;--th-pale:rgba(176,58,58,0.07);
   --nm:#0f766e;--nm-pale:rgba(15,118,110,0.07);
   --rp:#7b4fa0;--rp-pale:rgba(123,79,160,0.07);
+  --hp:#e8001b;--hp-pale:rgba(232,0,27,0.07);
   --bis:#2e7b8c;--bis-pale:rgba(46,123,140,0.07);
   --gf:#2563eb;--gf-pale:rgba(37,99,235,0.07);
   --ic:#c0392b;--ic-pale:rgba(192,57,43,0.07);
@@ -669,6 +670,7 @@
   <div class="datasrc"><span class="src-dot" style="background:var(--th)"></span><span id="telhaiStatusText">Tel-Hai: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--rp)"></span><span id="ruppinStatusText">Ruppin: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--nm)"></span><span id="namerStatusText">Local Authorities: loading…</span></div>
+  <div class="datasrc"><span class="src-dot" style="background:var(--hp)"></span><span id="hapoalimStatusText">Bank Hapoalim: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--bis)"></span><span id="bisStatusText">BIS: loading…</span></div>
   <span class="databar-sep">·</span>
@@ -834,6 +836,7 @@
         <li class="ms-item" data-value="telhai"><input type="checkbox" id="src_telhai"><label class="ms-item-label" for="src_telhai">Tel-Hai &#x1F393;</label></li>
         <li class="ms-item" data-value="ruppin"><input type="checkbox" id="src_ruppin"><label class="ms-item-label" for="src_ruppin">Ruppin &#x1F393;</label></li>
         <li class="ms-item" data-value="namer"><input type="checkbox" id="src_namer"><label class="ms-item-label" for="src_namer">Local Authorities &#x1F3DB;</label></li>
+        <li class="ms-item" data-value="hapoalim"><input type="checkbox" id="src_hapoalim"><label class="ms-item-label" for="src_hapoalim">Bank Hapoalim &#x1F3E6;</label></li>
         <li class="ms-item" data-value="bis"><input type="checkbox" id="src_bis"><label class="ms-item-label" for="src_bis">BIS</label></li>
         <li class="ms-item" data-value="gf"><input type="checkbox" id="src_gf"><label class="ms-item-label" for="src_gf">GotFriends</label></li>
         <li class="ms-item" data-value="ichilov"><input type="checkbox" id="src_ichilov"><label class="ms-item-label" for="src_ichilov">Ichilov &#x1F3E5;</label></li>
@@ -1293,6 +1296,7 @@ let YVC_JOBS = []; // Max Stern Yezreel Valley College (Emek Yezreel) positions
 let TELHAI_JOBS = []; // Tel-Hai Academic College positions
 let RUPPIN_JOBS = []; // Ruppin Academic Center positions
 let NAMER_JOBS = []; // NAMER municipal / local-authority tenders (public)
+let HAPOALIM_JOBS = []; // Bank Hapoalim careers
 let BIS_JOBS = [];   // BIS (אגודת סטודנטים בר-אילן)
 let GF_JOBS  = [];   // GotFriends
 let IC_JOBS  = [];   // Ichilov (TopMatch)
@@ -1395,6 +1399,7 @@ const $sapirStatus = document.getElementById('sapirStatusText');
 const $yvcStatus = document.getElementById('yvcStatusText');
 const $telhaiStatus = document.getElementById('telhaiStatusText');
 const $namerStatus = document.getElementById('namerStatusText');
+const $hapoalimStatus = document.getElementById('hapoalimStatusText');
 const $ruppinStatus = document.getElementById('ruppinStatusText');
 const $bisStatus = document.getElementById('bisStatusText');
 const $gfStatus  = document.getElementById('gfStatusText');
@@ -2890,6 +2895,44 @@ async function loadNamer() {
   TOTALS['namer'] = NAMER_JOBS.length;
 }
 
+// ─── LOAD HAPOALIM (בנק הפועלים) ─────────────────────────────────────────────
+function normHapoalim(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const title = g('title').split('\n')[0].trim();
+  if (!title) return null;
+  const fnDate = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  return {
+    source: 'hapoalim', fnArea: 'hapoalim', title,
+    company: g('company') || 'בנק הפועלים',
+    category: classifySegment(title), size: '', level: classifyLevel(title),
+    city: g('location'),
+    url: g('url'), updated: g('date') || fnDate,
+    department: g('department'),
+    description: g('description'), positionType: g('position_type'), workType: 'onsite'
+  };
+}
+async function loadHapoalim() {
+  if ($hapoalimStatus) $hapoalimStatus.innerHTML = 'Bank Hapoalim: <span style="color:var(--ink-faint)">loading…</span>';
+  const rows = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    const fname = `hapoalim_jobs_${y}-${m}-${day}.csv`;
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) continue;
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, transformHeader:h=>h.replace(/^﻿/,'').trim().toLowerCase() });
+      parsed.data.forEach(row => { const n = normHapoalim(row, fname); if (n) rows.push(n); });
+      break;
+    } catch(e) {}
+  }
+  if (!rows.length) { if ($hapoalimStatus) $hapoalimStatus.innerHTML = 'Bank Hapoalim: <span style="color:var(--ink-faint)">no file yet</span>'; return; }
+  const seen = new Set();
+  HAPOALIM_JOBS = rows.filter(r => { const k = r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
+  if ($hapoalimStatus) $hapoalimStatus.innerHTML = `Bank Hapoalim: <strong>${HAPOALIM_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['hapoalim'] = HAPOALIM_JOBS.length;
+}
+
 // ─── LOAD RUPPIN (המרכז האקדמי רופין) ────────────────────────────────────────
 function normRuppin(row, fname) {
   const g = k => (row[k] == null ? '' : String(row[k]).trim());
@@ -3030,7 +3073,7 @@ function getPoolInner(){
     const seen = new Set();
     const seenTitleCo = new Set();
     // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
+    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
       const k = r.url;
       const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
       if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3071,6 +3114,7 @@ function getPoolInner(){
   if(activeSrc==='telhai') return TELHAI_JOBS;
   if(activeSrc==='ruppin') return RUPPIN_JOBS;
   if(activeSrc==='namer')  return NAMER_JOBS;
+  if(activeSrc==='hapoalim') return HAPOALIM_JOBS;
   if(activeSrc==='bis')   return BIS_JOBS;
   if(activeSrc==='gf')    return GF_JOBS;
   if(activeSrc==='ichilov') return IC_JOBS;
@@ -3096,7 +3140,7 @@ function getPoolInner(){
   // fallback: full merged pool
   const seen = new Set();
   const seenTitleCo = new Set();
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3800,7 +3844,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'maccabi':'public','mac':'public',
   'leumit':'public','leu':'public',
   'meuhedet':'public','meu':'public',
-  'movement':'private','mov':'private','osem':'private','teva':'private',
+  'movement':'private','mov':'private','osem':'private','teva':'private','hapoalim':'private',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -3868,6 +3912,7 @@ const DATABAR_SOURCES = [
   { id:'telhaiStatusText',    key:'telhai',      label:'Tel-Hai' },
   { id:'ruppinStatusText',    key:'ruppin',      label:'Ruppin' },
   { id:'namerStatusText',     key:'namer',       label:'Local Authorities' },
+  { id:'hapoalimStatusText',  key:'hapoalim',    label:'Bank Hapoalim' },
   { id:'bisStatusText',       key:'bis',         label:'BIS' },
   { id:'gfStatusText',        key:'gf',          label:'GotFriends' },
   { id:'icStatusText',        key:'ichilov',     label:'Ichilov' },
@@ -5448,6 +5493,7 @@ render();
     loadMovement(),
     loadOsem(),
     loadTeva(),
+    loadHapoalim(),
     loadTelegram(),
     loadMod(),
     loadInnovationIsrael(),
@@ -5521,7 +5567,7 @@ async function renderAnalytics(){
   const panel = document.getElementById('analyticsPanel');
   if(!panel || panel.style.display==='none') return;
 
-  const pool = [...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...TG_JOBS];
+  const pool = [...LI_JOBS,...CM_JOBS,...GH_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...HAPOALIM_JOBS,...BIS_JOBS,...GF_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...TG_JOBS];
   const seen=new Set();
   const jobs=pool.filter(r=>{ const k=r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
   if(!jobs.length) return;
@@ -5761,7 +5807,7 @@ function shareJob(btn) {
 }
 
 function toggleTrack(id){
-  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,SHENKAR_JOBS,SAPIR_JOBS,YVC_JOBS,TELHAI_JOBS,RUPPIN_JOBS,NAMER_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
+  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,SHENKAR_JOBS,SAPIR_JOBS,YVC_JOBS,TELHAI_JOBS,RUPPIN_JOBS,NAMER_JOBS,HAPOALIM_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
   var r=pool.find(function(j){ return (j.url||j.title+j.company)===id; });
   var apps=getApps();
   if(isTracked(id)){

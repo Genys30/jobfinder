@@ -91,6 +91,7 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Joint (JDC) | `fetch_joint.py` | `joint_jobs_*` | PW | local | `thejoint.org.il/en/career/`, `a[href*='juid']`, detail pages |
 | Osem-Nestlé | `fetch_osem.py` | `osem_jobs_*` | cffi | local | **A company, not a source** (see §7). Akamai WAF → curl_cffi `chrome110`. List pages + detail pages (`div.description_single` + JSON-LD `JobPosting`) |
 | KPMG | (`run_comeet` via `companies.json`) | `comeet_jobs_*` | API | CI | Routes through **Comeet** as *Somekh Chaikin*: `"comeet": "somekhchaikin/F3.007"` in companies.json. ~52 jobs. No standalone scraper. |
+| Bank Hapoalim | `fetch_hapoalim.py` | `hapoalim_jobs_*` | cffi | local | Drupal 10.2 / Imperva WAF → curl_cffi `chrome` impersonation. Lobby `/he/jobs-site/lobby` + landing + pager auto-follow → `a.views-row.job` cards (nid, title, area). Detail `/he/node/{nid}` → liveness guard + `description` (.job-content) + `department` (חטיבה link). `position_type` by title (סטודנט→part_time, מתמחה→internship, חל"ד→maternity_cover). `first_seen` keyed by node URL. employer-type **`private`**. LOCAL-ONLY (datacenter IP blocked). |
 | NAMER (נמ"ר) | `fetch_namer.py` | `namer_jobs_*` | API | local | **National local-authority tenders** (מכרזי כוח אדם, רשויות מקומיות) — Ministry of Interior's central system. employer-type **`public`**. One feed → hundreds of authorities (~580 open). Angular SPA backed by an Azure **APIM gateway** (anonymous, public key): `GET …/namer-anonymous/v1/api/ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>` + header `Ocp-Apim-Subscription-Key`. **`basePage` filters MUST be `null`, not `[]`** (empty arrays NRE the server); `page:{Number,SumItem}` paginates (0-based, stop on empty page). Key is re-derived from the site bundle at runtime (32-hex), with a hardcoded fallback. Real publish date (`ptichatMichrazDate`) → no first_seen. Per-job url `namerz.moin.gov.il/showexternal/{misparAsmachta}/{oid}`; **dedup by `misparAsmachta`** (oid is not unique alone). Open only (`kodStatus=0`/`פתוח`, skip `sibatBitul`/`sibatDchiya`). Title: `shemTafkid`, but ~27% are literally **"אחר"** → for those a per-michraz **detail fetch** (`Michraz/GetSiteMichraz/{asmachta}/{oid}`, GET, singular "Michraz") supplies **`teurMichraz`** = the job-description field (תאור משרה). `teurMichraz` is **not** a clean role name — it ranges from a bare title to a 5000-char wall — so `_title_from_teur()` extracts a concise role from it (first line; pull text after `לתפקיד`/`דרוש/ה`; cut body markers like `ייעוד התפקיד`/`דרוג ודרגה`; html-unescape; cap 90 chars). On empty/`אחר` result it falls back to `tchumMiktzoi`→`shemYechida` (variant B), so a title is always set and never reverts to "אחר". The full unescaped `teurMichraz` also becomes the **description** for these 'אחר' rows (free — the fetch already happens); other rows still get the list-metadata description. Throttled+cached, 'אחר' rows only. |
 
 ---
@@ -206,9 +207,9 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 21. Ichilov · 22. GotFriends · 23. HUJI positions
 24. Shaare Zedek (PW) · 25. Hadassah (PW)
 26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
-30. Osem-Nestlé (curl_cffi) · 31. Teva Pharmaceuticals (req) · **32. NAMER (req, APIM)**
-33. `check_health.py` (health report) · 34. rclone upload all CSVs → Google Drive
-35. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+30. Osem-Nestlé (curl_cffi) · 31. Teva (req) · **32. NAMER (req, APIM)** · **33. Bank Hapoalim (cffi)**
+34. `check_health.py` (health report) · 35. rclone upload all CSVs → Google Drive
+36. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -289,6 +290,23 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-30 — Bank Hapoalim added (banks expansion, source #1)
+- **New source `hapoalim`** (employer-type **`private`**) — Bank Hapoalim's own open positions
+  (`fetch_hapoalim.py` → `hapoalim_jobs_*.csv`). Drupal 10.2, behind Imperva/Incapsula WAF →
+  **curl_cffi** `chrome` impersonation (LOCAL-ONLY — datacenter IP blocked).
+- **Enumeration:** lobby (`/he/jobs-site/lobby`) + landing (`/he/jobs-site`), auto-follow Drupal
+  pager `?page=N` until no new node ids. Cards: `a.views-row.job` → nid, `.job-name` (title),
+  `.job-area` (location = גוש דן / השפלה …). Sitemap NOT used (would pull old/closed nodes).
+- **Detail fetch per node** (`/he/node/{nid}`): `article.job-page-single` liveness guard;
+  `.job-content` → description; `a[aria-label*="חטיבה"]` → department (division). description
+  falls back to area text if no `.job-content`. `position_type` by title keyword.
+- **Frontend:** `normHapoalim`/`loadHapoalim` (NAMER template — dedup by url, `positionType`),
+  data-bar pill, source filter item, `'hapoalim':'private'` employer-type, `--hp` colour (#e8001b),
+  all pool spreads + `activeSrc`. **`run_fetch.bat`:** Hapoalim inserted as **step 33/36**;
+  NAMER bat step (previously missing) inserted as **step 32/36** at the same time.
+- **HOOP (poalim.hoop.co.il) recon:** rejected — WP Job Manager portal where all visible listings
+  are `applications-closed`. No open vacancies → source not viable. Parser notes banked for future.
 
 ### 2026-06-29 — NAMER `אחר` titles fixed properly + descriptions for those rows
 - **Root cause found via recon (probe_namer_detail.py):** the 06-28 variant-C fix was built on
