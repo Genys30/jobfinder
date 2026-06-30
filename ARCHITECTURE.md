@@ -225,20 +225,26 @@ doesn't abort the rest.
 - **Google Drive archive**: rclone OAuth, account `sncentral.data@gmail.com`, folder
   `jobfinder-data` (`RCLONE_TOKEN` GitHub secret). Repo keeps ~7 days; Drive keeps full
   history. The **site loads from GitHub, not Drive.**
-  - The local `gdrive:` remote used by `run_fetch.bat` also points to
-    `sncentral.data@gmail.com`. Verified 2026-06-30 via `rclone lsf gdrive:jobfinder-data`
-    (returns `hapoalim_*`, `namer_*` — local-only sources never run in CI — alongside
-    `linkedin_jobs_*`). So **both** the CI upload and the local bat write to the same
-    `sncentral` archive.
-  - **LinkedIn files are part of the `sncentral` archive** like every other source: the
-    bat's `rclone copy . gdrive:jobfinder-data --include "*.csv"` uploads them nightly.
+  - The local `gdrive:` remote used by `run_fetch.bat` points to
+    `sncentral.data@gmail.com` — the same account as the CI upload. Verified 2026-06-30
+    via `rclone lsf gdrive:jobfinder-data`, which returns local-only sources (`hapoalim_*`,
+    `namer_*` — these never run in CI) alongside `linkedin_jobs_*`. So **both** the CI
+    upload and the local bat write to the single `sncentral` archive.
+  - **LinkedIn files live in the `sncentral` archive** like every other source: the bat's
+    `rclone copy . gdrive:jobfinder-data --include "*.csv"` uploads them nightly.
     (`rclone copy ... -v` on 2026-06-30 reported "nothing to transfer / Checks 26/26" —
-    all LinkedIn files already present.)
-  - **Known duplicate:** a second copy of `linkedin_jobs_*.csv` also lands in the Drive of
-    `sotnik@gmail.com`, created automatically by the Chrome workflow used to collect
-    LinkedIn (Chrome signed into `sotnik`). This is a redundant copy, not the canonical
-    store. The analytics spreadsheet (owned by `sotnik`) reads the canonical archive from
-    `sncentral` via a shared-folder link, so the `sotnik` duplicate is not needed.
+    all 26 LinkedIn files already present.) There is **no separate LinkedIn-only store**.
+  - **`sotnik@gmail.com` does not hold a second copy of the archive.** It owns the
+    analytics spreadsheet and sees `jobfinder-data` through a *shared-folder* link from
+    `sncentral` (it appears under "Shared with me"). A search under `sotnik` therefore
+    finds the same `hapoalim_*` / `namer_*` / `linkedin_jobs_*` files — these are the
+    shared originals, not duplicates. The earlier belief that "LinkedIn goes only to
+    sotnik" was a misreading of this shared view (the dated `linkedin_jobs_*` files were
+    in `sncentral` all along).
+  - Unrelated stray file: `linkedin_job_listings.csv` (no date in the name) sits in
+    `sotnik`'s own Drive. It is the raw one-off export from the LinkedIn Chrome extension
+    (fixed filename), **not** part of the pipeline, which uses dated
+    `linkedin_jobs_YYYY-MM-DD.csv`. The dashboard never reads it; it can be deleted safely.
 - **GitHub Actions** workflow `.github/workflows/fetch_jobs.yml`: installs only
   `requests beautifulsoup4` + rclone. Runs `fetch_jobs.py` nightly.
 - **GitHub Pages**: serves the static site from `main`.
