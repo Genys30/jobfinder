@@ -92,6 +92,10 @@ Method legend: **req** = plain requests+BeautifulSoup · **API** = JSON API ·
 | Osem-Nestlé | `fetch_osem.py` | `osem_jobs_*` | cffi | local | **A company, not a source** (see §7). Akamai WAF → curl_cffi `chrome110`. List pages + detail pages (`div.description_single` + JSON-LD `JobPosting`) |
 | KPMG | (`run_comeet` via `companies.json`) | `comeet_jobs_*` | API | CI | Routes through **Comeet** as *Somekh Chaikin*: `"comeet": "somekhchaikin/F3.007"` in companies.json. ~52 jobs. No standalone scraper. |
 | Bank Hapoalim | `fetch_hapoalim.py` | `hapoalim_jobs_*` | cffi | local | Drupal 10.2 / Imperva WAF → curl_cffi `chrome` impersonation. Lobby `/he/jobs-site/lobby` + landing + pager auto-follow → `a.views-row.job` cards (nid, title, area). Detail `/he/node/{nid}` → liveness guard + `description` (.job-content) + `department` (חטיבה link). `position_type` by title (סטודנט→part_time, מתמחה→internship, חל"ד→maternity_cover). `first_seen` keyed by node URL. employer-type **`private`**. LOCAL-ONLY (datacenter IP blocked). |
+| Bank Leumi | `fetch_leumi.py` | `leumi_jobs_*` | req | local | Drupal 11. `leumi.co.il/he/leumi_main/searchjobs`. Cards: `div.full-job` → title + `/he/Articles/{nid}` per-job URL. `first_seen`/dedup by URL. employer-type **`private`**. |
+| Mizrahi-Tefahot | `fetch_mizrahi.py` | `mizrahi_jobs_*` | req | local | `mizrahi-tefahot.co.il/about-mizrahi-tefahot-he/career/open-jobs/`. Cards: `div.job` → `div.divJobName` (title) + `div.jobMeta` (location/dept/scope). No per-job URLs → `first_seen`/dedup by **title**. `parse_meta()` strips "הגשת מועמדות" and splits tokens. employer-type **`private`**. |
+| Bank Discount | `fetch_discount.py` | `discount_jobs_*` | API | local | **Oracle Recruiting Cloud (ORC)**, site `CX_3001` on `ehsb.fa.em2.oraclecloud.com`. Public REST: `GET /hcmRestApi/resources/latest/recruitingCEJobRequisitions?expand=all&finder=findReqs;siteNumber=CX_3001`. Oracle hard-caps public API at **25 jobs** (TotalJobsCount=68; no pagination endpoint). Per-job URL: `discountbank.co.il/DB/jobs/#he/sites/CX_3001/requisitions/{Id}/details`. `first_seen` by URL. employer-type **`private`**. |
+| FIBI (בינלאומי) | `fetch_fibi.py` | `fibi_jobs_*` | req | local | Custom CMS, server-rendered. Two pages: `/jobsfibi/` (banking, company=הבנק הבינלאומי הראשון) + `/jobsmataf/` (tech/MATAF subsidiary, company=מת"ף). Job structure: `<section>` elements (no class) per job. Title: regex to first structural delimiter (`הכישורים הנדרשים`/`תיאור התפקיד`/`דרישות`/…); fallback: first line capped at 100 chars. Apply by email (`jobs@fibi.co.il`) — no per-job URLs. `first_seen`/dedup by **title**. employer-type **`private`**. |
 | NAMER (נמ"ר) | `fetch_namer.py` | `namer_jobs_*` | API | local | **National local-authority tenders** (מכרזי כוח אדם, רשויות מקומיות) — Ministry of Interior's central system. employer-type **`public`**. One feed → hundreds of authorities (~580 open). Angular SPA backed by an Azure **APIM gateway** (anonymous, public key): `GET …/namer-anonymous/v1/api/ManageMichrazim/GetAllSiteMichrazim/?basePage=<json>` + header `Ocp-Apim-Subscription-Key`. **`basePage` filters MUST be `null`, not `[]`** (empty arrays NRE the server); `page:{Number,SumItem}` paginates (0-based, stop on empty page). Key is re-derived from the site bundle at runtime (32-hex), with a hardcoded fallback. Real publish date (`ptichatMichrazDate`) → no first_seen. Per-job url `namerz.moin.gov.il/showexternal/{misparAsmachta}/{oid}`; **dedup by `misparAsmachta`** (oid is not unique alone). Open only (`kodStatus=0`/`פתוח`, skip `sibatBitul`/`sibatDchiya`). Title: `shemTafkid`, but ~27% are literally **"אחר"** → for those a per-michraz **detail fetch** (`Michraz/GetSiteMichraz/{asmachta}/{oid}`, GET, singular "Michraz") supplies **`teurMichraz`** = the job-description field (תאור משרה). `teurMichraz` is **not** a clean role name — it ranges from a bare title to a 5000-char wall — so `_title_from_teur()` extracts a concise role from it (first line; pull text after `לתפקיד`/`דרוש/ה`; cut body markers like `ייעוד התפקיד`/`דרוג ודרגה`; html-unescape; cap 90 chars). On empty/`אחר` result it falls back to `tchumMiktzoi`→`shemYechida` (variant B), so a title is always set and never reverts to "אחר". The full unescaped `teurMichraz` also becomes the **description** for these 'אחר' rows (free — the fetch already happens); other rows still get the list-metadata description. Throttled+cached, 'אחר' rows only. |
 
 ---
@@ -199,7 +203,7 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 
 ---
 
-## 8. `run_fetch.bat` — the local nightly runner (35 steps)
+## 8. `run_fetch.bat` — the local nightly runner (40 steps)
 
 1. git pull (with `git reset --hard` + LinkedIn CSV backup/restore + `clean_linkedin_csv.py`)
 2. Telegram @biltiformali · 3. Rambam · 4. BGU · 5. Maccabi · 6. MOD
@@ -207,9 +211,9 @@ a top-level source in the data bar. Movement Group and Osem-Nestlé use this pat
 21. Ichilov · 22. GotFriends · 23. HUJI positions
 24. Shaare Zedek (PW) · 25. Hadassah (PW)
 26. Deloitte (PW) · 27. EY (PW) · 28. BIS (PW) · 29. Joint (PW)
-30. Osem-Nestlé (curl_cffi) · 31. Teva (req) · **32. NAMER (req, APIM)** · **33. Bank Hapoalim (cffi)**
-34. `check_health.py` (health report) · 35. rclone upload all CSVs → Google Drive
-36. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
+30. Osem-Nestlé (cffi) · 31. Teva (req) · **32. NAMER (req, APIM)** · **33. Bank Hapoalim (cffi)** · **34. Bank Leumi (req)** · **35. Mizrahi-Tefahot (req)** · **36. Bank Discount (API/Oracle ORC)** · **37. FIBI (req)**
+38. `check_health.py` (health report) · 39. rclone upload all CSVs → Google Drive
+40. commit + push (`git add -- *.csv health_report.json`, then `git pull --rebase` + push)
 
 **Note:** `fetch_jobs.py` (ATS sources — Comeet incl. KPMG, Greenhouse, Lever, Ashby) and
 `fetch_gotfriends.py` are **not** steps in the bat — they run automatically in the nightly
@@ -310,6 +314,15 @@ doesn't abort the rest.
 ## 11. Session log
 
 Newest first. Keep entries short — details go in `BACKLOG.md`.
+
+### 2026-06-30 — Banks expansion complete: Leumi + Mizrahi + Discount + FIBI (sources #2–5)
+- **Bank Leumi** (`fetch_leumi.py` → `leumi_jobs_*.csv`): Drupal 11, plain req+BS4, `div.full-job` cards, per-job `/he/Articles/{nid}` URLs, dedup by URL. employer-type `private`.
+- **Mizrahi-Tefahot** (`fetch_mizrahi.py` → `mizrahi_jobs_*.csv`): req+BS4, `div.job` cards, `parse_meta()` decodes location/dept/scope from a single meta string (strips "הגשת מועמדות", splits tokens). No per-job URLs → dedup by **title**. 29 jobs.
+- **Bank Discount** (`fetch_discount.py` → `discount_jobs_*.csv`): **Oracle Recruiting Cloud (ORC)** public REST API. Explored all pagination options (`offset=N`, child resource, finder offset, PATCH) — Oracle hard-caps public API at **25 records** regardless; `TotalJobsCount=68`. Accepted limitation — 25 most-recent jobs captured. Per-job URL built from `Id` field. Plain requests (no WAF). employer-type `private`.
+- **FIBI** (`fetch_fibi.py` → `fibi_jobs_*.csv`): req+BS4, two pages (`/jobsfibi/` + `/jobsmataf/`), `<section>` tags per job (no class), title extracted via delimiter regex (`הכישורים הנדרשים`/`תי?אור ה(?:תפקיד|משרה)`/`דרישות`/`שעות עבודה`); fallback to first line capped 100 chars. Apply by email — no per-job URLs, dedup by **title**. 16 jobs (10 FIBI + 6 MATAF). employer-type `private`.
+- **Frontend:** all 4 sources wired (CSS vars `--lm/--mz/--dc/--fb`, norm+load fns, data-bar pills, source filter, employer-type map, activeSrc, 3 pool spreads, DATABAR_SOURCES, Promise.all).
+- **`run_fetch.bat`:** steps 34 (Leumi) + 35 (Mizrahi) + 36 (Discount) + 37 (FIBI) added; total now **40 steps**.
+- Commits: `ccee36a` (Leumi + Mizrahi), `dff8c9e` (Discount + FIBI).
 
 ### 2026-06-30 — Bank Hapoalim added (banks expansion, source #1)
 - **New source `hapoalim`** (employer-type **`private`**) — Bank Hapoalim's own open positions
