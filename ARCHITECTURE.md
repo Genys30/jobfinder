@@ -225,6 +225,20 @@ doesn't abort the rest.
 - **Google Drive archive**: rclone OAuth, account `sncentral.data@gmail.com`, folder
   `jobfinder-data` (`RCLONE_TOKEN` GitHub secret). Repo keeps ~7 days; Drive keeps full
   history. The **site loads from GitHub, not Drive.**
+  - The local `gdrive:` remote used by `run_fetch.bat` also points to
+    `sncentral.data@gmail.com`. Verified 2026-06-30 via `rclone lsf gdrive:jobfinder-data`
+    (returns `hapoalim_*`, `namer_*` — local-only sources never run in CI — alongside
+    `linkedin_jobs_*`). So **both** the CI upload and the local bat write to the same
+    `sncentral` archive.
+  - **LinkedIn files are part of the `sncentral` archive** like every other source: the
+    bat's `rclone copy . gdrive:jobfinder-data --include "*.csv"` uploads them nightly.
+    (`rclone copy ... -v` on 2026-06-30 reported "nothing to transfer / Checks 26/26" —
+    all LinkedIn files already present.)
+  - **Known duplicate:** a second copy of `linkedin_jobs_*.csv` also lands in the Drive of
+    `sotnik@gmail.com`, created automatically by the Chrome workflow used to collect
+    LinkedIn (Chrome signed into `sotnik`). This is a redundant copy, not the canonical
+    store. The analytics spreadsheet (owned by `sotnik`) reads the canonical archive from
+    `sncentral` via a shared-folder link, so the `sotnik` duplicate is not needed.
 - **GitHub Actions** workflow `.github/workflows/fetch_jobs.yml`: installs only
   `requests beautifulsoup4` + rclone. Runs `fetch_jobs.py` nightly.
 - **GitHub Pages**: serves the static site from `main`.
