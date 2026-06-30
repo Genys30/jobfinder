@@ -319,7 +319,7 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 32: NAMER (national local-authority tenders, Azure APIM) ──────────
-echo [32/36] Fetching NAMER jobs (local only, requests/APIM)...
+echo [32/38] Fetching NAMER jobs (local only, requests/APIM)...
 %PYTHON_CMD% fetch_namer.py
 if errorlevel 1 (
     echo WARNING: NAMER fetch failed - continuing anyway.
@@ -327,24 +327,40 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 33: Bank Hapoalim ──────────────────────────────────────────────────
-echo [33/36] Fetching Bank Hapoalim jobs (local only, curl_cffi)...
+echo [33/38] Fetching Bank Hapoalim jobs (local only, curl_cffi)...
 %PYTHON_CMD% fetch_hapoalim.py
 if errorlevel 1 (
     echo WARNING: Hapoalim fetch failed - continuing anyway.
 )
 echo.
 
-:: ── Step 34: Source health check ──────────────────────────────────────────
+:: ── Step 34: Bank Leumi ────────────────────────────────────────────────────
+echo [34/38] Fetching Bank Leumi jobs (local only, requests/BS4)...
+%PYTHON_CMD% fetch_leumi.py
+if errorlevel 1 (
+    echo WARNING: Leumi fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 35: Mizrahi-Tefahot ────────────────────────────────────────────────
+echo [35/38] Fetching Mizrahi-Tefahot jobs (local only, requests/BS4)...
+%PYTHON_CMD% fetch_mizrahi.py
+if errorlevel 1 (
+    echo WARNING: Mizrahi fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 36: Source health check ──────────────────────────────────────────
 :: Verifies every source produced a fresh, non-empty CSV with the right
 :: columns. Writes health_report.json (committed below). Never aborts the bat.
-echo [34/36] Running source health check...
+echo [36/38] Running source health check...
 %PYTHON_CMD% check_health.py
 echo.
 
 :: ── Step 32: Upload all CSVs to Google Drive (history archive) ────────────
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [35/36] Uploading CSVs to Google Drive...
+echo [37/38] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -367,7 +383,7 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 8: Commit and push ───────────────────────────────────────────────
-echo [36/36] Committing and pushing CSVs...
+echo [38/38] Committing and pushing CSVs...
 git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.
