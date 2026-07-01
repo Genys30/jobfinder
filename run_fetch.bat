@@ -351,7 +351,7 @@ if errorlevel 1 (
 echo.
 
 :: â”€â”€ Step 36: Bank Discount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [36/40] Fetching Bank Discount jobs (Oracle ORC API, plain requests)...
+echo [36/41] Fetching Bank Discount jobs (Oracle ORC API, plain requests)...
 %PYTHON_CMD% fetch_discount.py
 if errorlevel 1 (
     echo WARNING: Discount fetch failed - continuing anyway.
@@ -359,24 +359,32 @@ if errorlevel 1 (
 echo.
 
 :: â”€â”€ Step 37: FIBI (×”×‘× ×§ ×”×‘×™× ×œ××•×ž×™ ×”×¨××©×•×Ÿ + ×ž×ª"×£) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [37/40] Fetching FIBI jobs (local only, requests/BS4)...
+echo [37/41] Fetching FIBI jobs (local only, requests/BS4)...
 %PYTHON_CMD% fetch_fibi.py
 if errorlevel 1 (
     echo WARNING: FIBI fetch failed - continuing anyway.
 )
 echo.
 
-:: â”€â”€ Step 38: Source health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 38: Phoenix Insurance (הפניקס) ────────────────────────────────────
+echo [38/41] Fetching Phoenix Insurance jobs (local only, Playwright)...
+%PYTHON_CMD% fetch_phoenix.py
+if errorlevel 1 (
+    echo WARNING: Phoenix fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 39: Source health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: Verifies every source produced a fresh, non-empty CSV with the right
 :: columns. Writes health_report.json (committed below). Never aborts the bat.
-echo [36/40] Running source health check...
+echo [39/41] Running source health check...
 %PYTHON_CMD% check_health.py
 echo.
 
 :: â”€â”€ Step 32: Upload all CSVs to Google Drive (history archive) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [37/40] Uploading CSVs to Google Drive...
+echo [40/41] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -399,7 +407,7 @@ if errorlevel 1 (
 echo.
 
 :: â”€â”€ Step 8: Commit and push â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [38/40] Committing and pushing CSVs...
+echo [41/41] Committing and pushing CSVs...
 git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.
