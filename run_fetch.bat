@@ -1,12 +1,12 @@
-﻿@echo off
-title JobFinder â€” Fetch Jobs
+@echo off
+title JobFinder — Fetch Jobs
 echo.
 echo ===================================
-echo  JobFinder â€” Fetching jobs...
+echo  JobFinder — Fetching jobs...
 echo ===================================
 echo.
 
-:: â”€â”€ Auto-detect project path â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Auto-detect project path ──────────────────────────────────────────────
 set "PROJECT_DIR=%USERPROFILE%\Desktop\Projects\jobfinder"
 
 if not exist "%PROJECT_DIR%" (
@@ -22,7 +22,7 @@ cd /d "%PROJECT_DIR%"
 echo Project folder: %PROJECT_DIR%
 echo.
 
-:: â”€â”€ Check Git â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Check Git ──────────────────────────────────────────────────────────────
 where git >nul 2>&1
 if errorlevel 1 (
     echo ERROR: Git is not installed or not in PATH.
@@ -33,7 +33,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: â”€â”€ Check if this is a git repo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Check if this is a git repo ───────────────────────────────────────────
 if not exist "%PROJECT_DIR%\.git" (
     echo ERROR: The project folder is not a Git repository.
     echo.
@@ -49,7 +49,7 @@ if not exist "%PROJECT_DIR%\.git" (
     exit /b 1
 )
 
-:: â”€â”€ Check Python â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Check Python ──────────────────────────────────────────────────────────
 where py >nul 2>&1
 if errorlevel 1 (
     where python >nul 2>&1
@@ -66,7 +66,7 @@ if errorlevel 1 (
     set PYTHON_CMD=py
 )
 
-:: â”€â”€ Install missing Python packages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Install missing Python packages ───────────────────────────────────────
 echo Checking Python dependencies...
 %PYTHON_CMD% -c "import requests" >nul 2>&1
 if errorlevel 1 (
@@ -93,7 +93,7 @@ if errorlevel 1 (
 echo   All dependencies OK.
 echo.
 
-:: â”€â”€ Step 1: Pull â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 1: Pull ──────────────────────────────────────────────────────────
 echo [1/40] Pulling latest from GitHub...
 
 :: Back up LinkedIn CSVs before clean (git clean deletes untracked files)
@@ -119,7 +119,7 @@ for %%f in ("%TEMP%\li_backup\linkedin_jobs_*.csv") do (
 rd /s /q "%TEMP%\li_backup" >nul 2>&1
 echo.
 
-:: â”€â”€ Clean LinkedIn tracking URLs (runs only if linkedin_jobs_*.csv exists) â”€
+:: ── Clean LinkedIn tracking URLs (runs only if linkedin_jobs_*.csv exists) ─
 if exist "%PROJECT_DIR%\linkedin_jobs_*.csv" (
     echo Cleaning LinkedIn CSV tracking URLs...
     %PYTHON_CMD% clean_linkedin_csv.py
@@ -129,7 +129,7 @@ if exist "%PROJECT_DIR%\linkedin_jobs_*.csv" (
     echo.
 )
 
-:: â”€â”€ Step 2: Fetch Telegram â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 2: Fetch Telegram ────────────────────────────────────────────────
 :: NOTE: fetch_jobs.py and fetch_gotfriends.py now run automatically in
 :: GitHub Actions every night. This .bat only handles LinkedIn (collected
 :: manually with the Chrome extension) and the local-only sources below.
@@ -310,7 +310,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 30: Teva Pharmaceuticals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 30: Teva Pharmaceuticals ─────────────────────────────────────────
 echo [31/40] Fetching Teva jobs (local only)...
 %PYTHON_CMD% fetch_teva.py
 if errorlevel 1 (
@@ -318,7 +318,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 32: NAMER (national local-authority tenders, Azure APIM) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 32: NAMER (national local-authority tenders, Azure APIM) ──────────
 echo [32/40] Fetching NAMER jobs (local only, requests/APIM)...
 %PYTHON_CMD% fetch_namer.py
 if errorlevel 1 (
@@ -326,7 +326,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 33: Bank Hapoalim â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 33: Bank Hapoalim ──────────────────────────────────────────────────
 echo [33/40] Fetching Bank Hapoalim jobs (local only, curl_cffi)...
 %PYTHON_CMD% fetch_hapoalim.py
 if errorlevel 1 (
@@ -334,7 +334,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 34: Bank Leumi â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 34: Bank Leumi ────────────────────────────────────────────────────
 echo [34/40] Fetching Bank Leumi jobs (local only, requests/BS4)...
 %PYTHON_CMD% fetch_leumi.py
 if errorlevel 1 (
@@ -342,7 +342,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 35: Mizrahi-Tefahot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 35: Mizrahi-Tefahot ────────────────────────────────────────────────
 echo [35/40] Fetching Mizrahi-Tefahot jobs (local only, requests/BS4)...
 %PYTHON_CMD% fetch_mizrahi.py
 if errorlevel 1 (
@@ -350,7 +350,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 36: Bank Discount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 36: Bank Discount ─────────────────────────────────────────────────
 echo [36/41] Fetching Bank Discount jobs (Oracle ORC API, plain requests)...
 %PYTHON_CMD% fetch_discount.py
 if errorlevel 1 (
@@ -358,7 +358,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: â”€â”€ Step 37: FIBI (×”×‘× ×§ ×”×‘×™× ×œ××•×ž×™ ×”×¨××©×•×Ÿ + ×ž×ª"×£) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 37: FIBI (הבנק הבינלאומי הראשון + מת"ף) ────────────────────────────
 echo [37/41] Fetching FIBI jobs (local only, requests/BS4)...
 %PYTHON_CMD% fetch_fibi.py
 if errorlevel 1 (
@@ -366,7 +366,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── Step 38: Migdal Insurance (מגדל) ─────────────────────────────────────────
+:: -- Step 38: Migdal Insurance (????) -----------------------------------------
 echo [38/44] Fetching Migdal Insurance jobs (local only, requests/JSON API)...
 %PYTHON_CMD% fetch_migdal.py
 if errorlevel 1 (
@@ -374,7 +374,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── Step 39: Harel Insurance (הראל) ─────────────────────────────────────────
+:: -- Step 39: Harel Insurance (????) -----------------------------------------
 echo [39/44] Fetching Harel Insurance jobs (local only, requests/BS4, AdamTOTAL)...
 %PYTHON_CMD% fetch_harel.py
 if errorlevel 1 (
@@ -382,7 +382,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── Step 40: Clal Insurance (כלל ביטוח) ─────────────────────────────────────
+:: -- Step 40: Clal Insurance (??? ?????) -------------------------------------
 echo [40/44] Fetching Clal Insurance jobs (local only, Playwright intercept)...
 %PYTHON_CMD% fetch_clal.py
 if errorlevel 1 (
@@ -390,33 +390,41 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── Step 40: Menora Insurance (מנורה מבטחים) ──────────────────────────────
-echo [41/45] Fetching Menora Insurance jobs (local only, Playwright)...
+:: -- Step 40: Menora Insurance (????? ??????) ------------------------------
+echo [41/46] Fetching Menora Insurance jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_menora.py
 if errorlevel 1 (
     echo WARNING: Menora fetch failed - continuing anyway.
 )
 echo.
 
-:: ── Step 41: Phoenix Insurance (הפניקס) ────────────────────────────────────
-echo [42/45] Fetching Phoenix Insurance jobs (local only, Playwright)...
+:: -- Step 41: Ayalon Insurance (??????) --------------------------------------
+echo [42/46] Fetching Ayalon Insurance jobs (local only, Playwright intercept)...
+%PYTHON_CMD% fetch_ayalon.py
+if errorlevel 1 (
+    echo WARNING: Ayalon fetch failed - continuing anyway.
+)
+echo.
+
+:: -- Step 42: Phoenix Insurance (??????) ------------------------------------
+echo [43/46] Fetching Phoenix Insurance jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_phoenix.py
 if errorlevel 1 (
     echo WARNING: Phoenix fetch failed - continuing anyway.
 )
 echo.
 
-:: ── Step 39: Source health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: -- Step 39: Source health check ──────────────────────────────────────────
 :: Verifies every source produced a fresh, non-empty CSV with the right
 :: columns. Writes health_report.json (committed below). Never aborts the bat.
-echo [43/45] Running source health check...
+echo [44/46] Running source health check...
 %PYTHON_CMD% check_health.py
 echo.
 
-:: â”€â”€ Step 32: Upload all CSVs to Google Drive (history archive) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Step 32: Upload all CSVs to Google Drive (history archive) ────────────
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [44/45] Uploading CSVs to Google Drive...
+echo [45/46] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -438,8 +446,8 @@ if errorlevel 1 (
 :after_drive
 echo.
 
-:: â”€â”€ Step 8: Commit and push â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [45/45] Committing and pushing CSVs...
+:: ── Step 8: Commit and push ───────────────────────────────────────────────
+echo [46/46] Committing and pushing CSVs...
 git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.
@@ -448,7 +456,7 @@ git diff --staged --quiet && (
 )
 echo.
 
-:: â”€â”€ Pull then Push â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+:: ── Pull then Push ────────────────────────────────────────────────────────
 echo Syncing with GitHub before push...
 git pull --rebase origin main
 if errorlevel 1 (
