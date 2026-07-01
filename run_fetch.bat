@@ -367,15 +367,23 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 38: Migdal Insurance (מגדל) ─────────────────────────────────────────
-echo [38/43] Fetching Migdal Insurance jobs (local only, requests/JSON API)...
+echo [38/44] Fetching Migdal Insurance jobs (local only, requests/JSON API)...
 %PYTHON_CMD% fetch_migdal.py
 if errorlevel 1 (
     echo WARNING: Migdal fetch failed - continuing anyway.
 )
 echo.
 
-:: ── Step 39: Clal Insurance (כלל ביטוח) ─────────────────────────────────────
-echo [39/43] Fetching Clal Insurance jobs (local only, Playwright intercept)...
+:: ── Step 39: Harel Insurance (הראל) ─────────────────────────────────────────
+echo [39/44] Fetching Harel Insurance jobs (local only, requests/BS4, AdamTOTAL)...
+%PYTHON_CMD% fetch_harel.py
+if errorlevel 1 (
+    echo WARNING: Harel fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 40: Clal Insurance (כלל ביטוח) ─────────────────────────────────────
+echo [40/44] Fetching Clal Insurance jobs (local only, Playwright intercept)...
 %PYTHON_CMD% fetch_clal.py
 if errorlevel 1 (
     echo WARNING: Clal fetch failed - continuing anyway.
@@ -383,7 +391,7 @@ if errorlevel 1 (
 echo.
 
 :: ── Step 40: Phoenix Insurance (הפניקס) ────────────────────────────────────
-echo [40/43] Fetching Phoenix Insurance jobs (local only, Playwright)...
+echo [41/44] Fetching Phoenix Insurance jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_phoenix.py
 if errorlevel 1 (
     echo WARNING: Phoenix fetch failed - continuing anyway.
@@ -393,14 +401,14 @@ echo.
 :: ── Step 39: Source health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: Verifies every source produced a fresh, non-empty CSV with the right
 :: columns. Writes health_report.json (committed below). Never aborts the bat.
-echo [41/43] Running source health check...
+echo [42/44] Running source health check...
 %PYTHON_CMD% check_health.py
 echo.
 
 :: â”€â”€ Step 32: Upload all CSVs to Google Drive (history archive) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [42/43] Uploading CSVs to Google Drive...
+echo [43/44] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -423,7 +431,7 @@ if errorlevel 1 (
 echo.
 
 :: â”€â”€ Step 8: Commit and push â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [43/43] Committing and pushing CSVs...
+echo [44/44] Committing and pushing CSVs...
 git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.
