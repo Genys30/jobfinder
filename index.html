@@ -60,6 +60,7 @@
   --mgd:#003087;--mgd-pale:rgba(0,48,135,0.07);
   --clal:#E30613;--clal-pale:rgba(227,6,19,0.07);
   --hrl:#005BAC;--hrl-pale:rgba(0,91,172,0.07);
+  --mnr:#005F9E;--mnr-pale:rgba(0,95,158,0.07);
   --fnx:#E8003D;--fnx-pale:rgba(232,0,61,0.07);
   --bis:#2e7b8c;--bis-pale:rgba(46,123,140,0.07);
   --gf:#2563eb;--gf-pale:rgba(37,99,235,0.07);
@@ -686,6 +687,7 @@
   <div class="datasrc"><span class="src-dot" style="background:var(--hrl)"></span><span id="harelStatusText">Harel: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--clal)"></span><span id="clalStatusText">Clal: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--mgd)"></span><span id="migdalStatusText">Migdal: loading…</span></div>
+  <div class="datasrc"><span class="src-dot" style="background:var(--mnr)"></span><span id="menoraStatusText">Menora: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--fnx)"></span><span id="phoenixStatusText">Phoenix: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--bis)"></span><span id="bisStatusText">BIS: loading…</span></div>
@@ -860,6 +862,7 @@
         <li class="ms-item" data-value="harel"><input type="checkbox" id="src_harel"><label class="ms-item-label" for="src_harel">Harel &#x1F4CA;</label></li>
         <li class="ms-item" data-value="clal"><input type="checkbox" id="src_clal"><label class="ms-item-label" for="src_clal">Clal &#x1F4CA;</label></li>
         <li class="ms-item" data-value="migdal"><input type="checkbox" id="src_migdal"><label class="ms-item-label" for="src_migdal">Migdal &#x1F4CA;</label></li>
+        <li class="ms-item" data-value="menora"><input type="checkbox" id="src_menora"><label class="ms-item-label" for="src_menora">Menora &#x1F4CA;</label></li>
         <li class="ms-item" data-value="phoenix"><input type="checkbox" id="src_phoenix"><label class="ms-item-label" for="src_phoenix">Phoenix &#x1F4CA;</label></li>
         <li class="ms-item" data-value="bis"><input type="checkbox" id="src_bis"><label class="ms-item-label" for="src_bis">BIS</label></li>
         <li class="ms-item" data-value="gf"><input type="checkbox" id="src_gf"><label class="ms-item-label" for="src_gf">GotFriends</label></li>
@@ -1329,6 +1332,7 @@ let HAREL_JOBS   = []; // Harel Insurance (הראל) careers
 let CLAL_JOBS    = []; // Clal Insurance (כלל ביטוח) careers
 let MIGDAL_JOBS  = []; // Migdal Insurance (מגדל) careers
 let PHOENIX_JOBS = []; // Phoenix Insurance (הפניקס) careers
+let MENORA_JOBS  = []; // Menora Insurance (מנורה מבטחים) careers
 let BIS_JOBS = [];   // BIS (אגודת סטודנטים בר-אילן)
 let GF_JOBS  = [];   // GotFriends
 let IC_JOBS  = [];   // Ichilov (TopMatch)
@@ -1439,6 +1443,7 @@ const $fibiStatus    = document.getElementById('fibiStatusText');
 const $harelStatus   = document.getElementById('harelStatusText');
 const $clalStatus    = document.getElementById('clalStatusText');
 const $migdalStatus  = document.getElementById('migdalStatusText');
+const $menoraStatus  = document.getElementById('menoraStatusText');
 const $phoenixStatus = document.getElementById('phoenixStatusText');
 const $ruppinStatus = document.getElementById('ruppinStatusText');
 const $bisStatus = document.getElementById('bisStatusText');
@@ -3279,6 +3284,34 @@ async function loadPhoenix() {
   TOTALS['phoenix'] = PHOENIX_JOBS.length;
 }
 
+// ─── LOAD MENORA (מנורה מבטחים) ─────────────────────────────────────────────
+function normMenora(r) {
+  const title = (r.title||'').trim(); if (!title) return null;
+  return { title, company: r.company||'מנורה מבטחים', location: r.location||'', department: r.department||'',
+    description: r.description||'', url: r.url||'', date_posted: r.date_posted||'', first_seen: r.first_seen||'', source:'menora' };
+}
+async function loadMenora() {
+  if ($menoraStatus) $menoraStatus.innerHTML = 'Menora: <span style="color:var(--ink-faint)">loading…</span>';
+  const rows = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    const fname = `menora_jobs_${y}-${m}-${day}.csv`;
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) continue;
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, transformHeader:h=>h.replace(/^﻿/,'').trim().toLowerCase() });
+      parsed.data.forEach(row => { const n = normMenora(row); if (n) rows.push(n); });
+      break;
+    } catch(e) {}
+  }
+  if (!rows.length) { if ($menoraStatus) $menoraStatus.innerHTML = 'Menora: <span style="color:var(--ink-faint)">no file yet</span>'; return; }
+  const seen = new Set();
+  MENORA_JOBS = rows.filter(r => { const k = r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
+  if ($menoraStatus) $menoraStatus.innerHTML = `Menora: <strong>${MENORA_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['menora'] = MENORA_JOBS.length;
+}
+
 // ─── LOAD RUPPIN (המרכז האקדמי רופין) ────────────────────────────────────────
 function normRuppin(row, fname) {
   const g = k => (row[k] == null ? '' : String(row[k]).trim());
@@ -3419,7 +3452,7 @@ function getPoolInner(){
     const seen = new Set();
     const seenTitleCo = new Set();
     // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...HAREL_JOBS,...CLAL_JOBS,...MIGDAL_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
+    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...HAREL_JOBS,...CLAL_JOBS,...MIGDAL_JOBS,...MENORA_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
       const k = r.url;
       const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
       if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3468,6 +3501,7 @@ function getPoolInner(){
   if(activeSrc==='harel')    return HAREL_JOBS;
   if(activeSrc==='clal')     return CLAL_JOBS;
   if(activeSrc==='migdal')   return MIGDAL_JOBS;
+  if(activeSrc==='menora')   return MENORA_JOBS;
   if(activeSrc==='phoenix')  return PHOENIX_JOBS;
   if(activeSrc==='bis')   return BIS_JOBS;
   if(activeSrc==='gf')    return GF_JOBS;
@@ -3494,7 +3528,7 @@ function getPoolInner(){
   // fallback: full merged pool
   const seen = new Set();
   const seenTitleCo = new Set();
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...HAREL_JOBS,...CLAL_JOBS,...MIGDAL_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...HAREL_JOBS,...CLAL_JOBS,...MIGDAL_JOBS,...MENORA_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -4198,7 +4232,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'maccabi':'public','mac':'public',
   'leumit':'public','leu':'public',
   'meuhedet':'public','meu':'public',
-  'movement':'private','mov':'private','osem':'private','teva':'private','hapoalim':'private','leumi':'private','mizrahi':'private','discount':'private','fibi':'private','harel':'private','clal':'private','migdal':'private','phoenix':'private',
+  'movement':'private','mov':'private','osem':'private','teva':'private','hapoalim':'private','leumi':'private','mizrahi':'private','discount':'private','fibi':'private','harel':'private','clal':'private','migdal':'private','menora':'private','phoenix':'private',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -4274,6 +4308,7 @@ const DATABAR_SOURCES = [
   { id:'harelStatusText',     key:'harel',       label:'Harel' },
   { id:'clalStatusText',      key:'clal',        label:'Clal' },
   { id:'migdalStatusText',    key:'migdal',      label:'Migdal' },
+  { id:'menoraStatusText',    key:'menora',      label:'Menora' },
   { id:'phoenixStatusText',   key:'phoenix',     label:'Phoenix' },
   { id:'bisStatusText',       key:'bis',         label:'BIS' },
   { id:'gfStatusText',        key:'gf',          label:'GotFriends' },
@@ -5863,6 +5898,7 @@ render();
     loadHarel(),
     loadClal(),
     loadMigdal(),
+    loadMenora(),
     loadPhoenix(),
     loadTelegram(),
     loadMod(),
@@ -6177,7 +6213,7 @@ function shareJob(btn) {
 }
 
 function toggleTrack(id){
-  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,SHENKAR_JOBS,SAPIR_JOBS,YVC_JOBS,TELHAI_JOBS,RUPPIN_JOBS,NAMER_JOBS,HAPOALIM_JOBS,LEUMI_JOBS,MIZRAHI_JOBS,DISCOUNT_JOBS,FIBI_JOBS,HAREL_JOBS,CLAL_JOBS,MIGDAL_JOBS,PHOENIX_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
+  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,SHENKAR_JOBS,SAPIR_JOBS,YVC_JOBS,TELHAI_JOBS,RUPPIN_JOBS,NAMER_JOBS,HAPOALIM_JOBS,LEUMI_JOBS,MIZRAHI_JOBS,DISCOUNT_JOBS,FIBI_JOBS,HAREL_JOBS,CLAL_JOBS,MIGDAL_JOBS,MENORA_JOBS,PHOENIX_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
   var r=pool.find(function(j){ return (j.url||j.title+j.company)===id; });
   var apps=getApps();
   if(isTracked(id)){

@@ -390,8 +390,16 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── Step 40: Phoenix Insurance (הפניקס) ────────────────────────────────────
-echo [41/44] Fetching Phoenix Insurance jobs (local only, Playwright)...
+:: ── Step 40: Menora Insurance (מנורה מבטחים) ──────────────────────────────
+echo [41/45] Fetching Menora Insurance jobs (local only, Playwright)...
+%PYTHON_CMD% fetch_menora.py
+if errorlevel 1 (
+    echo WARNING: Menora fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 41: Phoenix Insurance (הפניקס) ────────────────────────────────────
+echo [42/45] Fetching Phoenix Insurance jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_phoenix.py
 if errorlevel 1 (
     echo WARNING: Phoenix fetch failed - continuing anyway.
@@ -401,14 +409,14 @@ echo.
 :: ── Step 39: Source health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: Verifies every source produced a fresh, non-empty CSV with the right
 :: columns. Writes health_report.json (committed below). Never aborts the bat.
-echo [42/44] Running source health check...
+echo [43/45] Running source health check...
 %PYTHON_CMD% check_health.py
 echo.
 
 :: â”€â”€ Step 32: Upload all CSVs to Google Drive (history archive) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [43/44] Uploading CSVs to Google Drive...
+echo [44/45] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -431,7 +439,7 @@ if errorlevel 1 (
 echo.
 
 :: â”€â”€ Step 8: Commit and push â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [44/44] Committing and pushing CSVs...
+echo [45/45] Committing and pushing CSVs...
 git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.
