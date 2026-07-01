@@ -366,8 +366,16 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── Step 38: Phoenix Insurance (הפניקס) ────────────────────────────────────
-echo [38/41] Fetching Phoenix Insurance jobs (local only, Playwright)...
+:: ── Step 38: Migdal Insurance (מגדל) ─────────────────────────────────────────
+echo [38/42] Fetching Migdal Insurance jobs (local only, requests/JSON API)...
+%PYTHON_CMD% fetch_migdal.py
+if errorlevel 1 (
+    echo WARNING: Migdal fetch failed - continuing anyway.
+)
+echo.
+
+:: ── Step 39: Phoenix Insurance (הפניקס) ────────────────────────────────────
+echo [39/42] Fetching Phoenix Insurance jobs (local only, Playwright)...
 %PYTHON_CMD% fetch_phoenix.py
 if errorlevel 1 (
     echo WARNING: Phoenix fetch failed - continuing anyway.
@@ -377,14 +385,14 @@ echo.
 :: ── Step 39: Source health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: Verifies every source produced a fresh, non-empty CSV with the right
 :: columns. Writes health_report.json (committed below). Never aborts the bat.
-echo [39/41] Running source health check...
+echo [40/42] Running source health check...
 %PYTHON_CMD% check_health.py
 echo.
 
 :: â”€â”€ Step 32: Upload all CSVs to Google Drive (history archive) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 :: rclone only transfers new/changed files, so this is cheap to run daily.
 :: Using "*.csv" so every naming pattern is covered (source_jobs_*, jobs_telegram_*, etc).
-echo [40/41] Uploading CSVs to Google Drive...
+echo [41/42] Uploading CSVs to Google Drive...
 where rclone >nul 2>&1
 if errorlevel 1 (
     if exist "%PROJECT_DIR%\rclone.exe" (
@@ -407,7 +415,7 @@ if errorlevel 1 (
 echo.
 
 :: â”€â”€ Step 8: Commit and push â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-echo [41/41] Committing and pushing CSVs...
+echo [42/42] Committing and pushing CSVs...
 git add -- *.csv health_report.json
 git diff --staged --quiet && (
     echo No new data to commit.

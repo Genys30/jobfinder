@@ -57,6 +57,7 @@
   --mz:#C55A1E;--mz-pale:rgba(197,90,30,0.07);
   --dc:#0033A0;--dc-pale:rgba(0,51,160,0.07);
   --fb:#7B2D8B;--fb-pale:rgba(123,45,139,0.07);
+  --mgd:#003087;--mgd-pale:rgba(0,48,135,0.07);
   --fnx:#E8003D;--fnx-pale:rgba(232,0,61,0.07);
   --bis:#2e7b8c;--bis-pale:rgba(46,123,140,0.07);
   --gf:#2563eb;--gf-pale:rgba(37,99,235,0.07);
@@ -680,6 +681,7 @@
   <div class="datasrc"><span class="src-dot" style="background:var(--mz)"></span><span id="mizrahiStatusText">Mizrahi-Tefahot: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--dc)"></span><span id="discountStatusText">Bank Discount: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--fb)"></span><span id="fibiStatusText">FIBI: loading…</span></div>
+  <div class="datasrc"><span class="src-dot" style="background:var(--mgd)"></span><span id="migdalStatusText">Migdal: loading…</span></div>
   <div class="datasrc"><span class="src-dot" style="background:var(--fnx)"></span><span id="phoenixStatusText">Phoenix: loading…</span></div>
   <span class="databar-sep">·</span>
   <div class="datasrc"><span class="src-dot" style="background:var(--bis)"></span><span id="bisStatusText">BIS: loading…</span></div>
@@ -851,6 +853,7 @@
         <li class="ms-item" data-value="mizrahi"><input type="checkbox" id="src_mizrahi"><label class="ms-item-label" for="src_mizrahi">Mizrahi-Tefahot &#x1F3E6;</label></li>
         <li class="ms-item" data-value="discount"><input type="checkbox" id="src_discount"><label class="ms-item-label" for="src_discount">Bank Discount &#x1F3E6;</label></li>
         <li class="ms-item" data-value="fibi"><input type="checkbox" id="src_fibi"><label class="ms-item-label" for="src_fibi">FIBI &#x1F3E6;</label></li>
+        <li class="ms-item" data-value="migdal"><input type="checkbox" id="src_migdal"><label class="ms-item-label" for="src_migdal">Migdal &#x1F4CA;</label></li>
         <li class="ms-item" data-value="phoenix"><input type="checkbox" id="src_phoenix"><label class="ms-item-label" for="src_phoenix">Phoenix &#x1F4CA;</label></li>
         <li class="ms-item" data-value="bis"><input type="checkbox" id="src_bis"><label class="ms-item-label" for="src_bis">BIS</label></li>
         <li class="ms-item" data-value="gf"><input type="checkbox" id="src_gf"><label class="ms-item-label" for="src_gf">GotFriends</label></li>
@@ -1316,6 +1319,7 @@ let LEUMI_JOBS   = []; // Bank Leumi careers
 let MIZRAHI_JOBS = []; // Mizrahi-Tefahot careers
 let DISCOUNT_JOBS= []; // Bank Discount careers (Oracle ORC)
 let FIBI_JOBS    = []; // FIBI careers (incl. MATAF subsidiary)
+let MIGDAL_JOBS  = []; // Migdal Insurance (מגדל) careers
 let PHOENIX_JOBS = []; // Phoenix Insurance (הפניקס) careers
 let BIS_JOBS = [];   // BIS (אגודת סטודנטים בר-אילן)
 let GF_JOBS  = [];   // GotFriends
@@ -1424,6 +1428,7 @@ const $leumiStatus   = document.getElementById('leumiStatusText');
 const $mizrahiStatus = document.getElementById('mizrahiStatusText');
 const $discountStatus= document.getElementById('discountStatusText');
 const $fibiStatus    = document.getElementById('fibiStatusText');
+const $migdalStatus  = document.getElementById('migdalStatusText');
 const $phoenixStatus = document.getElementById('phoenixStatusText');
 const $ruppinStatus = document.getElementById('ruppinStatusText');
 const $bisStatus = document.getElementById('bisStatusText');
@@ -3112,6 +3117,44 @@ async function loadFibi() {
   TOTALS['fibi'] = FIBI_JOBS.length;
 }
 
+// ─── LOAD MIGDAL (מגדל) ───────────────────────────────────────────────────────
+function normMigdal(row, fname) {
+  const g = k => (row[k] == null ? '' : String(row[k]).trim());
+  const title = g('title').split('\n')[0].trim();
+  if (!title) return null;
+  const fnDate = (fname.match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
+  return {
+    source: 'migdal', fnArea: 'migdal', title,
+    company: g('company') || 'מגדל',
+    category: classifySegment(title), size: '', level: classifyLevel(title),
+    city: g('location'),
+    url: g('url'), updated: g('date') || fnDate,
+    department: g('department'),
+    description: g('description'), positionType: g('position_type'), workType: 'onsite'
+  };
+}
+async function loadMigdal() {
+  if ($migdalStatus) $migdalStatus.innerHTML = 'Migdal: <span style="color:var(--ink-faint)">loading…</span>';
+  const rows = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+    const fname = `migdal_jobs_${y}-${m}-${day}.csv`;
+    try {
+      const r = await fetch(LI_RAW + fname); if (!r.ok) continue;
+      const text = await r.text();
+      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true, transformHeader:h=>h.replace(/^﻿/,'').trim().toLowerCase() });
+      parsed.data.forEach(row => { const n = normMigdal(row, fname); if (n) rows.push(n); });
+      break;
+    } catch(e) {}
+  }
+  if (!rows.length) { if ($migdalStatus) $migdalStatus.innerHTML = 'Migdal: <span style="color:var(--ink-faint)">no file yet</span>'; return; }
+  const seen = new Set();
+  MIGDAL_JOBS = rows.filter(r => { const k = r.url||(r.company+'|'+r.title); if(seen.has(k))return false; seen.add(k); return true; });
+  if ($migdalStatus) $migdalStatus.innerHTML = `Migdal: <strong>${MIGDAL_JOBS.length.toLocaleString()} jobs</strong>`;
+  TOTALS['migdal'] = MIGDAL_JOBS.length;
+}
+
 // ─── LOAD PHOENIX (הפניקס) ────────────────────────────────────────────────────
 function normPhoenix(row, fname) {
   const g = k => (row[k] == null ? '' : String(row[k]).trim());
@@ -3290,7 +3333,7 @@ function getPoolInner(){
     const seen = new Set();
     const seenTitleCo = new Set();
     // Priority: Comeet/GH/GF first (rich data), LinkedIn last
-    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
+    return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...MIGDAL_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS,...SZ_JOBS,...HD_JOBS,...CL_JOBS,...MEIR_JOBS,...KAPLAN_JOBS,...SCHNEIDER_JOBS,...YOSEFTAL_JOBS,...EMEK_JOBS,...LOEWENSTEIN_JOBS,...CARMEL_JOBS,...RABIN_JOBS].filter(r=>{
       const k = r.url;
       const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
       if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -3336,6 +3379,7 @@ function getPoolInner(){
   if(activeSrc==='mizrahi')  return MIZRAHI_JOBS;
   if(activeSrc==='discount') return DISCOUNT_JOBS;
   if(activeSrc==='fibi')     return FIBI_JOBS;
+  if(activeSrc==='migdal')   return MIGDAL_JOBS;
   if(activeSrc==='phoenix')  return PHOENIX_JOBS;
   if(activeSrc==='bis')   return BIS_JOBS;
   if(activeSrc==='gf')    return GF_JOBS;
@@ -3362,7 +3406,7 @@ function getPoolInner(){
   // fallback: full merged pool
   const seen = new Set();
   const seenTitleCo = new Set();
-  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
+  return [...CM_JOBS,...GH_JOBS,...GF_JOBS,...LV_JOBS,...AB_JOBS,...WK_JOBS,...SP_JOBS,...MT_JOBS,...AC_JOBS,...HJ_JOBS,...TAU_JOBS,...HUJI_JOBS,...UF_JOBS,...KPMG_JOBS,...DL_JOBS,...EY_JOBS,...JNT_JOBS,...BAR_JOBS,...AFEKA_JOBS,...SCE_JOBS,...BRAUDE_JOBS,...HIT_JOBS,...AZRIELI_JOBS,...SHENKAR_JOBS,...SAPIR_JOBS,...YVC_JOBS,...TELHAI_JOBS,...RUPPIN_JOBS,...NAMER_JOBS,...BIS_JOBS,...IC_JOBS,...RB_JOBS,...BL_JOBS,...SK_JOBS,...OSEM_JOBS,...TEVA_JOBS,...HAPOALIM_JOBS,...LEUMI_JOBS,...MIZRAHI_JOBS,...DISCOUNT_JOBS,...FIBI_JOBS,...MIGDAL_JOBS,...PHOENIX_JOBS,...LI_JOBS,...TG_JOBS,...MOD_JOBS,...MAC_JOBS,...LEU_JOBS,...MEU_JOBS,...MOV_JOBS,...INN_JOBS].filter(r=>{
     const k = r.url;
     const k2 = (r.title||'').toLowerCase().trim()+'|'+(r.company||'').toLowerCase().trim();
     if((k && seen.has(k)) || seenTitleCo.has(k2)) return false;
@@ -4066,7 +4110,7 @@ const SOURCE_EMPLOYER_TYPE = {
   'maccabi':'public','mac':'public',
   'leumit':'public','leu':'public',
   'meuhedet':'public','meu':'public',
-  'movement':'private','mov':'private','osem':'private','teva':'private','hapoalim':'private','leumi':'private','mizrahi':'private','discount':'private','fibi':'private','phoenix':'private',
+  'movement':'private','mov':'private','osem':'private','teva':'private','hapoalim':'private','leumi':'private','mizrahi':'private','discount':'private','fibi':'private','migdal':'private','phoenix':'private',
   'rabin':'public',
   'meir':'public',
   'kaplan':'public',
@@ -4139,6 +4183,7 @@ const DATABAR_SOURCES = [
   { id:'mizrahiStatusText',   key:'mizrahi',     label:'Mizrahi-Tefahot' },
   { id:'discountStatusText',  key:'discount',    label:'Bank Discount' },
   { id:'fibiStatusText',      key:'fibi',        label:'FIBI' },
+  { id:'migdalStatusText',    key:'migdal',      label:'Migdal' },
   { id:'phoenixStatusText',   key:'phoenix',     label:'Phoenix' },
   { id:'bisStatusText',       key:'bis',         label:'BIS' },
   { id:'gfStatusText',        key:'gf',          label:'GotFriends' },
@@ -5725,6 +5770,7 @@ render();
     loadMizrahi(),
     loadDiscount(),
     loadFibi(),
+    loadMigdal(),
     loadPhoenix(),
     loadTelegram(),
     loadMod(),
@@ -6039,7 +6085,7 @@ function shareJob(btn) {
 }
 
 function toggleTrack(id){
-  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,SHENKAR_JOBS,SAPIR_JOBS,YVC_JOBS,TELHAI_JOBS,RUPPIN_JOBS,NAMER_JOBS,HAPOALIM_JOBS,LEUMI_JOBS,MIZRAHI_JOBS,DISCOUNT_JOBS,FIBI_JOBS,PHOENIX_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
+  var pool=[].concat(LI_JOBS,CM_JOBS,GH_JOBS,LV_JOBS,AB_JOBS,WK_JOBS,TAU_JOBS,HUJI_JOBS,UF_JOBS,KPMG_JOBS,DL_JOBS,EY_JOBS,JNT_JOBS,BAR_JOBS,AFEKA_JOBS,SCE_JOBS,BRAUDE_JOBS,HIT_JOBS,AZRIELI_JOBS,SHENKAR_JOBS,SAPIR_JOBS,YVC_JOBS,TELHAI_JOBS,RUPPIN_JOBS,NAMER_JOBS,HAPOALIM_JOBS,LEUMI_JOBS,MIZRAHI_JOBS,DISCOUNT_JOBS,FIBI_JOBS,MIGDAL_JOBS,PHOENIX_JOBS,BIS_JOBS,GF_JOBS,IC_JOBS,RB_JOBS,BL_JOBS,SK_JOBS,TG_JOBS);
   var r=pool.find(function(j){ return (j.url||j.title+j.company)===id; });
   var apps=getApps();
   if(isTracked(id)){
