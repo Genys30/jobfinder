@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Israeli Tech Labor Market Analytics — Rashut HaHidush</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f6f8;--surface:#ffffff;--border:#e2e8f0;--teal:#0d9488;--amber:#d97706;
+  --rose:#e11d48;--blue:#2563eb;--green:#16a34a;--violet:#7c3aed;
+  --ink:#0f172a;--ink-dim:#475569;--ink-faint:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 32px 80px;max-width:1280px;margin:0 auto;}
+.header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.header-left h1{font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;letter-spacing:-0.5px;color:var(--ink);line-height:1.1;}
+.header-left h1 em{font-style:italic;color:var(--teal);}
+.header-left p{margin-top:8px;font-size:13px;color:var(--ink-dim);font-family:'DM Mono',monospace;}
+.header-right{text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-faint);line-height:1.8;}
+.header-right strong{color:var(--teal);font-size:28px;font-family:'DM Serif Display',serif;display:block;}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),transparent);opacity:0.4;}
+.card.accent-rose::before{background:linear-gradient(90deg,var(--rose),transparent);}
+.card.accent-amber::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.card.accent-green::before{background:linear-gradient(90deg,var(--green),transparent);}
+.card-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:16px;}
+.stat-card{display:flex;flex-direction:column;justify-content:space-between;}
+.stat-value{font-family:'DM Serif Display',serif;font-size:42px;color:var(--ink);line-height:1;}
+.stat-value span{font-size:18px;color:var(--ink-dim);font-family:'DM Sans',sans-serif;font-weight:300;}
+.stat-sub{font-size:12px;color:var(--ink-dim);margin-top:8px;}
+.split{display:flex;gap:24px;align-items:flex-end;}
+.split-item{flex:1;}
+.split-item .val{font-family:'DM Serif Display',serif;font-size:36px;line-height:1;}
+.split-item .lbl{font-size:11px;color:var(--ink-dim);margin-top:4px;font-family:'DM Mono',monospace;}
+.core-val{color:var(--teal);}.supp-val{color:var(--amber);}
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.bar-row:last-child{margin-bottom:0;}
+.bar-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-dim);width:20px;text-align:center;flex-shrink:0;}
+.bar-label.wide{width:150px;text-align:left;}
+.bar-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-faint);width:78px;text-align:right;}
+.pyramid-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.pyramid-label{font-size:12px;color:var(--ink-dim);width:72px;flex-shrink:0;text-transform:capitalize;}
+.pyramid-bar{height:24px;border-radius:3px;display:flex;align-items:center;padding:0 10px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.85);min-width:40px;white-space:nowrap;}
+.insight{margin-top:16px;padding:12px 16px;background:rgba(13,148,136,0.05);border-left:2px solid var(--teal);border-radius:0 4px 4px 0;font-size:12px;color:var(--ink-dim);line-height:1.6;}
+.insight strong{color:var(--teal);}
+.insight.warn{background:rgba(225,29,72,0.04);border-left-color:var(--rose);}
+.insight.warn strong{color:var(--rose);}
+table.data{width:100%;border-collapse:collapse;font-size:12px;}
+table.data th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);text-align:right;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:400;}
+table.data th:first-child,table.data td:first-child{text-align:left;}
+table.data td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:var(--ink-dim);}
+table.data td:first-child{font-family:'DM Sans',sans-serif;font-weight:400;color:var(--ink);}
+table.data tr:last-child td{border-bottom:none;}
+.heat{width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:12px;}
+.heat th{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);padding:8px 6px;font-weight:400;text-align:center;}
+.heat td{padding:12px 6px;text-align:center;border-radius:4px;color:var(--ink-dim);}
+.heat td.rowhead{text-align:left;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:12px;text-transform:capitalize;}
+.heat td.avgcell{color:var(--ink);font-weight:500;}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-family:'DM Mono',monospace;font-size:10px;}
+.pill.open{background:rgba(22,163,74,0.12);color:var(--green);}
+.pill.closed{background:rgba(225,29,72,0.12);color:var(--rose);}
+.pill.mixed{background:rgba(217,119,6,0.12);color:var(--amber);}
+.policy-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);}
+.policy-item:last-child{border-bottom:none;}
+.policy-num{font-family:'DM Serif Display',serif;font-size:28px;color:var(--teal);line-height:1;flex-shrink:0;width:36px;}
+.policy-body h3{font-size:14px;font-weight:500;margin-bottom:4px;}
+.policy-body p{font-size:12.5px;color:var(--ink-dim);line-height:1.65;}
+.policy-body strong{color:var(--ink);font-weight:500;}
+.span-4{grid-column:span 4;}.span-3{grid-column:span 3;}.span-6{grid-column:span 6;}
+.span-8{grid-column:span 8;}.span-12{grid-column:span 12;}.span-5{grid-column:span 5;}.span-7{grid-column:span 7;}
+.footnote{font-size:10.5px;color:var(--ink-faint);margin-top:12px;font-family:'DM Mono',monospace;line-height:1.5;}
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-faint);display:flex;justify-content:space-between;}
+.footer a{color:var(--teal);text-decoration:none;}
+.footer a:hover{text-decoration:underline;}
+@media(max-width:900px){.span-4,.span-3,.span-6,.span-8,.span-5,.span-7{grid-column:span 12;}body{padding:20px 16px 60px;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <h1>Israeli Tech<br><em>Labor Intelligence</em></h1>
+    <p>Where the market is closed — and where to invest retraining</p>
+  </div>
+  <div class="header-right">
+    <strong>4,766</strong>
+    open roles, LLM-classified<br>
+    Sources: GotFriends 3,207 · Comeet 1,351 · Greenhouse 208<br>
+    Snapshot: 2026-05-19 · jobfinder pipeline
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- ── Row 1: role type + seniority ─────────────────────────────── -->
+  <div class="card span-4">
+    <div class="card-label">Role Type</div>
+    <div class="split">
+      <div class="split-item"><div class="val core-val">63.0%</div><div class="lbl">Core R&amp;D</div></div>
+      <div class="split-item"><div class="val supp-val">37.0%</div><div class="lbl">Support</div></div>
+    </div>
+    <div class="insight"><strong>3,002 core</strong> vs 1,764 support roles — hands-on engineering dominates open demand.</div>
+  </div>
+
+  <div class="card span-8">
+    <div class="card-label">Seniority Distribution</div>
+    <div style="margin-top:4px;">
+      <div class="pyramid-row"><div class="pyramid-label">Mid</div><div class="pyramid-bar" style="width:45.9%;background:linear-gradient(90deg,#0d9488,#0f766e);">45.9% · 2,189</div></div>
+      <div class="pyramid-row"><div class="pyramid-label">Senior</div><div class="pyramid-bar" style="width:26%;background:linear-gradient(90deg,#2563eb,#1d4ed8);">26.0% · 1,240</div></div>
+      <div class="pyramid-row"><div class="pyramid-label">Lead</div><div class="pyramid-bar" style="width:18%;background:linear-gradient(90deg,#7c3aed,#6d28d9);">18.0% · 859</div></div>
+      <div class="pyramid-row"><div class="pyramid-label">Junior</div><div class="pyramid-bar" style="width:7%;background:linear-gradient(90deg,#e11d48,#be123c);">6.7% · 317</div></div>
+      <div class="pyramid-row"><div class="pyramid-label">Executive</div><div class="pyramid-bar" style="width:3.5%;background:linear-gradient(90deg,#d97706,#b45309);">3.4% · 161</div></div>
+    </div>
+    <div class="insight warn">Only <strong>6.7% junior</strong> roles — 93.3% of the market demands prior experience. This is the entry wall for career changers and returners.</div>
+  </div>
+
+  <!-- ── Row 2: barrier + flexibility distributions ───────────────── -->
+  <div class="card span-6">
+    <div class="card-label">Entry Barrier Score (1=Open · 5=Strict)</div>
+    <div style="margin-top:8px;">
+      <div class="bar-row"><div class="bar-label">1</div><div class="bar-track"><div class="bar-fill" style="width:3%;background:var(--green);"></div></div><div class="bar-count">142 · 3.0%</div></div>
+      <div class="bar-row"><div class="bar-label">2</div><div class="bar-track"><div class="bar-fill" style="width:30.9%;background:var(--teal);"></div></div><div class="bar-count">1,471 · 30.9%</div></div>
+      <div class="bar-row"><div class="bar-label">3</div><div class="bar-track"><div class="bar-fill" style="width:41.1%;background:var(--blue);"></div></div><div class="bar-count">1,960 · 41.1%</div></div>
+      <div class="bar-row"><div class="bar-label">4</div><div class="bar-track"><div class="bar-fill" style="width:23.9%;background:var(--amber);"></div></div><div class="bar-count">1,140 · 23.9%</div></div>
+      <div class="bar-row"><div class="bar-label">5</div><div class="bar-track"><div class="bar-fill" style="width:1.1%;background:var(--rose);"></div></div><div class="bar-count">53 · 1.1%</div></div>
+    </div>
+    <div class="insight"><strong>Avg barrier: 2.89/5</strong> — 25.0% of roles score 4–5: a specific rare stack or background is a hard gate.</div>
+  </div>
+
+  <div class="card span-6">
+    <div class="card-label">Flexibility Score (1=Office Only · 5=Full Remote)</div>
+    <div style="margin-top:8px;">
+      <div class="bar-row"><div class="bar-label">1</div><div class="bar-track"><div class="bar-fill" style="width:3.9%;background:var(--rose);"></div></div><div class="bar-count">188 · 3.9%</div></div>
+      <div class="bar-row"><div class="bar-label">2</div><div class="bar-track"><div class="bar-fill" style="width:20.5%;background:var(--amber);"></div></div><div class="bar-count">978 · 20.5%</div></div>
+      <div class="bar-row"><div class="bar-label">3</div><div class="bar-track"><div class="bar-fill" style="width:59.8%;background:var(--blue);"></div></div><div class="bar-count">2,851 · 59.8%</div></div>
+      <div class="bar-row"><div class="bar-label">4</div><div class="bar-track"><div class="bar-fill" style="width:15.2%;background:var(--teal);"></div></div><div class="bar-count">723 · 15.2%</div></div>
+      <div class="bar-row"><div class="bar-label">5</div><div class="bar-track"><div class="bar-fill" style="width:0.5%;background:var(--green);"></div></div><div class="bar-count">26 · 0.5%</div></div>
+    </div>
+    <div class="insight warn"><strong>Only 26 roles (0.5%) are full-remote.</strong> 60% offer standard hybrid — "can mothers work in tech?" — barely, and on the employer's terms.</div>
+  </div>
+
+  <!-- ── Row 3 NEW: glass ceiling — barrier × seniority ───────────── -->
+  <div class="card span-12 accent-rose">
+    <div class="card-label">The Glass Ceiling in Numbers — Barrier Score × Seniority</div>
+    <table class="heat">
+      <thead>
+        <tr>
+          <th style="text-align:left;">Seniority</th>
+          <th>Barrier 1</th><th>Barrier 2</th><th>Barrier 3</th><th>Barrier 4</th><th>Barrier 5</th>
+          <th>Avg</th><th>Strict (4–5)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowhead">Junior <span style="color:var(--ink-faint);font-size:10px;">n=317</span></td>
+          <td style="background:rgba(22,163,74,0.28);">34.1%</td>
+          <td style="background:rgba(22,163,74,0.42);">55.2%</td>
+          <td style="background:rgba(225,29,72,0.06);">8.5%</td>
+          <td style="background:rgba(225,29,72,0.03);">2.2%</td>
+          <td>0%</td>
+          <td class="avgcell">1.79</td>
+          <td><span class="pill open">2.2%</span></td>
+        </tr>
+        <tr>
+          <td class="rowhead">Mid <span style="color:var(--ink-faint);font-size:10px;">n=2,189</span></td>
+          <td style="background:rgba(22,163,74,0.05);">1.5%</td>
+          <td style="background:rgba(22,163,74,0.26);">35.9%</td>
+          <td style="background:rgba(225,29,72,0.16);">40.8%</td>
+          <td style="background:rgba(225,29,72,0.12);">21.2%</td>
+          <td style="background:rgba(225,29,72,0.03);">0.7%</td>
+          <td class="avgcell">2.84</td>
+          <td><span class="pill mixed">21.9%</span></td>
+        </tr>
+        <tr>
+          <td class="rowhead">Senior <span style="color:var(--ink-faint);font-size:10px;">n=1,240</span></td>
+          <td>0.1%</td>
+          <td style="background:rgba(22,163,74,0.18);">24.9%</td>
+          <td style="background:rgba(225,29,72,0.18);">43.7%</td>
+          <td style="background:rgba(225,29,72,0.16);">29.1%</td>
+          <td style="background:rgba(225,29,72,0.05);">2.2%</td>
+          <td class="avgcell">3.08</td>
+          <td><span class="pill closed">31.3%</span></td>
+        </tr>
+        <tr>
+          <td class="rowhead">Lead <span style="color:var(--ink-faint);font-size:10px;">n=859</span></td>
+          <td>0.1%</td>
+          <td style="background:rgba(22,163,74,0.14);">19.2%</td>
+          <td style="background:rgba(225,29,72,0.2);">50.6%</td>
+          <td style="background:rgba(225,29,72,0.16);">29.7%</td>
+          <td style="background:rgba(225,29,72,0.02);">0.3%</td>
+          <td class="avgcell">3.11</td>
+          <td><span class="pill closed">30.0%</span></td>
+        </tr>
+        <tr>
+          <td class="rowhead">Executive <span style="color:var(--ink-faint);font-size:10px;">n=161</span></td>
+          <td>0%</td>
+          <td style="background:rgba(22,163,74,0.16);">22.4%</td>
+          <td style="background:rgba(225,29,72,0.16);">39.8%</td>
+          <td style="background:rgba(225,29,72,0.19);">33.5%</td>
+          <td style="background:rgba(225,29,72,0.08);">4.3%</td>
+          <td class="avgcell">3.20</td>
+          <td><span class="pill closed">37.9%</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="insight warn">Average barrier rises monotonically with seniority: <strong>1.79 → 2.84 → 3.08 → 3.11 → 3.20</strong>. The share of strict roles (4–5) grows <strong>17× from junior to executive</strong> (2.2% → 37.9%). The higher the position, the narrower the required stack — this is why experienced women who paused careers cannot re-enter at senior/lead level.</div>
+  </div>
+
+  <!-- ── Row 4 NEW: experience wall + flexibility by seniority ────── -->
+  <div class="card span-6 accent-amber">
+    <div class="card-label">The Experience Wall</div>
+    <div class="split" style="margin-bottom:16px;">
+      <div class="split-item"><div class="val" style="color:var(--rose);">93.3%</div><div class="lbl">roles demand prior experience (mid+)</div></div>
+      <div class="split-item"><div class="val" style="color:var(--amber);">45.2%</div><div class="lbl">of explicit reqs ask 5+ years</div></div>
+    </div>
+    <div style="margin-top:8px;">
+      <div class="bar-row"><div class="bar-label wide">Junior — avg yrs asked</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--green);"></div></div><div class="bar-count">2.5 yrs</div></div>
+      <div class="bar-row"><div class="bar-label wide">Mid</div><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--teal);"></div></div><div class="bar-count">2.8 yrs</div></div>
+      <div class="bar-row"><div class="bar-label wide">Senior</div><div class="bar-track"><div class="bar-fill" style="width:46%;background:var(--amber);"></div></div><div class="bar-count">4.6 yrs</div></div>
+      <div class="bar-row"><div class="bar-label wide">Lead</div><div class="bar-track"><div class="bar-fill" style="width:61%;background:var(--rose);"></div></div><div class="bar-count">6.1 yrs</div></div>
+    </div>
+    <div class="insight warn">Where postings state years explicitly, <strong>76.2% demand 3+ years and 45.2% demand 5+</strong>. A returner after maternity leave or a career changer is filtered out before any interview.</div>
+    <div class="footnote">* Only 42 postings state years numerically in the scraped snippet (descriptions truncated at 800 chars); the 93.3% mid+ seniority share is the robust market-wide proxy for the experience requirement.</div>
+  </div>
+
+  <div class="card span-6">
+    <div class="card-label">Flexibility × Seniority — who gets remote?</div>
+    <div style="margin-top:8px;">
+      <div class="bar-row"><div class="bar-label wide">Junior · flex 4–5</div><div class="bar-track"><div class="bar-fill" style="width:7.3%;background:var(--rose);"></div></div><div class="bar-count">7.3%</div></div>
+      <div class="bar-row"><div class="bar-label wide">Mid</div><div class="bar-track"><div class="bar-fill" style="width:14.1%;background:var(--amber);"></div></div><div class="bar-count">14.1%</div></div>
+      <div class="bar-row"><div class="bar-label wide">Senior</div><div class="bar-track"><div class="bar-fill" style="width:21.7%;background:var(--teal);"></div></div><div class="bar-count">21.7%</div></div>
+      <div class="bar-row"><div class="bar-label wide">Lead</div><div class="bar-track"><div class="bar-fill" style="width:15.9%;background:var(--blue);"></div></div><div class="bar-count">15.9%</div></div>
+      <div class="bar-row"><div class="bar-label wide">Executive</div><div class="bar-track"><div class="bar-fill" style="width:6.8%;background:var(--rose);"></div></div><div class="bar-count">6.8%</div></div>
+    </div>
+    <div class="insight warn">Flexibility is <strong>earned with seniority, then revoked at the top</strong>: juniors (7.3%) and executives (6.8%) get the least remote access. The double bind: entry demands office presence, and so does leadership.</div>
+  </div>
+
+  <!-- ── Row 5: stack + degree + military ─────────────────────────── -->
+  <div class="card span-4">
+    <div class="card-label">Tech Stack Recency</div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+      <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">Standard</span><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--ink-dim);">58.4% · 2,784</span></div><div class="bar-track" style="height:12px;"><div class="bar-fill" style="width:58.4%;background:var(--blue);"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">Cutting Edge</span><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--ink-dim);">41.5% · 1,979</span></div><div class="bar-track" style="height:12px;"><div class="bar-fill" style="width:41.5%;background:var(--teal);"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">Legacy</span><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--ink-dim);">&lt;0.1% · 3</span></div><div class="bar-track" style="height:12px;"><div class="bar-fill" style="width:0.5%;background:var(--rose);"></div></div></div>
+    </div>
+    <div class="insight"><strong>41.5% cutting-edge</strong> — retraining curricula must target current AI/ML-era stacks, not last decade's.</div>
+  </div>
+
+  <div class="card span-4 stat-card">
+    <div class="card-label">Degree Required</div>
+    <div><div class="stat-value">0.8<span>%</span></div><div class="stat-sub">Only 39 of 4,766 roles explicitly require a degree</div></div>
+    <div class="insight">Formal education is almost never a hard gate — <strong>certification-based retraining is viable</strong>. The market screens on experience and stack, not diplomas.</div>
+  </div>
+
+  <div class="card span-4 stat-card accent-rose">
+    <div class="card-label">Military Unit as Informal Filter</div>
+    <div><div class="stat-value">0.5<span>%</span></div><div class="stat-sub">25 roles explicitly demand 8200 / ממר"ם / מת"ם — plus a dedicated "Graduates (8200/Mamram)" hiring category of 42 roles</div></div>
+    <div class="insight warn">The explicit 0.5% is the <strong>tip of the iceberg</strong> — elite-unit background operates as an unstated screen, structurally excluding those who served elsewhere or not at all.</div>
+  </div>
+
+  <!-- ── Row 6 NEW: category breakdown ────────────────────────────── -->
+  <div class="card span-12">
+    <div class="card-label">Where Is the Market Open vs Closed — GotFriends Categories (n=3,207)</div>
+    <table class="data">
+      <thead>
+        <tr><th>Category</th><th>Roles</th><th>Avg Barrier</th><th>Open (barrier 1–2)</th><th>Lead+Exec</th><th>Junior</th><th>Core R&amp;D</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Product Management</td><td>399</td><td>2.38</td><td>61.4%</td><td>19.5%</td><td>0.5%</td><td>0.8%</td><td><span class="pill open">OPEN</span></td></tr>
+        <tr><td>BI &amp; Big Data</td><td>399</td><td>2.55</td><td>51.9%</td><td>16.5%</td><td>7.5%</td><td>63.4%</td><td><span class="pill open">OPEN</span></td></tr>
+        <tr><td>QA &amp; Automation</td><td>402</td><td>2.75</td><td>36.8%</td><td>18.7%</td><td>9.7%</td><td>86.8%</td><td><span class="pill open">OPEN</span></td></tr>
+        <tr><td>DevOps &amp; System</td><td>402</td><td>2.96</td><td>22.6%</td><td>22.9%</td><td>5.2%</td><td>75.6%</td><td><span class="pill mixed">MIXED</span></td></tr>
+        <tr><td>Software Development</td><td>405</td><td>3.06</td><td>21.7%</td><td>31.9%</td><td>1.5%</td><td>90.1%</td><td><span class="pill mixed">MIXED</span></td></tr>
+        <tr><td>Executive Search</td><td>192</td><td>3.02</td><td>27.6%</td><td>91.1%</td><td>0%</td><td>37.5%</td><td><span class="pill mixed">MIXED</span></td></tr>
+        <tr><td>AI &amp; ML</td><td>166</td><td>3.40</td><td>8.4%</td><td>11.4%</td><td>1.8%</td><td>94.6%</td><td><span class="pill closed">CLOSED</span></td></tr>
+        <tr><td>Graduates (8200/Mamram)</td><td>42</td><td>3.26</td><td>19.0%</td><td>4.8%</td><td>11.9%</td><td>97.6%</td><td><span class="pill closed">GATED</span></td></tr>
+        <tr><td>Cyber &amp; Security</td><td>400</td><td>3.56</td><td>4.8%</td><td>19.2%</td><td>1.8%</td><td>81.5%</td><td><span class="pill closed">CLOSED</span></td></tr>
+        <tr><td>Algorithms &amp; Data Science</td><td>400</td><td>3.58</td><td>4.2%</td><td>19.0%</td><td>0.8%</td><td>93.5%</td><td><span class="pill closed">CLOSED</span></td></tr>
+      </tbody>
+    </table>
+    <div class="insight">The spread is stark: <strong>Product Management is 61% open while Algorithms &amp; Data Science is 96% closed</strong>. Cyber, Algorithms and AI/ML — the highest-prestige, highest-pay tracks — are precisely where barrier 1–2 roles almost don't exist. A separate "Graduates (8200/Mamram)" category institutionalizes the military pipeline.</div>
+    <div class="footnote">* GotFriends pagination caps each category at ~400 listings; counts near 400 mean "at least 400". Percentages remain representative within category.</div>
+  </div>
+
+  <!-- ── Row 7 NEW: where to invest ───────────────────────────────── -->
+  <div class="card span-5 accent-green">
+    <div class="card-label">The Accessible Market — Barrier 1–2</div>
+    <div class="split" style="margin-bottom:16px;">
+      <div class="split-item"><div class="val" style="color:var(--green);">1,613</div><div class="lbl">roles open to imperfect backgrounds</div></div>
+      <div class="split-item"><div class="val" style="color:var(--teal);">33.8%</div><div class="lbl">of the whole market</div></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--ink-dim);line-height:1.7;">
+      Of these, <strong style="color:var(--ink);">558 are core R&amp;D roles</strong> — real engineering, not only support tracks. 283 are junior, 818 mid-level: a realistic first and second step for program graduates.
+    </div>
+    <div class="insight">This is the addressable market for retraining: <strong>1 in 3 openings</strong> does not demand a rare stack or elite background.</div>
+  </div>
+
+  <div class="card span-7 accent-green">
+    <div class="card-label">Top Accessible Core Categories — where graduates can actually land</div>
+    <div style="margin-top:8px;">
+      <div class="bar-row"><div class="bar-label wide">QA &amp; Automation</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green);"></div></div><div class="bar-count">126</div></div>
+      <div class="bar-row"><div class="bar-label wide">BI &amp; Big Data</div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--teal);"></div></div><div class="bar-count">105</div></div>
+      <div class="bar-row"><div class="bar-label wide">Software Development</div><div class="bar-track"><div class="bar-fill" style="width:62%;background:var(--blue);"></div></div><div class="bar-count">78</div></div>
+      <div class="bar-row"><div class="bar-label wide">DevOps &amp; System</div><div class="bar-track"><div class="bar-fill" style="width:37%;background:var(--violet);"></div></div><div class="bar-count">46</div></div>
+      <div class="bar-row"><div class="bar-label wide">R&amp;D (mixed)</div><div class="bar-track"><div class="bar-fill" style="width:34%;background:var(--amber);"></div></div><div class="bar-count">43</div></div>
+      <div class="bar-row"><div class="bar-label wide">Algorithms &amp; DS</div><div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--rose);"></div></div><div class="bar-count">16</div></div>
+      <div class="bar-row"><div class="bar-label wide">AI &amp; ML</div><div class="bar-track"><div class="bar-fill" style="width:11%;background:var(--rose);"></div></div><div class="bar-count">14</div></div>
+    </div>
+    <div class="insight">Plus non-core accessible volume: <strong>Product Management (260), Sales (100), Marketing (53), Operations (53)</strong> — bridge roles that use domain experience from previous careers.</div>
+  </div>
+
+  <!-- ── Row 8 NEW: policy implications ───────────────────────────── -->
+  <div class="card span-12 accent-amber">
+    <div class="card-label">Policy Implications — where to invest retraining budgets</div>
+    <div class="policy-item">
+      <div class="policy-num">1</div>
+      <div class="policy-body">
+        <h3>Fund fast-track programs in QA, BI &amp; Data Analytics, and Product</h3>
+        <p>These categories combine high volume, low barriers (37–61% of roles at barrier 1–2) and real junior intake. <strong>QA &amp; Automation alone has 126 accessible core openings</strong> in this snapshot — the shortest path from retraining to employment for women without a tech background.</p>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-num">2</div>
+      <div class="policy-body">
+        <h3>The experience wall needs returnship subsidies, not more bootcamps</h3>
+        <p><strong>93.3% of roles demand prior experience; only 6.7% are junior.</strong> Where years are stated, 45% ask for 5+. Training alone cannot cross this — subsidized returnships and first-job wage support for maternity returners attack the actual bottleneck.</p>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-num">3</div>
+      <div class="policy-body">
+        <h3>Cyber, Algorithms and AI/ML require long-track intervention</h3>
+        <p>The highest-pay tracks are <strong>95%+ closed at entry</strong> (barrier 1–2 share: 4.2–8.4%) and feed from the military pipeline (dedicated 8200/Mamram hiring category). Short courses won't open them; funded 1–2 year conversion programs with employer commitments might.</p>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-num">4</div>
+      <div class="policy-body">
+        <h3>The glass ceiling is a stack problem — fund senior-level reskilling</h3>
+        <p>Barrier rises monotonically with seniority (avg 1.79 junior → 3.20 executive); <strong>strict-requirement share grows 17×</strong>. Women stuck at mid-level need targeted deep-stack upskilling (not generic leadership courses) to clear senior/lead screens.</p>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-num">5</div>
+      <div class="policy-body">
+        <h3>Flexibility mandates matter more than any single program</h3>
+        <p><strong>Only 26 of 4,766 roles (0.5%) are full-remote</strong>, and flexibility peaks mid-career then drops at leadership level. Incentives for verified-flexible roles (tax credits per remote/flex position) would expand the market for mothers across every category at once.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Based on data from <a href="https://genys30.github.io/jobfinder/">JobFinder</a> · Built by <a href="https://www.linkedin.com/in/jennysotnik/">Jenny Sotnik-Talisman</a></span>
+  <span>4,766 jobs · classified 2026-05-19 (claude-sonnet-4, 8 dimensions) · real data</span>
+</div>
+</body>
+</html>
