@@ -1,0 +1,117 @@
+JobFinder — licensing terms
+Last updated: 2026-07-24
+
+This repository contains two kinds of material governed by two different sets of
+terms. Neither section covers the whole repository. Read both.
+
+
+================================================================================
+1. CODE — MIT License
+================================================================================
+
+Applies to the software in this repository: files with the extensions .py, .js,
+.bat, .sh, .yml, .yaml, .html, .css, .md, and the GitHub Actions workflows.
+
+Copyright (c) 2026 Jenny Sotnik Talisman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+================================================================================
+2. DATA — all rights reserved
+================================================================================
+
+Applies to the data files in this repository and to the data served from it:
+*.csv, jobs_data.json, history.csv, companies.json, and any file whose content
+is a collection of job postings or of observations about them. The carve-outs in
+section 3 take precedence over this section.
+
+What is NOT claimed
+-------------------
+The individual job postings are facts published by third-party employers. No
+ownership is claimed over any individual posting, over the fact that a given
+employer is hiring, or over any employer's trademarks or names. Anyone is free
+to go to the same ~90 sources and collect the same postings themselves.
+
+What IS claimed
+---------------
+Two things, both of them original work rather than found facts:
+
+  (a) The compilation — the selection, aggregation, normalisation, de-duplication
+      and arrangement of postings drawn from ~90 separate sources into a single
+      structured set.
+
+  (b) The observational record — data that exists only because this project has
+      been watching those sources daily and that cannot be reconstructed after
+      the fact by scraping them today: first-observed and last-observed dates,
+      posting lifetimes and closure dates, appearance/disappearance histories,
+      staleness scores, hiring-velocity figures, and machine classifications of
+      postings.
+
+Permitted without asking
+------------------------
+  - Reading and browsing the site.
+  - Personal, non-commercial use, including saving postings you are interested
+    in and applying to them.
+  - Quoting figures or excerpts in research, journalism, teaching or reporting,
+    with attribution to JobFinder and the date of collection.
+  - Reproducing the code under section 1 and running it against the original
+    sources to build your own dataset.
+
+Not permitted without prior written permission
+----------------------------------------------
+  - Bulk or systematic extraction of the data, whether in one request or many.
+  - Redistributing, republishing or mirroring these data files, in whole or in
+    substantial part, including in a modified or reformatted form.
+  - Building a derived dataset or a competing product or service from them.
+  - Using them to train or fine-tune machine-learning models.
+  - Removing or obscuring attribution.
+
+Permission may be requested through this repository's issue tracker.
+
+Change of terms as of 2026-07-24
+--------------------------------
+Until 2026-07-24 the README of this repository stated that the data was
+available under the Open Database License v1.0 (ODbL). That statement is
+withdrawn and replaced by this section for all data published on or after
+2026-07-24. Copies obtained before that date were received under ODbL and keep
+those terms; ODbL is perpetual and irrevocable and nothing here purports to
+revoke it retroactively. Data published from 2026-07-24 onward is governed by
+this section only.
+
+
+================================================================================
+3. THIRD-PARTY MATERIAL — carve-outs
+================================================================================
+
+Section 2 does not apply to material this project did not produce:
+
+  - data/avodata_ref.json — occupational reference data derived from
+    avodata.labor.gov.il (Israeli Ministry of Labour processing of Central
+    Bureau of Statistics 2023 data). Its embedded skills glossary comes from
+    O*NET OnLine (USDOL/ETA, CC BY 4.0) and from the European Commission's ESCO
+    classification, as republished by avodata. Redistributed under the terms of
+    those sources, with their attribution preserved in the file itself. This
+    file is deliberately public and is fetched by an external service; it must
+    stay public.
+
+  - Any third-party library, font or asset vendored into this repository keeps
+    the licence it came with.
+
+Employer names, logos and trademarks appearing in the data belong to their
+respective owners and are used to identify the source of a posting.
