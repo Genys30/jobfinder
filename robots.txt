@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://genys30.github.io/jobfinder/sitemap.xml
