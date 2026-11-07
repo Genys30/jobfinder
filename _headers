@@ -1,0 +1,18 @@
+# Cloudflare Pages response headers (ignored by GitHub Pages). Shipped via
+# .github/site_manifest.txt. Added 2026-11-03 from SITE_AUDIT_2026-11-03.md §5.
+#
+# CSP keeps 'unsafe-inline' for scripts/styles: index.html is one file with
+# inline <script> blocks and onclick= handlers. The value of this policy is the
+# host allowlist (where scripts load from / data can be sent) + no framing.
+# Adding a CDN, API or analytics host to the frontend means adding it HERE too,
+# or the browser blocks it silently (console: "Refused to load/connect").
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://pqatrxbwevetcqntpbzk.supabase.co wss://pqatrxbwevetcqntpbzk.supabase.co https://cdn.jsdelivr.net https://raw.githubusercontent.com https://genys30.github.io https://jobfinder-eta-seven.vercel.app https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.google.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+# Served as octet-stream (a download) without this; the footer links it as "site terms".
+/LICENSE
+  Content-Type: text/plain; charset=utf-8

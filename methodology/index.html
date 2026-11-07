@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology · JobFinder</title>
+<meta name="description" content="How JobFinder collects Israeli job postings from 105 sources, what its dates mean, how employers are matched and how to read its salary, signal and funding figures.">
+<link rel="canonical" href="https://jobfinderdata.com/methodology/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JobFinder">
+<meta property="og:title" content="How JobFinder works">
+<meta property="og:description" content="How JobFinder collects Israeli job postings from 105 sources, what its dates mean, how employers are matched and how to read its salary, signal and funding figures.">
+<meta property="og:url" content="https://jobfinderdata.com/methodology/">
+<meta property="og:image" content="https://jobfinderdata.com/og-image.png">
+<meta name="theme-color" content="#f5f1e8">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f1e8;--panel:#ffffff;--ink:#1a1a17;--ink-dim:#5c5849;--ink-faint:#6f6a5c;--rule:#d9d2c2;--accent:#9a5c00;--accent-2:#c62d0e;--fund:#1a6b3a;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Carlito','Calibri','Gill Sans MT',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;}
+a{color:var(--accent);}
+.wrap{max-width:920px;margin:0 auto;padding:28px 16px 56px;}
+.mono,.eyebrow,.lbl,th,.meta{font-family:'JetBrains Mono',Consolas,monospace;}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;}
+.top a{text-decoration:none;color:var(--ink-dim);}
+.eyebrow{margin-top:34px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);}
+h1{font-size:clamp(28px,5vw,48px);font-weight:700;font-style:italic;letter-spacing:-.02em;line-height:1.1;margin:10px 0 12px;}
+h2{font-size:22px;font-style:italic;font-weight:700;margin:36px 0 10px;}
+.sub{color:var(--ink-dim);font-size:16px;max-width:680px;margin:0;}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin:22px 0 0;padding:14px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+.facts div{min-width:110px;}
+.lbl{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);}
+.val{font-size:17px;font-weight:700;}
+.fund{display:inline-block;margin-top:16px;padding:5px 11px;border:1px solid var(--fund);border-radius:999px;color:var(--fund);font-size:13px;font-weight:700;text-decoration:none;}
+.cta{display:inline-block;margin-top:20px;padding:10px 18px;border:1px solid var(--accent);border-radius:4px;color:var(--accent);text-decoration:none;font-weight:700;}
+.cta:hover{background:var(--accent);color:#fff;}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:16px;}
+.trend{width:100%;height:auto;display:block;}
+.trend .bar{fill:var(--accent);} .trend .bar0{fill:var(--rule);}
+.trend .bv{font:11px 'JetBrains Mono',monospace;fill:var(--ink-dim);text-anchor:middle;}
+.trend .bl{font:10px 'JetBrains Mono',monospace;fill:var(--ink-faint);text-anchor:middle;}
+.trend .axis{stroke:var(--rule);}
+.note{font-size:12.5px;color:var(--ink-faint);margin:8px 0 0;}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--rule);border-radius:6px;overflow:hidden;}
+th{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);text-align:left;font-weight:500;padding:9px 12px;border-bottom:1px solid var(--rule);}
+td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;font-size:15px;}
+tr:last-child td{border-bottom:0;}
+td a{color:var(--ink);text-decoration:none;font-weight:700;}
+td a:hover{color:var(--accent);text-decoration:underline;}
+td.meta{font-size:12px;color:var(--ink-dim);white-space:nowrap;}
+[dir=auto]{unicode-bidi:plaintext;text-align:left;}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--ink-faint);}
+footer a{color:var(--ink-dim);}
+.byline{margin:0 0 8px;font-size:13.5px;color:var(--ink-dim);}
+footer .byline a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:1px;font-weight:700;}
+@media (max-width:600px){th.c-city,td.c-city{display:none;} td{font-size:14px;}}
+.bars{table-layout:fixed;}
+.bars th:nth-child(1){width:38%;} .bars th:nth-child(2){width:17%;} .bars th:nth-child(4){width:15%;}
+.bars td.barc{padding-left:4px;padding-right:4px;}
+.bar{display:block;height:10px;background:var(--accent);border-radius:2px;vertical-align:middle;}
+.bar.prev{background:var(--rule);}
+td.meta.wrap{white-space:normal;}
+td.num{font-family:'JetBrains Mono',Consolas,monospace;font-size:13px;white-space:nowrap;text-align:right;}
+.up{color:#1a6b3a;} .down{color:#c62d0e;} .flat{color:var(--ink-faint);}
+.months{list-style:none;padding:0;margin:18px 0 0;}
+.months li{padding:12px 0;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:12px;}
+.months a{font-size:19px;font-weight:700;text-decoration:none;color:var(--ink);}
+.months a:hover{color:var(--accent);}
+.howto li{margin:6px 0;color:var(--ink-dim);font-size:14.5px;}
+.pnav{display:flex;justify-content:space-between;margin-top:36px;font-family:'JetBrains Mono',Consolas,monospace;font-size:12px;}
+.pnav a{text-decoration:none;}
+.wrap p{max-width:720px;color:var(--ink-dim);font-size:15.5px;}
+.bars th:nth-child(1){width:24%;} .bars th:nth-child(2){width:14%;} .bars th:nth-child(3){width:auto;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="top mono"><a href="../index.html">← JobFinder</a><a href="../report/">Market reports</a></nav>
+<div class="eyebrow">Methodology</div>
+<h1>How JobFinder works</h1>
+<p class="sub">Where the postings come from, what each number means, and where the data falls short.</p>
+<h2>What we collect</h2><p>JobFinder reads 105 sources every night: applicant-tracking systems that Israeli companies use (Comeet, Greenhouse, Lever, Workday and others), employers' own career sites, universities, hospitals, banks, government and public bodies, nonprofits, and a LinkedIn guest search. A few sites block automated access; those are refreshed by hand about once a week and never by getting around the block.</p><table class="bars"><thead><tr><th>Group</th><th>Sources</th><th>Which</th></tr></thead><tbody><tr><td class="lab">Academia</td><td class="num">21</td><td class="meta wrap" dir="auto">Afeka College of Engineering, Azrieli College (JCE), Bar-Ilan Alumni (job board), Bar-Ilan University, Ben-Gurion University, BGU Extra (supplementary listings), Braude College (Karmiel), Hebrew University (HUJI Careers), HIT — Holon Institute of Technology, HUJI Staff Positions (HunterHRMS), Reichman University (IDC), Ruppin Academic Center, Sapir College, SCE — Shamoon College of Engineering, Shenkar College, Technion — Israel Institute of Technology, Tel Aviv University, Tel-Hai College, University of Haifa, Weizmann Institute, Yezreel Valley College (YVC)</td></tr><tr><td class="lab">Corporate</td><td class="num">19</td><td class="meta wrap" dir="auto">Arkia Israeli Airlines (ארקיע), BDO Ziv Haft, Bezeq (בזק, telecom), BIS (Bezeq International), Deloitte Israel, El Al Israel Airlines (אל על), Electra Group (קבוצת אלקטרה), EY Israel (Ernst &amp; Young), HOT (הוט, telecom), Israair Airlines (ישראייר), Israeli Law Firms (umbrella), JDC — Joint Distribution Committee, KPMG (Somekh Chaikin), Osem-Nestlé, Partner Communications (פרטנר, telecom), Pelephone (פלאפון, telecom), PwC Israel (Kesselman), Strauss Group (קבוצת שטראוס), Teva Pharmaceutical</td></tr><tr><td class="lab">Finance</td><td class="num">17</td><td class="meta wrap" dir="auto">Altshuler Shaham, Ayalon Insurance, Bank Hapoalim, Bank Leumi, Cal (credit card), Clal Insurance, Discount Bank, First International Bank (FIBI), Harel Insurance &amp; Finance, IBI Investment House, Isracard, Max (credit card), Meitav Investment House, Menora Mivtachim, Migdal Insurance, Mizrahi-Tefahot Bank, The Phoenix Group</td></tr><tr><td class="lab">Tech</td><td class="num">15</td><td class="meta wrap" dir="auto">Amazon (Annapurna Labs / AWS Israel), Ashby (multi-company ATS), BambooHR (multi-company ATS), Breezy HR (multi-company ATS), Comeet (multi-company ATS), GotFriends (job board), Greenhouse (multi-company ATS), Innovation Israel (IIA), Lever (multi-company ATS), LinkedIn, Microsoft (Israel R&amp;D), Movement Group, Qualcomm (Israel R&amp;D centers), Workable (multi-company ATS), Workday (multinational R&amp;D centers)</td></tr><tr><td class="lab">NGO/Amutot</td><td class="num">10</td><td class="meta wrap" dir="auto">AKIM — intellectual-disability NGO (אקים), ALUT — autism NGO (אלו&quot;ט), Brookdale Institute (JDC), ELEM — youth-in-distress NGO (עלם), Enosh — mental-health NGO (אנוש), Leket Israel — food-rescue NGO, Mitam (NGO job board), NATAL — trauma &amp; resiliency NGO (נט&quot;ל), Shatil — third-sector job board, Telegram @biltiformali (NGO jobs)</td></tr><tr><td class="lab">Public</td><td class="num">10</td><td class="meta wrap" dir="auto">Bank of Israel, Civil Service Commission (CSC), Israel Electric Corporation (חברת החשמל), Mekorot (מקורות, national water company), Ministry of Defense (MOD), Namer (local municipalities), National Insurance (Bituach Leumi), National Library of Israel, NTA (Tel Aviv metro/light rail), Tel Aviv Municipality</td></tr><tr><td class="lab">Healthcare</td><td class="num">9</td><td class="meta wrap" dir="auto">Assuta Medical Centers, Clalit Health Services (all hospitals), Hadassah Medical Organization, Leumit Health Services, Maccabi Healthcare, Meuhedet Health Services, Rambam Medical Center, Shaare Zedek Medical Center, TopMatch (healthcare recruitment)</td></tr><tr><td class="lab">Defense</td><td class="num">3</td><td class="meta wrap" dir="auto">Elbit Systems, Israel Aerospace Industries (IAI), Rafael Advanced Defense Systems</td></tr><tr><td class="lab">Other</td><td class="num">1</td><td class="meta wrap" dir="auto">HUJI Alumni (job board)</td></tr></tbody></table><h2>What a date means</h2><p>Sources disagree about dates, so each one is labelled by what its date really is. &ldquo;Posted today&rdquo; on JobFinder means first seen today. Never compare the age of a posting across sources with different labels.</p><table class="bars"><thead><tr><th>Label</th><th>Sources</th><th>The date is</th></tr></thead><tbody><tr><td class="lab">observed</td><td class="num">72</td><td class="meta wrap">the day JobFinder first saw the posting</td></tr><tr><td class="lab">posted</td><td class="num">10</td><td class="meta wrap">a posting date the source itself publishes</td></tr><tr><td class="lab">hybrid</td><td class="num">21</td><td class="meta wrap">the source&#x27;s date where it gives one, else the day we first saw it</td></tr><tr><td class="lab">scrape</td><td class="num">2</td><td class="meta wrap">the day the list was exported, not a posting date (LinkedIn, Shatil)</td></tr></tbody></table><p>A date in the future is never shown. When a listing gives an application deadline, it appears as a deadline, not as the posting date.</p><h2>Open and closed</h2><p>A role is open while it is on its source's latest list. When it disappears it counts as closed: taken down, which is not the same as filled. A failed scrape never blanks a source: the last good list stays until a new one arrives.</p><h2>Employers and duplicates</h2><p>Company names are matched to one employer record, keyed on the Israeli company number (ח.פ.) where we can verify it. The same posting arriving from two sources is counted once on employer pages. Employer pages exist for employers with at least 3 open roles.</p><h2>Role, seniority and work type</h2><p>Role group, seniority and remote / hybrid / on-site are read from the job title and posting with fixed rules, not a language model. Titles that fit no rule stay unclassified, so groups never add up to 100%. The rules improve over time, which can move a group's share between months without any change in the market.</p><h2>Salary figures</h2><p>The pay range on a posting is a field benchmark: the typical gross monthly pay for that role group from Israel's Central Bureau of Statistics (2023, via the Ministry of Labor). It is not the posting's salary and does not depend on seniority. Technician and trade roles get no benchmark, because the engineering band would mislead. The monthly CBS hi-tech wage in Analytics is an industry average with about a two-month lag.</p><h2>Signal score</h2><p>The small &ldquo;b&rdquo; number on a posting is the character-level Shannon entropy of its description, in bits per character. Higher means richer, more specific text; low values are usually template ads.</p><h2>Funding badges</h2><p>A funding badge marks an employer that announced a round in the last 12 months, from curated press reports. Acquisitions are out of scope. Badges appear only for employers we can match to a company record.</p><h2>Descriptions</h2><p>JobFinder shows a short excerpt of each description and links to the original posting. Applications always happen on the employer's own site.</p><h2>What this is not</h2><p>It is not the whole Israeli job market. Coverage leans toward tech and the Tel Aviv area, LinkedIn shows only what its guest search returns, and the total grows whenever a source is added. Use the numbers for direction and mix, not as an official count. Official labour statistics come from the Central Bureau of Statistics.</p>
+<footer><p class="byline">Built by <a href="https://www.linkedin.com/in/jennysotnik/" target="_blank" rel="noopener">Jenny Sotnik Talisman</a> — turning messy public data into real-time operational signal.</p>Sources as of 2026-11-07. <a href="../index.html">Search all jobs</a> · <a href="../report/">Market reports</a> · <a href="../privacy.html">Privacy</a></footer>
+</div>
+</body>
+</html>
