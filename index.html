@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>JobFinder has moved to jobfinderdata.com</title>
+<!-- Redirect stub for the retired public repo Genys30/jobfinder (GitHub Pages at
+     genys30.github.io/jobfinder). Pages cannot send a server 301, so: JS first
+     (keeps path after /jobfinder, query and #hash — tab routing + url-state filters
+     survive), then a 0s meta refresh + canonical, which search engines treat as a
+     permanent move. 404.html is a copy of this file so deep links redirect too. -->
+<script>
+  (function () {
+    var p = location.pathname.replace(/^\/jobfinder(?=\/|$)/, '') || '/';
+    location.replace('https://jobfinderdata.com' + p + location.search + location.hash);
+  })();
+</script>
+<meta http-equiv="refresh" content="0; url=https://jobfinderdata.com/">
+<link rel="canonical" href="https://jobfinderdata.com/">
+</head>
+<body>
+<p>JobFinder has moved to <a href="https://jobfinderdata.com/">jobfinderdata.com</a>.</p>
+</body>
+</html>
